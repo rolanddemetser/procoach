@@ -19,39 +19,46 @@ body{
 }
 .card{
   background:#162235;
-  border-radius:20px;
-  padding:16px;
+  border-radius:22px;
+  padding:18px;
   margin-bottom:14px;
 }
-h1{font-size:28px;margin:0}
-label{display:block;margin-top:10px}
+h1{margin:0;font-size:28px}
+.subtitle{color:#9aa4b2;margin-top:4px}
+label{display:block;margin-top:10px;font-size:14px;color:#cbd5e1}
 input{
   width:100%;
-  padding:12px;
-  border-radius:12px;
+  padding:14px;
+  border-radius:14px;
   border:none;
   font-size:16px;
+  margin-top:4px;
 }
 button{
   width:100%;
-  padding:14px;
+  padding:16px;
   border:none;
-  border-radius:14px;
+  border-radius:16px;
   background:#22c55e;
   color:white;
   font-size:18px;
-  margin-top:12px;
+  margin-top:14px;
 }
 .status{
   text-align:center;
   font-size:26px;
-  padding:12px;
-  border-radius:14px;
-  margin-bottom:10px;
+  padding:14px;
+  border-radius:16px;
+  margin-bottom:12px;
 }
 .go{background:#16a34a}
 .hold{background:#f59e0b}
 .recover{background:#ef4444}
+.small{color:#9aa4b2;font-size:14px}
+.sync{
+  background:#0ea5e9;
+  margin-top:8px;
+}
 </style>
 </head>
 
@@ -60,10 +67,10 @@ button{
 
 <div class="card">
 <h1>ProCoach</h1>
-<div id="date"></div>
+<div class="subtitle" id="date"></div>
 
-<label>Slaap</label>
-<input id="sleep" placeholder="7.2">
+<label>Slaap (uren)</label>
+<input id="sleep" placeholder="6,5">
 
 <label>Rusthartslag</label>
 <input id="rhr">
@@ -83,19 +90,21 @@ button{
 <label>Fitness</label>
 <input id="fitness">
 
-<label>Gewicht</label>
+<label>Gewicht (optioneel)</label>
 <input id="weight">
 
-<label>Buikomtrek</label>
+<label>Buikomtrek (optioneel)</label>
 <input id="waist">
 
-<button onclick="save()">Opslaan</button>
+<button onclick="save()">Opslaan & Analyse</button>
+<button class="sync">Sync (binnenkort automatisch)</button>
 </div>
 
 <div class="card">
 <h2>Coach</h2>
 <div id="status" class="status">-</div>
 <div id="coach"></div>
+<div id="detail" class="small"></div>
 </div>
 
 <div class="card">
@@ -110,16 +119,11 @@ button{
 let data = JSON.parse(localStorage.getItem("pc")) || [];
 
 document.getElementById("date").innerText =
-new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 
 function val(id){
   let v=document.getElementById(id).value.replace(",",".");
   return v===""?null:Number(v);
-}
-
-function sleepFix(v){
-  if(v>24) return v/10;
-  return v;
 }
 
 function last(key){
@@ -133,7 +137,7 @@ function save(){
 
 let d={
   date:new Date().toISOString().slice(0,10),
-  sleep:sleepFix(val("sleep")),
+  sleep:val("sleep"),
   rhr:val("rhr"),
   bb:val("bb"),
   steps:val("steps"),
@@ -161,22 +165,46 @@ if(d.tsb>-10) score++;
 if(d.rhr<=60) score++;
 if(d.fatigue<d.fitness+10) score++;
 
-let label="HOLD",txt="Rustig bewegen";
+let prev = data.length>1 ? data[data.length-2] : null;
 
-if(score>=4){label="GO";txt="Sterke dag → trainen mogelijk";}
-if(score<=2){label="RECOVER";txt="Herstel → wandelen + yoga";}
+let trend="";
+if(prev){
+  if(d.tsb>prev.tsb) trend="⬆️ herstel beter";
+  if(d.tsb<prev.tsb) trend="⬇️ vermoeidheid stijgt";
+}
+
+let label="HOLD";
+let txt="";
+let detail="";
+
+if(score>=4){
+  label="GO";
+  txt="Sterke dag. HASfit mogelijk + wandelen 45–60 min (zone 2-3)";
+}
+else if(score<=2){
+  label="RECOVER";
+  txt="Herstel nodig. Wandelen 20–40 min (zone 2) + yoga";
+}
+else{
+  label="HOLD";
+  txt="Rustige dag. Wandelen 30–45 min (zone 2). Geen zware kracht";
+}
+
+if(d.bb<40) detail="Body Battery laag → hou intensiteit laag";
+if(d.tsb<-20) detail="TSB diep negatief → herstel prioritair";
 
 document.getElementById("status").innerText=label;
 document.getElementById("status").className="status "+label.toLowerCase();
 
-document.getElementById("coach").innerText=
-txt+" | BB "+d.bb+" | TSB "+d.tsb;
+document.getElementById("coach").innerText=txt;
+document.getElementById("detail").innerText=
+"Slaap "+d.sleep+"u | BB "+d.bb+" | TSB "+d.tsb+" | "+trend+" "+detail;
 }
 
 function render(){
 let html="";
-data.slice(-10).forEach(d=>{
-html+=d.date+" | "+d.weight+"kg | "+d.waist+"cm<br>";
+data.slice(-7).forEach(d=>{
+html+=d.date+" | "+d.weight+" kg | "+d.waist+" cm<br>";
 });
 document.getElementById("dash").innerHTML=html;
 }
