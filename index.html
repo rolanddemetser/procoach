@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProCoach</title>
+<style>
+body {
+  font-family: -apple-system, Arial;
+  margin: 0;
+  background: #0f172a;
+  color: white;
+}
+.container {
+  padding: 16px;
+  max-width: 430px;
+  margin: auto;
+}
+.card {
+  background: #1e293b;
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+h2 {margin:0 0 10px 0;}
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 5px;
+  font-size: 16px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  margin-top: 10px;
+  background: #22c55e;
+  color: white;
+}
+.result {
+  font-size: 22px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 12px;
+}
+.go {background: #16a34a;}
+.hold {background: #f59e0b;}
+.recover {background: #ef4444;}
+.small {font-size: 14px; opacity: 0.8;}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="card">
+<h2>📅 Vandaag</h2>
+
+<label>Slaap (uren)</label>
+<input id="sleep" type="number" step="0.1">
+
+<label>Rusthartslag</label>
+<input id="rhr" type="number">
+
+<label>Body Battery</label>
+<input id="bb" type="number">
+
+<label>Stappen</label>
+<input id="steps" type="number">
+
+<label>Form / TSB</label>
+<input id="tsb" type="number">
+
+<label>Fatigue</label>
+<input id="fatigue" type="number">
+
+<label>Fitness</label>
+<input id="fitness" type="number">
+
+<label>Gewicht (optioneel)</label>
+<input id="weight" type="number">
+
+<label>Buikomtrek (optioneel)</label>
+<input id="waist" type="number">
+
+<button onclick="saveDay()">Opslaan & Analyse</button>
+</div>
+
+<div class="card">
+<h2>📊 Advies</h2>
+<div id="result" class="result">Nog geen data</div>
+<div id="detail" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📥 JSON plakken (optioneel)</h2>
+<textarea id="json"></textarea>
+<button onclick="importJSON()">Import</button>
+</div>
+
+<div class="card">
+<h2>📈 Dashboard</h2>
+<div id="dashboard"></div>
+</div>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("procoach")) || [];
+
+function saveDay() {
+  let last = data[data.length-1] || {};
+  let today = {
+    date: new Date().toISOString().slice(0,10),
+    sleep: +sleep.value,
+    rhr: +rhr.value,
+    bb: +bb.value,
+    steps: +steps.value,
+    tsb: +tsb.value,
+    fatigue: +fatigue.value,
+    fitness: +fitness.value,
+    weight: weight.value ? +weight.value : last.weight,
+    waist: waist.value ? +waist.value : last.waist
+  };
+  data.push(today);
+  localStorage.setItem("procoach", JSON.stringify(data));
+  analyze(today);
+  renderDashboard();
+}
+
+function analyze(d) {
+  let score = 0;
+
+  if(d.sleep >= 7) score++;
+  if(d.bb >= 50) score++;
+  if(d.tsb > -10) score++;
+  if(d.rhr <= 60) score++;
+  if(d.fatigue < d.fitness + 10) score++;
+
+  let result = "HOLD";
+  let cls = "hold";
+
+  if(score >= 4) {result="GO"; cls="go";}
+  if(score <= 2) {result="RECOVER"; cls="recover";}
+
+  document.getElementById("result").innerHTML = result;
+  document.getElementById("result").className = "result " + cls;
+
+  document.getElementById("detail").innerHTML =
+    "Slaap: " + d.sleep + "u | BB: " + d.bb +
+    " | TSB: " + d.tsb + " | Fatigue: " + d.fatigue;
+}
+
+function importJSON() {
+  try {
+    let j = JSON.parse(json.value);
+    sleep.value = j.sleep || "";
+    rhr.value = j.rhr || "";
+    bb.value = j.bodyBattery || "";
+    steps.value = j.steps || "";
+    tsb.value = j.tsb || "";
+    fatigue.value = j.fatigue || "";
+    fitness.value = j.fitness || "";
+  } catch(e) {
+    alert("JSON fout");
+  }
+}
+
+function renderDashboard() {
+  let html = "";
+  data.slice(-7).forEach(d => {
+    html += d.date + " | " + d.weight + " kg | " + d.waist + " cm<br>";
+  });
+  document.getElementById("dashboard").innerHTML = html;
+}
+
+renderDashboard();
+</script>
+
+</body>
+</html>
