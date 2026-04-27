@@ -2,354 +2,188 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ProCoach</title>
+
 <style>
-:root{
-  --bg:#07111f;--card:#162235;--text:#fff;--muted:#a8b3c7;
-  --green:#22c55e;--orange:#f59e0b;--red:#ef4444;--blue:#38bdf8;
-}
-*{box-sizing:border-box}
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size:16px;
+  font-family:-apple-system;
+  background:#07111f;
+  color:white;
 }
 .app{
   max-width:430px;
-  margin:0 auto;
-  padding:18px 14px 40px;
-}
-.header{
-  padding:18px 4px 10px;
-}
-.header h1{
-  margin:0;
-  font-size:30px;
-  line-height:1.05;
-}
-.header p{
-  margin:8px 0 0;
-  color:var(--muted);
-  font-size:15px;
+  margin:auto;
+  padding:16px;
 }
 .card{
-  background:var(--card);
-  border-radius:22px;
-  padding:18px;
-  margin:14px 0;
-  box-shadow:0 8px 24px rgba(0,0,0,.22);
+  background:#162235;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:14px;
 }
-.row{
-  display:flex;
-  gap:10px;
-}
-.row>*{flex:1}
-label{
-  display:block;
-  margin:12px 0 6px;
-  font-weight:700;
-  font-size:15px;
-}
-input,textarea{
+h1{font-size:28px;margin:0}
+label{display:block;margin-top:10px}
+input{
   width:100%;
-  border:0;
-  border-radius:14px;
-  padding:13px 14px;
-  font-size:18px;
-  background:#fff;
-  color:#000;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  font-size:16px;
 }
 button{
   width:100%;
-  border:0;
-  border-radius:16px;
-  padding:15px;
-  margin-top:16px;
-  background:var(--green);
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#22c55e;
   color:white;
   font-size:18px;
-  font-weight:800;
-}
-.secondary{background:#334155}
-.danger{background:var(--red)}
-.datebox{
-  display:inline-block;
-  background:#0f172a;
-  border:1px solid #334155;
-  color:#cbd5e1;
-  border-radius:999px;
-  padding:7px 12px;
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:12px;
+  margin-top:12px;
 }
 .status{
   text-align:center;
-  font-size:30px;
-  font-weight:900;
-  padding:18px;
-  border-radius:18px;
-  margin:8px 0 12px;
-}
-.go{background:var(--green)}
-.hold{background:var(--orange)}
-.recover{background:var(--red)}
-.coachline{
-  color:#e5e7eb;
-  font-size:16px;
-  line-height:1.45;
-}
-.muted{
-  color:var(--muted);
-  font-size:14px;
-}
-.kpi{
-  background:#0f172a;
+  font-size:26px;
+  padding:12px;
   border-radius:14px;
-  padding:12px;
-  margin:8px 0;
-  font-size:15px;
+  margin-bottom:10px;
 }
-.kpi b{font-size:18px}
-.tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
-}
-.tabs button{
-  margin:0;
-  font-size:15px;
-  padding:11px;
-}
-.hidden{display:none}
-pre{
-  white-space:pre-wrap;
-  word-break:break-word;
-  background:#0f172a;
-  padding:12px;
-  border-radius:12px;
-  color:#cbd5e1;
-  font-size:13px;
-}
+.go{background:#16a34a}
+.hold{background:#f59e0b}
+.recover{background:#ef4444}
 </style>
 </head>
+
 <body>
 <div class="app">
 
-  <div class="header">
-    <h1>ProCoach</h1>
-    <p>Dagcoach op basis van herstel, belasting en trend. Geen HRV.</p>
-  </div>
+<div class="card">
+<h1>ProCoach</h1>
+<div id="date"></div>
 
-  <div class="card">
-    <div class="datebox" id="dateLabel"></div>
+<label>Slaap</label>
+<input id="sleep" placeholder="7.2">
 
-    <label>Slaap</label>
-    <input id="sleep" inputmode="decimal" placeholder="bv. 7.2">
+<label>Rusthartslag</label>
+<input id="rhr">
 
-    <label>Rusthartslag</label>
-    <input id="rhr" inputmode="numeric" placeholder="bv. 56">
+<label>Body Battery</label>
+<input id="bb">
 
-    <label>Body Battery</label>
-    <input id="bb" inputmode="numeric" placeholder="bv. 32">
+<label>Stappen</label>
+<input id="steps">
 
-    <label>Stappen</label>
-    <input id="steps" inputmode="numeric" placeholder="bv. 12000">
+<label>Form / TSB</label>
+<input id="tsb" type="number" placeholder="-23">
 
-    <div class="row">
-      <div>
-        <label>Form / TSB</label>
-        <input id="tsb" inputmode="numeric" placeholder="-23">
-      </div>
-      <div>
-        <label>Fatigue</label>
-        <input id="fatigue" inputmode="numeric" placeholder="53">
-      </div>
-    </div>
+<label>Fatigue</label>
+<input id="fatigue">
 
-    <label>Fitness</label>
-    <input id="fitness" inputmode="numeric" placeholder="48">
+<label>Fitness</label>
+<input id="fitness">
 
-    <div class="row">
-      <div>
-        <label>Gewicht</label>
-        <input id="weight" inputmode="decimal" placeholder="alleen bij wijziging">
-      </div>
-      <div>
-        <label>Buik</label>
-        <input id="waist" inputmode="decimal" placeholder="alleen bij wijziging">
-      </div>
-    </div>
+<label>Gewicht</label>
+<input id="weight">
 
-    <button onclick="saveDay()">Opslaan & analyseer</button>
-  </div>
+<label>Buikomtrek</label>
+<input id="waist">
 
-  <div class="card">
-    <h2>Coach</h2>
-    <div id="status" class="status hold">Nog geen data</div>
-    <div id="coach" class="coachline">Vul je waarden in en druk op opslaan.</div>
-  </div>
+<button onclick="save()">Opslaan</button>
+</div>
 
-  <div class="card">
-    <h2>Dashboard</h2>
-    <div id="dashboard" class="muted">Nog geen historiek.</div>
-  </div>
+<div class="card">
+<h2>Coach</h2>
+<div id="status" class="status">-</div>
+<div id="coach"></div>
+</div>
 
-  <div class="card">
-    <h2>Beheer</h2>
-    <div class="tabs">
-      <button class="secondary" onclick="exportData()">Export</button>
-      <button class="danger" onclick="resetData()">Reset</button>
-    </div>
-  </div>
+<div class="card">
+<h2>Dashboard</h2>
+<div id="dash"></div>
+</div>
 
 </div>
 
 <script>
-const DEFAULT_WEIGHT = 84.5;
-const DEFAULT_WAIST = 98;
 
-let data = JSON.parse(localStorage.getItem("procoach_v3") || "[]");
+let data = JSON.parse(localStorage.getItem("pc")) || [];
 
-function todayISO(){
-  const d=new Date();
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
+document.getElementById("date").innerText =
+new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+
+function val(id){
+  let v=document.getElementById(id).value.replace(",",".");
+  return v===""?null:Number(v);
 }
 
-function showDate(){
-  const d=new Date();
-  document.getElementById("dateLabel").textContent =
-    d.toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+function sleepFix(v){
+  if(v>24) return v/10;
+  return v;
 }
 
-function num(id){
-  const raw=document.getElementById(id).value.trim().replace(",",".");
-  if(raw==="") return null;
-  return Number(raw);
-}
-
-function sleepValue(){
-  let s=num("sleep");
-  if(s===null) return null;
-  if(s>24) s=s/10;       // 72 wordt 7.2
-  return Math.round(s*10)/10;
-}
-
-function latestValid(key){
+function last(key){
   for(let i=data.length-1;i>=0;i--){
-    if(data[i][key]!==undefined && data[i][key]!==null && !Number.isNaN(data[i][key])) return data[i][key];
+    if(data[i][key]!=null) return data[i][key];
   }
-  return key==="weight" ? DEFAULT_WEIGHT : DEFAULT_WAIST;
+  return key=="weight"?84.5:98;
 }
 
-function saveDay(){
-  const lastWeight=latestValid("weight");
-  const lastWaist=latestValid("waist");
+function save(){
 
-  const d={
-    date:todayISO(),
-    sleep:sleepValue(),
-    rhr:num("rhr"),
-    bb:num("bb"),
-    steps:num("steps"),
-    tsb:num("tsb"),
-    fatigue:num("fatigue"),
-    fitness:num("fitness"),
-    weight:num("weight") ?? lastWeight,
-    waist:num("waist") ?? lastWaist
-  };
+let d={
+  date:new Date().toISOString().slice(0,10),
+  sleep:sleepFix(val("sleep")),
+  rhr:val("rhr"),
+  bb:val("bb"),
+  steps:val("steps"),
+  tsb:val("tsb"),
+  fatigue:val("fatigue"),
+  fitness:val("fitness"),
+  weight:val("weight") ?? last("weight"),
+  waist:val("waist") ?? last("waist")
+};
 
-  data=data.filter(x=>x.date!==d.date);
-  data.push(d);
-  data.sort((a,b)=>a.date.localeCompare(b.date));
-  localStorage.setItem("procoach_v3",JSON.stringify(data));
+data.push(d);
+localStorage.setItem("pc",JSON.stringify(data));
 
-  analyze(d);
-  renderDashboard();
+analyze(d);
+render();
 }
 
 function analyze(d){
-  let score=0;
-  let warnings=[];
 
-  if(d.sleep!==null && d.sleep>=7) score++;
-  if(d.bb!==null && d.bb>=50) score++;
-  if(d.tsb!==null && d.tsb>-10) score++;
-  if(d.rhr!==null && d.rhr<=60) score++;
-  if(d.fatigue!==null && d.fitness!==null && d.fatigue<d.fitness+10) score++;
+let score=0;
 
-  if(d.sleep!==null && d.sleep<6.2) warnings.push("slaap kort");
-  if(d.bb!==null && d.bb<40) warnings.push("Body Battery laag");
-  if(d.tsb!==null && d.tsb<-20) warnings.push("Form/TSB sterk negatief");
-  if(d.steps!==null && d.steps>18000) warnings.push("veel stappenbelasting");
+if(d.sleep>=7) score++;
+if(d.bb>=50) score++;
+if(d.tsb>-10) score++;
+if(d.rhr<=60) score++;
+if(d.fatigue<d.fitness+10) score++;
 
-  let label="HOLD", cls="hold", advice="Rustige training. Wandelen 30–45 min, zone 2. Geen extra zware HASfit.";
+let label="HOLD",txt="Rustig bewegen";
 
-  if(score>=4 && warnings.length===0){
-    label="GO"; cls="go";
-    advice="Goede trainingsdag. Wandelen 45–60 min of HASfit kan. Hou het gecontroleerd, geen heldengedoe.";
-  }
+if(score>=4){label="GO";txt="Sterke dag → trainen mogelijk";}
+if(score<=2){label="RECOVER";txt="Herstel → wandelen + yoga";}
 
-  if(score<=2 || warnings.length>=2){
-    label="RECOVER"; cls="recover";
-    advice="Herstelmodus. Wandelen 20–30 min rustig + lichte yoga. Geen krachttraining vandaag.";
-  }
+document.getElementById("status").innerText=label;
+document.getElementById("status").className="status "+label.toLowerCase();
 
-  document.getElementById("status").textContent=label;
-  document.getElementById("status").className="status "+cls;
-
-  document.getElementById("coach").innerHTML =
-    advice +
-    `<br><br><span class="muted">Slaap: ${d.sleep ?? "-"}u · BB: ${d.bb ?? "-"} · TSB: ${d.tsb ?? "-"} · Fatigue/Fitness: ${d.fatigue ?? "-"}/${d.fitness ?? "-"} · Gewicht: ${d.weight} kg · Buik: ${d.waist} cm</span>` +
-    (warnings.length ? `<br><br><b>Aandacht:</b> ${warnings.join(", ")}.` : "");
+document.getElementById("coach").innerText=
+txt+" | BB "+d.bb+" | TSB "+d.tsb;
 }
 
-function renderDashboard(){
-  if(!data.length){
-    document.getElementById("dashboard").textContent="Nog geen historiek.";
-    return;
-  }
-
-  const recent=data.slice(-14);
-  let html="";
-
-  recent.forEach(d=>{
-    html += `<div class="kpi">
-      <b>${d.date}</b><br>
-      Gewicht: ${d.weight ?? "-"} kg · Buik: ${d.waist ?? "-"} cm<br>
-      Slaap: ${d.sleep ?? "-"}u · BB: ${d.bb ?? "-"} · TSB: ${d.tsb ?? "-"}
-    </div>`;
-  });
-
-  document.getElementById("dashboard").innerHTML=html;
+function render(){
+let html="";
+data.slice(-10).forEach(d=>{
+html+=d.date+" | "+d.weight+"kg | "+d.waist+"cm<br>";
+});
+document.getElementById("dash").innerHTML=html;
 }
 
-function exportData(){
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="procoach-backup.json";
-  a.click();
-}
+render();
 
-function resetData(){
-  if(confirm("Alle ProCoach-data wissen?")){
-    localStorage.removeItem("procoach_v3");
-    data=[];
-    location.reload();
-  }
-}
-
-showDate();
-renderDashboard();
-if(data.length) analyze(data[data.length-1]);
 </script>
+
 </body>
 </html>
