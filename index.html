@@ -6,59 +6,18 @@
 <title>ProCoach</title>
 
 <style>
-body{
-  margin:0;
-  font-family:-apple-system;
-  background:#07111f;
-  color:white;
-}
-.app{
-  max-width:430px;
-  margin:auto;
-  padding:16px;
-}
-.card{
-  background:#162235;
-  border-radius:22px;
-  padding:18px;
-  margin-bottom:14px;
-}
+body{margin:0;font-family:-apple-system;background:#07111f;color:white;}
+.app{max-width:430px;margin:auto;padding:16px;}
+.card{background:#162235;border-radius:22px;padding:18px;margin-bottom:14px;}
 h1{margin:0;font-size:28px}
-.subtitle{color:#9aa4b2;margin-top:4px}
+.subtitle{color:#9aa4b2}
 label{display:block;margin-top:10px;font-size:14px;color:#cbd5e1}
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:none;
-  font-size:16px;
-  margin-top:4px;
-}
-button{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:16px;
-  background:#22c55e;
-  color:white;
-  font-size:18px;
-  margin-top:14px;
-}
-.status{
-  text-align:center;
-  font-size:26px;
-  padding:14px;
-  border-radius:16px;
-  margin-bottom:12px;
-}
-.go{background:#16a34a}
-.hold{background:#f59e0b}
-.recover{background:#ef4444}
+input{width:100%;padding:14px;border-radius:14px;border:none;font-size:16px;margin-top:4px;}
+button{width:100%;padding:16px;border:none;border-radius:16px;background:#22c55e;color:white;font-size:18px;margin-top:14px;}
+.sync{background:#0ea5e9;}
+.status{text-align:center;font-size:26px;padding:14px;border-radius:16px;margin-bottom:12px;}
+.go{background:#16a34a}.hold{background:#f59e0b}.recover{background:#ef4444}
 .small{color:#9aa4b2;font-size:14px}
-.sync{
-  background:#0ea5e9;
-  margin-top:8px;
-}
 </style>
 </head>
 
@@ -69,8 +28,8 @@ button{
 <h1>ProCoach</h1>
 <div class="subtitle" id="date"></div>
 
-<label>Slaap (uren)</label>
-<input id="sleep" placeholder="6,5">
+<label>Slaap</label>
+<input id="sleep">
 
 <label>Rusthartslag</label>
 <input id="rhr">
@@ -82,7 +41,7 @@ button{
 <input id="steps">
 
 <label>Form / TSB</label>
-<input id="tsb" type="number" placeholder="-23">
+<input id="tsb" type="number">
 
 <label>Fatigue</label>
 <input id="fatigue">
@@ -90,14 +49,14 @@ button{
 <label>Fitness</label>
 <input id="fitness">
 
-<label>Gewicht (optioneel)</label>
+<label>Gewicht</label>
 <input id="weight">
 
-<label>Buikomtrek (optioneel)</label>
+<label>Buikomtrek</label>
 <input id="waist">
 
 <button onclick="save()">Opslaan & Analyse</button>
-<button class="sync">Sync (binnenkort automatisch)</button>
+<button class="sync">Sync (later)</button>
 </div>
 
 <div class="card">
@@ -122,33 +81,38 @@ document.getElementById("date").innerText =
 new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 
 function val(id){
-  let v=document.getElementById(id).value.replace(",",".");
-  return v===""?null:Number(v);
+ let v=document.getElementById(id).value.replace(",",".");
+ return v===""?null:Number(v);
 }
 
 function last(key){
-  for(let i=data.length-1;i>=0;i--){
-    if(data[i][key]!=null) return data[i][key];
-  }
-  return key=="weight"?84.5:98;
+ for(let i=data.length-1;i>=0;i--){
+  if(data[i][key]!=null) return data[i][key];
+ }
+ return key=="weight"?84.5:98;
 }
 
 function save(){
 
+let today=new Date().toISOString().slice(0,10);
+
 let d={
-  date:new Date().toISOString().slice(0,10),
-  sleep:val("sleep"),
-  rhr:val("rhr"),
-  bb:val("bb"),
-  steps:val("steps"),
-  tsb:val("tsb"),
-  fatigue:val("fatigue"),
-  fitness:val("fitness"),
-  weight:val("weight") ?? last("weight"),
-  waist:val("waist") ?? last("waist")
+ date:today,
+ sleep:val("sleep"),
+ rhr:val("rhr"),
+ bb:val("bb"),
+ steps:val("steps"),
+ tsb:val("tsb"),
+ fatigue:val("fatigue"),
+ fitness:val("fitness"),
+ weight:val("weight") ?? last("weight"),
+ waist:val("waist") ?? last("waist")
 };
 
+# 👉 voorkomt duplicaten
+data = data.filter(x => x.date !== today);
 data.push(d);
+
 localStorage.setItem("pc",JSON.stringify(data));
 
 analyze(d);
@@ -169,42 +133,44 @@ let prev = data.length>1 ? data[data.length-2] : null;
 
 let trend="";
 if(prev){
-  if(d.tsb>prev.tsb) trend="⬆️ herstel beter";
-  if(d.tsb<prev.tsb) trend="⬇️ vermoeidheid stijgt";
+ if(d.tsb>prev.tsb) trend="⬆️ herstel beter";
+ if(d.tsb<prev.tsb) trend="⬇️ vermoeidheid stijgt";
 }
 
 let label="HOLD";
 let txt="";
-let detail="";
+let extra=[];
 
 if(score>=4){
-  label="GO";
-  txt="Sterke dag. HASfit mogelijk + wandelen 45–60 min (zone 2-3)";
+ label="GO";
+ txt="Sterke dag → trainen + wandelen 45–60 min";
 }
 else if(score<=2){
-  label="RECOVER";
-  txt="Herstel nodig. Wandelen 20–40 min (zone 2) + yoga";
+ label="RECOVER";
+ txt="Herstel → wandelen 20–40 min + yoga";
 }
 else{
-  label="HOLD";
-  txt="Rustige dag. Wandelen 30–45 min (zone 2). Geen zware kracht";
+ label="HOLD";
+ txt="Rustige dag → wandelen 30–45 min";
 }
 
-if(d.bb<40) detail="Body Battery laag → hou intensiteit laag";
-if(d.tsb<-20) detail="TSB diep negatief → herstel prioritair";
+if(d.bb<40) extra.push("BB laag");
+if(d.tsb<-20) extra.push("TSB diep negatief");
 
 document.getElementById("status").innerText=label;
 document.getElementById("status").className="status "+label.toLowerCase();
 
 document.getElementById("coach").innerText=txt;
-document.getElementById("detail").innerText=
-"Slaap "+d.sleep+"u | BB "+d.bb+" | TSB "+d.tsb+" | "+trend+" "+detail;
+
+document.getElementById("detail").innerText =
+"Slaap "+d.sleep+"u | BB "+d.bb+" | TSB "+d.tsb+
+(extra.length?" | "+extra.join(" + "):"")+" "+trend;
 }
 
 function render(){
 let html="";
-data.slice(-7).forEach(d=>{
-html+=d.date+" | "+d.weight+" kg | "+d.waist+" cm<br>";
+data.slice(-7).reverse().forEach(d=>{
+ html+=d.date+" | "+d.weight+" kg | "+d.waist+" cm<br>";
 });
 document.getElementById("dash").innerHTML=html;
 }
