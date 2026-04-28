@@ -4,60 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ProCoach Auto</title>
-
 <style>
-body{
-  margin:0;
-  font-family:-apple-system;
-  background:#07111f;
-  color:white;
-}
-.app{
-  max-width:430px;
-  margin:auto;
-  padding:16px;
-}
-.card{
-  background:#162235;
-  border-radius:24px;
-  padding:20px;
-  margin-bottom:16px;
-}
-h1{
-  font-size:34px;
-  margin:0;
-}
-.value{
-  font-size:22px;
-  margin-top:10px;
-}
-.status{
-  text-align:center;
-  font-size:34px;
-  font-weight:900;
-  padding:20px;
-  border-radius:20px;
-  margin-bottom:12px;
-}
-.go{background:#16a34a;}
-.hold{background:#f59e0b;}
-.recover{background:#ef4444;}
-.text{
-  font-size:22px;
-  line-height:1.35;
-  font-weight:800;
-}
-.detail{
-  font-size:18px;
-  color:#9aa4b2;
-  margin-top:10px;
-}
+body{margin:0;font-family:-apple-system;background:#07111f;color:white}
+.app{max-width:430px;margin:auto;padding:16px}
+.card{background:#162235;border-radius:24px;padding:20px;margin-bottom:16px}
+h1{font-size:34px;margin:0}
+.value{font-size:22px;margin-top:10px}
+.status{text-align:center;font-size:34px;font-weight:900;padding:20px;border-radius:20px;margin-bottom:12px}
+.go{background:#16a34a}.hold{background:#f59e0b}.recover{background:#ef4444}
+.text{font-size:22px;line-height:1.35;font-weight:800}
+.detail{font-size:18px;color:#9aa4b2;margin-top:10px;line-height:1.4}
 </style>
 </head>
-
 <body>
 <div class="app">
-
   <div class="card">
     <h1>ProCoach Auto</h1>
     <div id="date" class="value"></div>
@@ -69,15 +29,27 @@ h1{
     <div id="text" class="text"></div>
     <div id="detail" class="detail"></div>
   </div>
-
 </div>
 
 <script>
+function getLocalData(){
+  try{
+    const raw = localStorage.getItem("procoach_auto_data");
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){
+    return null;
+  }
+}
+
+async function getFallbackData(){
+  const res = await fetch("procoach-data.json?v=" + Date.now());
+  return await res.json();
+}
 
 async function loadAndCoach(){
   try{
-    const res = await fetch("procoach-data.json?v=" + Date.now());
-    const d = await res.json();
+    const d = getLocalData() || await getFallbackData();
 
     document.getElementById("date").innerText =
       new Date().toLocaleDateString("nl-BE");
@@ -121,11 +93,11 @@ async function loadAndCoach(){
 
   }catch(e){
     document.getElementById("text").innerText = "Geen data gevonden";
+    document.getElementById("detail").innerText = "Upload eerst data via upload.html.";
   }
 }
 
 loadAndCoach();
-
 </script>
 </body>
 </html>
