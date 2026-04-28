@@ -28,8 +28,29 @@ h1{
   margin:0;
 }
 .value{
-  font-size:28px;
-  margin-top:12px;
+  font-size:22px;
+  margin-top:10px;
+}
+.status{
+  text-align:center;
+  font-size:34px;
+  font-weight:900;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:12px;
+}
+.go{background:#16a34a;}
+.hold{background:#f59e0b;}
+.recover{background:#ef4444;}
+.text{
+  font-size:22px;
+  line-height:1.35;
+  font-weight:800;
+}
+.detail{
+  font-size:18px;
+  color:#9aa4b2;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -43,15 +64,17 @@ h1{
   </div>
 
   <div class="card">
-    <h1>Data</h1>
-    <div id="data" class="value">laden...</div>
+    <h1>Coach</h1>
+    <div id="status" class="status hold">...</div>
+    <div id="text" class="text"></div>
+    <div id="detail" class="detail"></div>
   </div>
 
 </div>
 
 <script>
 
-async function loadData(){
+async function loadAndCoach(){
   try{
     const res = await fetch("procoach-data.json?v=" + Date.now());
     const d = await res.json();
@@ -59,17 +82,49 @@ async function loadData(){
     document.getElementById("date").innerText =
       new Date().toLocaleDateString("nl-BE");
 
-    document.getElementById("data").innerText =
-      "Slaap: " + d.sleep +
-      " | BB: " + d.bb +
-      " | TSB: " + d.tsb;
+    let score = 0;
+    let attention = [];
+
+    if(d.sleep >= 7) score++;
+    if(d.bb >= 50) score++;
+    if(d.tsb > -10) score++;
+    if(d.rhr <= 60) score++;
+    if(d.fatigue < d.fitness + 10) score++;
+
+    if(d.bb < 40) attention.push("BB laag");
+    if(d.tsb < -20) attention.push("TSB diep negatief");
+    if(d.steps > 18000) attention.push("veel stappen");
+
+    let label = "HOLD";
+    let text = "Rustige dag → wandelen 30–45 min.";
+
+    if(score >= 4 && attention.length === 0){
+      label = "GO";
+      text = "Sterke dag → trainen mogelijk.";
+    }
+
+    if(score <= 2 || attention.length >= 2){
+      label = "RECOVER";
+      text = "Herstel → wandelen + yoga.";
+    }
+
+    document.getElementById("status").innerText = label;
+    document.getElementById("status").className = "status " + label.toLowerCase();
+    document.getElementById("text").innerText = text;
+
+    document.getElementById("detail").innerText =
+      "Slaap " + d.sleep +
+      " | BB " + d.bb +
+      " | TSB " + d.tsb +
+      " | Fatigue/Fitness " + d.fatigue + "/" + d.fitness +
+      (attention.length ? " | " + attention.join(" + ") : "");
 
   }catch(e){
-    document.getElementById("data").innerText = "geen data gevonden";
+    document.getElementById("text").innerText = "Geen data gevonden";
   }
 }
 
-loadData();
+loadAndCoach();
 
 </script>
 </body>
