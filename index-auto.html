@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProCoach Auto</title>
 
+<style>
+body{
+  margin:0;
+  font-family:-apple-system;
+  background:#07111f;
+  color:white;
+}
+.app{
+  max-width:430px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:#162235;
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:16px;
+}
+h1{
+  font-size:34px;
+  margin:0;
+}
+.value{
+  font-size:28px;
+  margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="card">
+    <h1>ProCoach Auto</h1>
+    <div id="date" class="value"></div>
+  </div>
+
+  <div class="card">
+    <h1>Data</h1>
+    <div id="data" class="value">laden...</div>
+  </div>
+
+</div>
+
+<script>
+
+async function loadData(){
+  try{
+    const res = await fetch("procoach-data.json?v=" + Date.now());
+    const d = await res.json();
+
+    document.getElementById("date").innerText =
+      new Date().toLocaleDateString("nl-BE");
+
+    document.getElementById("data").innerText =
+      "Slaap: " + d.sleep +
+      " | BB: " + d.bb +
+      " | TSB: " + d.tsb;
+
+  }catch(e){
+    document.getElementById("data").innerText = "geen data gevonden";
+  }
+}
+
+loadData();
+
+</script>
+</body>
+</html>
