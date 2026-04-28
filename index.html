@@ -109,7 +109,6 @@ let d={
  waist:val("waist") ?? last("waist")
 };
 
-# 👉 voorkomt duplicaten
 data = data.filter(x => x.date !== today);
 data.push(d);
 
@@ -173,6 +172,11 @@ data.slice(-7).reverse().forEach(d=>{
  html+=d.date+" | "+d.weight+" kg | "+d.waist+" cm<br>";
 });
 document.getElementById("dash").innerHTML=html;
+
+# 🔥 BELANGRIJK: coach automatisch tonen
+if(data.length){
+ analyze(data[data.length-1]);
+}
 }
 
 render();
