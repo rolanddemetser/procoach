@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProCoach Upload</title>
+<style>
+body{
+  margin:0;
+  font-family:-apple-system;
+  background:#07111f;
+  color:white;
+}
+.app{
+  max-width:430px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:#162235;
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:16px;
+}
+h1{font-size:34px;margin:0 0 12px}
+p{color:#9aa4b2;font-size:18px;line-height:1.4}
+input,button{
+  width:100%;
+  box-sizing:border-box;
+  padding:18px;
+  border-radius:18px;
+  border:none;
+  font-size:20px;
+  margin-top:16px;
+}
+button{
+  background:#22c55e;
+  color:white;
+  font-weight:900;
+}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#07111f;
+  padding:16px;
+  border-radius:16px;
+  font-size:15px;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="card">
+<h1>ProCoach Upload</h1>
+<p>Kies een JSON-bestand. De data wordt lokaal bewaard voor ProCoach Auto.</p>
+
+<input id="file" type="file" accept=".json,application/json">
+<button onclick="saveFile()">Bewaar data</button>
+</div>
+
+<div class="card">
+<h1>Status</h1>
+<pre id="status">Nog geen bestand gekozen.</pre>
+</div>
+
+</div>
+
+<script>
+function saveFile(){
+  const file = document.getElementById("file").files[0];
+
+  if(!file){
+    alert("Kies eerst een JSON-bestand.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    try{
+      const json = JSON.parse(e.target.result);
+
+      const required = ["sleep","rhr","bb","steps","tsb","fatigue","fitness"];
+      const missing = required.filter(k => json[k] === undefined);
+
+      if(missing.length){
+        alert("Ontbrekende velden: " + missing.join(", "));
+        return;
+      }
+
+      localStorage.setItem("procoach_auto_data", JSON.stringify(json));
+
+      document.getElementById("status").innerText =
+        "Data bewaard:\n\n" + JSON.stringify(json,null,2);
+
+      alert("Upload gelukt. Open nu ProCoach Auto.");
+    }catch(err){
+      alert("Ongeldig JSON-bestand.");
+    }
+  };
+
+  reader.readAsText(file);
+}
+</script>
+</body>
+</html>
