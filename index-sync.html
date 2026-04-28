@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProCoach</title>
+
+<style>
+body{margin:0;font-family:-apple-system;background:#07111f;color:white;}
+.app{max-width:430px;margin:auto;padding:16px;}
+.card{background:#162235;border-radius:22px;padding:18px;margin-bottom:14px;}
+h1{margin:0;font-size:30px}
+.subtitle{color:#9aa4b2;margin-top:6px}
+label{display:block;margin-top:12px;font-size:15px;color:#cbd5e1;font-weight:700}
+input{width:100%;padding:15px;border-radius:16px;border:none;font-size:18px;margin-top:5px;box-sizing:border-box;}
+button{width:100%;padding:17px;border:none;border-radius:18px;background:#22c55e;color:white;font-size:20px;font-weight:800;margin-top:16px;}
+.sync{background:#0ea5e9;}
+.status{text-align:center;font-size:30px;font-weight:900;padding:18px;border-radius:18px;margin-bottom:14px;}
+.go{background:#16a34a}.hold{background:#f59e0b}.recover{background:#ef4444}
+.small{color:#9aa4b2;font-size:16px;line-height:1.45}
+.coachtext{font-size:20px;line-height:1.35;font-weight:700}
+.dashline{font-size:18px;margin-bottom:8px;color:#e5e7eb}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="card">
+<h1>ProCoach</h1>
+<div class="subtitle" id="date"></div>
+
+<label>Slaap</label>
+<input id="sleep" inputmode="decimal" placeholder="bv. 6,5">
+
+<label>Rusthartslag</label>
+<input id="rhr" inputmode="numeric">
+
+<label>Body Battery</label>
+<input id="bb" inputmode="numeric">
+
+<label>Stappen</label>
+<input id="steps" inputmode="numeric">
+
+<label>Form / TSB</label>
+<input id="tsb" type="number" placeholder="-18">
+
+<label>Fatigue</label>
+<input id="fatigue" inputmode="numeric">
+
+<label>Fitness</label>
+<input id="fitness" inputmode="numeric">
+
+<label>Gewicht</label>
+<input id="weight" inputmode="decimal" placeholder="alleen bij wijziging">
+
+<label>Buikomtrek</label>
+<input id="waist" inputmode="decimal" placeholder="alleen bij wijziging">
+
+<button onclick="save()">Opslaan & Analyse</button>
+<button class="sync" onclick="alert('Automatische sync bouwen we later via interval.icu.')">Sync later</button>
+</div>
+
+<div class="card">
+<h2>Coach</h2>
+<div id="status" class="status hold">Nog geen analyse</div>
+<div id="coach" class="coachtext">Vul je waarden in en druk op Opslaan & Analyse.</div>
+<div id="detail" class="small"></div>
+</div>
+
+<div class="card">
+<h2>Dashboard</h2>
+<div id="dash" class="small">Nog geen data opgeslagen.</div>
+</div>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("pc_final") || "[]");
+
+document.getElementById("date").innerText =
+new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+function val(id){
+  const el = document.getElementById(id);
+  if(!el) return null;
+  let v = el.value.trim().replace(",",".");
+  if(v === "") return null;
+  let n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function sleepVal(){
+  let s = val("sleep");
+  if(s === null) return null;
+  if(s > 24) s = s / 10;
+  return Math.round(s * 10) / 10;
+}
+
+function lastValue(key, fallback){
+  for(let i=data.length-1; i>=0; i--){
+    if(data[i][key] !== null && data[i][key] !== undefined){
+      return data[i][key];
+    }
+  }
+  return fallback;
+}
+
+function todayISO(){
+  let d = new Date();
+  let y = d.getFullYear();
+  let m = String(d.getMonth()+1).padStart(2,"0");
+  let day = String(d.getDate()).padStart(2,"0");
+  return y + "-" + m + "-" + day;
+}
+
+function save(){
+  let today = todayISO();
+
+  let d = {
+    date: today,
+    sleep: sleepVal(),
+    rhr: val("rhr"),
+    bb: val("bb"),
+    steps: val("steps"),
+    tsb: val("tsb"),
+    fatigue: val("fatigue"),
+    fitness: val("fitness"),
+    weight: val("weight") ?? lastValue("weight",84.5),
+    waist: val("waist") ?? lastValue("waist",98)
+  };
+
+  data = data.filter(x => x.date !== today);
+  data.push(d);
+  data.sort((a,b) => a.date.localeCompare(b.date));
+
+  localStorage.setItem("pc_final", JSON.stringify(data));
+
+  analyze(d);
+  render();
+}
+
+function analyze(d){
+  let score = 0;
+  let extra = [];
+
+  if(d.sleep !== null && d.sleep >= 7) score++;
+  if(d.bb !== null && d.bb >= 50) score++;
+  if(d.tsb !== null && d.tsb > -10) score++;
+  if(d.rhr !== null && d.rhr <= 60) score++;
+  if(d.fatigue !== null && d.fitness !== null && d.fatigue < d.fitness + 10) score++;
+
+  if(d.bb !== null && d.bb < 40) extra.push("Body Battery laag");
+  if(d.tsb !== null && d.tsb < -20) extra.push("TSB diep negatief");
+  if(d.steps !== null && d.steps > 18000) extra.push("veel stappenbelasting");
+  if(d.sleep !== null && d.sleep < 6) extra.push("korte slaap");
+
+  let label = "HOLD";
+  let txt = "Rustige dag → wandelen 30–45 min in zone 2. Geen zware HASfit.";
+
+  if(score >= 4 && extra.length === 0){
+    label = "GO";
+    txt = "Sterke dag → HASfit kan + wandelen 45–60 min. Hou het gecontroleerd.";
+  }
+
+  if(score <= 2 || extra.length >= 2){
+    label = "RECOVER";
+    txt = "Herstel → wandelen 20–40 min rustig + yoga. Geen krachttraining vandaag.";
+  }
+
+  document.getElementById("status").innerText = label;
+  document.getElementById("status").className = "status " + label.toLowerCase();
+  document.getElementById("coach").innerText = txt;
+
+  document.getElementById("detail").innerText =
+    "Slaap " + (d.sleep ?? "-") + "u | BB " + (d.bb ?? "-") +
+    " | TSB " + (d.tsb ?? "-") +
+    " | Fatigue/Fitness " + (d.fatigue ?? "-") + "/" + (d.fitness ?? "-") +
+    (extra.length ? " | Aandacht: " + extra.join(" + ") : "");
+}
+
+function render(){
+  if(!data.length){
+    document.getElementById("dash").innerText = "Nog geen data opgeslagen.";
+    return;
+  }
+
+  let html = "";
+  data.slice(-7).reverse().forEach(d => {
+    html += "<div class='dashline'>" +
+      d.date + " | " + d.weight + " kg | " + d.waist + " cm" +
+      "</div>";
+  });
+
+  document.getElementById("dash").innerHTML = html;
+}
+
+render();
+
+if(data.length){
+  analyze(data[data.length-1]);
+}
+</script>
+</body>
+</html>
