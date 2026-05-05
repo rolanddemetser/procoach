@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V21</title>
+<title>ProCoach V22</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--amber:#96550b;--green:#0d6f42;--blue:#1d4f8f;--red:#9d1c1c}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#091527 70%,#160722);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
@@ -26,7 +26,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="app">
-<div class="top"><div><h1>ProCoach V21 🧠</h1><div class="sub">Dagflow: één keer ochtendinput. Intervals-data wordt automatisch opgehaald. Geen CSV nodig voor activiteiten.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
+<div class="top"><div><h1>ProCoach V22 🧠</h1><div class="sub">Dagflow: automatische sync bij openen + betere dashboardtrends voor gewicht, vetverlies en consistentie.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
 <div class="card"><div class="grid"><div><label>Periode dashboard</label><select id="period" onchange="renderAll()"><option value="start">Sinds startdatum</option><option value="6m">Laatste 6 maanden</option><option value="3m">Laatste 3 maanden</option><option value="1m">Laatste maand</option><option value="1w">Laatste week</option></select></div><div class="tile"><div class="k">Periode-info</div><div id="periodInfo" class="d">—</div></div></div><div id="syncMsg" class="small" style="margin-top:10px">Intervals sync: nog niet gestart.</div></div>
 <div class="tabs"><div class="tab active" onclick="setTab('today')">Vandaag</div><div class="tab" onclick="setTab('history')">Historiek</div><div class="tab" onclick="setTab('dashboard')">Dashboard</div><div class="tab" onclick="setTab('settings')">Instellingen</div></div>
 <section id="today" class="section active">
@@ -40,12 +40,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <section id="settings" class="section"><div class="card"><h2>Instellingen</h2><div class="grid"><div><label>Startdatum</label><input id="startDate" type="date"></div><div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div><div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div><div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div><div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div><div><label>Coachstijl</label><select id="coachStyle"><option>Scherp</option><option>Normaal</option><option>Zacht</option></select></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveSettings()">Bewaar instellingen</button><button class="danger" onclick="wipeAll()">Wis alle lokale data</button></div></div></section>
 </div>
 <script>
-const KEY='procoach_v21_data',SETKEY='procoach_v21_settings',SYNC_KEY='procoach_v21_last_sync';
+const KEY='procoach_v22_data',SETKEY='procoach_v22_settings',SYNC_KEY='procoach_v22_last_sync';
 const INTERVALS_API='https://getintervalsdata-u52cb43h2a-uc.a.run.app';
 let entries=JSON.parse(localStorage.getItem(KEY)||'[]');
 let oldEntries=JSON.parse(localStorage.getItem('procoach_v20_data')||'[]');
 if(entries.length===0&&oldEntries.length){entries=oldEntries;localStorage.setItem(KEY,JSON.stringify(entries));}
-let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:86,startWaist:116,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v20_settings')||'{}'));
+let v21Entries=JSON.parse(localStorage.getItem('procoach_v21_data')||'[]');
+if(entries.length===0&&v21Entries.length){entries=v21Entries;localStorage.setItem(KEY,JSON.stringify(entries));}
+let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:86,startWaist:116,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v21_settings')||localStorage.getItem('procoach_v20_settings')||'{}'));
 const $=id=>document.getElementById(id);const n=v=>{if(v===undefined||v===null||v==='')return null;return Number(String(v).replace(',','.').replace(/\s/g,''))};const dstr=dt=>new Date(dt.getTime()-dt.getTimezoneOffset()*60000).toISOString().slice(0,10);const today=dstr(new Date());$('date').value=today;
 function saveSettings(){['startDate','goalWalk','goalStrength','startWeight','startWaist','coachStyle'].forEach(id=>settings[id]=$(id).value);settings.goalWalk=n(settings.goalWalk)||240;settings.goalStrength=n(settings.goalStrength)||60;settings.startWeight=n(settings.startWeight)||null;settings.startWaist=n(settings.startWaist)||null;localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
 function loadSettings(){$('startDate').value=settings.startDate;$('goalWalk').value=settings.goalWalk;$('goalStrength').value=settings.goalStrength;$('startWeight').value=settings.startWeight??'';$('startWaist').value=settings.startWaist??'';$('coachStyle').value=settings.coachStyle}
@@ -59,8 +61,12 @@ function autoFillFromYesterday(){const y=lastBefore($('date').value||today);if(y
 function lastBefore(date){return entries.filter(e=>e.date<date).sort((a,b)=>b.date.localeCompare(a.date))[0]||null}
 function last7(date=today){const end=new Date(date),start=new Date(end);start.setDate(end.getDate()-6);return entries.filter(e=>e.date>=dstr(start)&&e.date<=dstr(end))}
 function sum(a,k){return a.reduce((s,e)=>s+(n(e[k])||0),0)}function active(a){return a.filter(e=>(n(e.walkMin)||0)>=20||(n(e.strengthMin)||0)>=10||(n(e.yogaMin)||0)>=20).length}
-async function syncIntervals(manual=false){try{$('syncMsg').textContent='Intervals sync: bezig...';const res=await fetch(INTERVALS_API+'?t='+Date.now());const data=await res.json();if(!Array.isArray(data))throw new Error(data.error||JSON.stringify(data).slice(0,160));const days=mapIntervals(data);mergeEntries(days);localStorage.setItem(SYNC_KEY,today);$('syncMsg').textContent=`Intervals sync: ${Object.keys(days).length} dagen bijgewerkt om ${new Date().toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'})}.`;if(manual)alert('Intervals sync klaar: '+Object.keys(days).length+' dagen bijgewerkt.');renderAll()}catch(err){$('syncMsg').textContent='Intervals sync fout: '+err.message;if(manual)alert('Intervals sync fout: '+err.message)}}
-function autoSyncOncePerDay(){if(localStorage.getItem(SYNC_KEY)!==today)syncIntervals(false)}
+async function syncIntervals(manual=false){try{$('syncMsg').textContent='Intervals sync: bezig...';const res=await fetch(INTERVALS_API+'?t='+Date.now());const data=await res.json();if(!Array.isArray(data))throw new Error(data.error||JSON.stringify(data).slice(0,160));const days=mapIntervals(data);mergeEntries(days);localStorage.setItem(SYNC_KEY,new Date().toISOString());$('syncMsg').textContent=`Intervals sync: ${Object.keys(days).length} dagen bijgewerkt om ${new Date().toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'})}.`;if(manual)alert('Intervals sync klaar: '+Object.keys(days).length+' dagen bijgewerkt.');renderAll()}catch(err){$('syncMsg').textContent='Intervals sync fout: '+err.message;if(manual)alert('Intervals sync fout: '+err.message)}}
+function autoSyncOnOpen(){
+  const last=localStorage.getItem(SYNC_KEY)||'';
+  $('syncMsg').textContent='Intervals sync: automatische check bij openen...';
+  syncIntervals(false);
+}
 function mapIntervals(items){const by={};items.forEach(a=>{const date=normDate(a.start_date_local||a.start_date||a.date);if(!date)return;const name=String(a.name||a.type||'').toLowerCase();const type=String(a.type||'').toLowerCase();const seconds=n(a.moving_time)||n(a.elapsed_time)||0;const min=Math.round(seconds/60);const km=(n(a.distance)||0)/1000;const load=n(a.icu_training_load)||n(a.training_load)||n(a.load)||0;const hr=n(a.average_heartrate)||n(a.average_hr)||n(a.hr)||null;const steps=n(a.steps)||n(a.step_count)||null;by[date] ||= {date,source:'intervals',walkMin:0,distanceKm:0,load:0,strengthMin:0,yogaMin:0,avgHr:null,steps:null};if(type.includes('walk')||name.includes('wandel')||name.includes('walk')){by[date].walkMin+=min;by[date].distanceKm+=km}else if(type.includes('weight')||type.includes('strength')||name.includes('kracht')||name.includes('strength'))by[date].strengthMin+=min;else if(type.includes('yoga')||name.includes('yoga'))by[date].yogaMin+=min;else if(km>0){by[date].walkMin+=min;by[date].distanceKm+=km}by[date].load+=load;if(hr)by[date].avgHr=by[date].avgHr?(by[date].avgHr+hr)/2:hr;if(steps!==null)by[date].steps=Math.max(by[date].steps||0,steps)});Object.values(by).forEach(e=>{if(e.walkMin&&e.distanceKm)e.speed=e.distanceKm/(e.walkMin/60)});return by}
 function mergeEntries(days){const map=new Map(entries.map(e=>[e.date,e]));Object.values(days).forEach(day=>{const old=map.get(day.date)||{};map.set(day.date,Object.assign({},old,day,{updatedAt:new Date().toISOString()}))});entries=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem(KEY,JSON.stringify(entries))}
 function coach(e=entry()){const y=lastBefore(e.date),week=last7(e.date),load7=sum(week,'load'),strength7=sum(week,'strengthMin'),active7=active(week),stepsY=e.stepsYesterday??(y?n(y.steps):null);let risk=0,reasons=[];if(e.feeling==='ziek'){risk+=100;reasons.push('Ziek gevoel: herstel is vandaag de training.')}if(e.feeling==='pijn'){risk+=35;reasons.push('Pijn gemeld: belasting beperken.')}if(e.sleep!==null&&e.sleep<5.5){risk+=35;reasons.push('Slaap is zwak: herstel beschermen.')}else if(e.sleep!==null&&e.sleep<6.3){risk+=18;reasons.push('Slaap is matig: slim doseren.')}if(e.bodyBattery!==null&&e.bodyBattery<35){risk+=32;reasons.push('Body Battery laag: geen heroïsche training.')}else if(e.bodyBattery!==null&&e.bodyBattery<50){risk+=14;reasons.push('Body Battery middelmatig: voorzichtig opbouwen.')}if(e.stress==='hoog'){risk+=18;reasons.push('Stress hoog: rustige zone 2 is veiliger.')}if(e.stress==='zeer hoog'){risk+=35;reasons.push('Stress zeer hoog: herstel gaat voor.')}if(e.form!==null&&e.form<-30){risk+=22;reasons.push('Form/TSB zwaar negatief: vermoeidheidsrisico.')}else if(e.form!==null&&e.form<-20){risk+=12;reasons.push('Form/TSB negatief: niet stapelen.')}if(load7>360){risk+=18;reasons.push('7-dagenbelasting is stevig: geen extra pieken.')}if(y&&(n(y.walkMin)||0)>90){risk+=16;reasons.push('Gisteren was actief: vandaag niet stapelen.')}if(stepsY!==null&&stepsY>15000){risk+=14;reasons.push('Gisteren veel stappen: benen kunnen vermoeid zijn.')}else if(stepsY!==null&&stepsY>10000){risk+=7;reasons.push('Gisteren ruim voldoende stappen: vandaag doseren.')}if(strength7<20)reasons.push('Krachtachterstand: korte krachtprikkel nodig.');let mode='light',title='VANDAAG: AANPASSEN — SLIM DOSEREN',actions=[],dont=[];if(e.feeling==='ziek'||risk>=75){mode='stop';title='VANDAAG: STOP. HERSTEL EERST.';actions=['Wandelen: max. 10–20 min rustig indien ok','Mobiliteit: 5–10 min','Vroeg stoppen bij duizeligheid/pijn'];dont=['Geen kracht','Geen versnellingen','Geen lange wandeling']}else if(risk>=50){mode='recover';title='VANDAAG: HERSTELDAG. NIET FORCEREN.';actions=['Wandelen: 20–30 min rustig, 4.5–5.2 km/u','Yoga/mobiliteit: 10–15 min','Kracht alleen als je duidelijk opknapt'];dont=['Geen versnellingen','Geen lange wandeling','Geen zware kracht']}else if(strength7<20){mode='light';title='VANDAAG: 20 MIN KRACHT. GEEN DISCUSSIE.';actions=['Kracht: 15–20 min licht, gecontroleerd','Wandelen: 20–40 min rustig optioneel','Stop met 2 herhalingen reserve'];dont=['Geen maximale sets','Geen sprint/versnellingen','Geen extra lange wandeling']}else{mode='go';title='VANDAAG: DOEN — NORMALE TRAININGSDAG';actions=['Wandelen: 40–60 min zone 2, 4.8–5.6 km/u','Kracht: 15–25 min als je fris blijft','Versnellingen: alleen 2–3 x 1 min als benen goed voelen'];dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn']}if(!reasons.length)reasons.push('Geen duidelijke rode vlaggen ingevuld.');return{mode,title,actions:actions.slice(0,3),dont:dont.slice(0,3),reasons:reasons.slice(0,3),y,stepsY,ctx:{risk,load7,strength7,active7}}}
@@ -68,7 +74,57 @@ function renderCoach(){const c=coach();$('mainDecision').className='decision '+c
 function range(){const end=new Date();let start=new Date(settings.startDate),p=$('period').value;if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);return{start:dstr(start),end:dstr(end),label:$('period').selectedOptions[0].text}}
 function filtered(){const r=range();return entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date))}function fmt(v,s=''){return v===null||isNaN(v)?'—':(Math.round(v*10)/10).toFixed(1)+s}function latest(k){return [...entries].reverse().find(e=>n(e[k])!==null)}
 function renderHistory(){const arr=filtered().slice().reverse();$('historyTable').innerHTML='<tr><th>Datum</th><th>Advies</th><th>Stappen</th><th>Wandelen</th><th>Afstand</th><th>Belasting</th><th>Kracht</th><th>Yoga</th><th>Gewicht</th></tr>'+arr.map(e=>`<tr><td>${e.date}</td><td>${e.decision||'—'}</td><td>${n(e.steps)||'—'}</td><td>${Math.round(n(e.walkMin)||0)} min</td><td>${fmt(n(e.distanceKm),' km')}</td><td>${Math.round(n(e.load)||0)}</td><td>${Math.round(n(e.strengthMin)||0)} min</td><td>${Math.round(n(e.yogaMin)||0)} min</td><td>${n(e.weight)||'—'}</td></tr>`).join('')}
-function renderDash(){const arr=filtered(),r=range(),lw=latest('weight'),lwa=latest('waist');$('periodInfo').innerHTML=`${r.label}<br>${r.start} t/m ${r.end}`;const fat=sum(arr,'walkMin')+sum(arr,'yogaMin')*.6,score=Math.max(0,Math.min(100,Math.round((fat/(arr.length*50||1))*100)));const tiles=[['Periode',r.label,`${r.start} t/m ${r.end}`],['Wandelen',Math.round(sum(arr,'walkMin'))+' min',fmt(sum(arr,'distanceKm'),' km')],['Stappen',Math.round(sum(arr,'steps')),'indien beschikbaar'],['Kracht',Math.round(sum(arr,'strengthMin'))+' min','Intervals + manueel'],['Belasting',Math.round(sum(arr,'load')),'periode'],['Belasting 7d',Math.round(sum(last7(),'load')),'coachcontext'],['Vetverbranding',score+'/100',Math.round(fat)+' rustige minuten'],['Gewicht',lw?fmt(n(lw.weight),' kg'):'geen meting',lw&&settings.startWeight?fmt(n(lw.weight)-settings.startWeight,' kg')+' sinds start':'—'],['Buik',lwa?fmt(n(lwa.waist),' cm'):'geen meting',lwa&&settings.startWaist?fmt(n(lwa.waist)-settings.startWaist,' cm')+' sinds start':'—']];$('dashTiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');draw('chartWalk',arr,'walkMin');draw('chartDistance',arr,'distanceKm');draw('chartLoad',arr,'load');draw('chartWeight',arr,'weight')}
+function renderDash(){
+const arr=filtered(),r=range(),lw=latest('weight'),lwa=latest('waist');
+$('periodInfo').innerHTML=`${r.label}<br>${r.start} t/m ${r.end}`;
+const walk=sum(arr,'walkMin'),yoga=sum(arr,'yogaMin'),strength=sum(arr,'strengthMin'),load=sum(arr,'load'),distance=sum(arr,'distanceKm'),steps=sum(arr,'steps');
+const fat=walk+yoga*.6;
+const score=Math.max(0,Math.min(100,Math.round((fat/(arr.length*50||1))*100)));
+const activeDays=active(arr);
+const consistency=arr.length?Math.round(activeDays/arr.length*100):0;
+const w=weightStats(arr);
+const tiles=[
+['Periode',r.label,`${r.start} t/m ${r.end}`],
+['Wandelen',Math.round(walk)+' min',fmt(distance,' km')],
+['Stappen',Math.round(steps),'indien beschikbaar'],
+['Kracht',Math.round(strength)+' min','Intervals + manueel'],
+['Belasting',Math.round(load),'periode'],
+['Belasting 7d',Math.round(sum(last7(),'load')),'coachcontext'],
+['Vetverbranding',score+'/100',Math.round(fat)+' rustige minuten'],
+['Consistentie',consistency+'%',activeDays+' actieve dagen'],
+['Gewicht nu',lw?fmt(n(lw.weight),' kg'):'geen meting',lw&&settings.startWeight?fmt(n(lw.weight)-settings.startWeight,' kg')+' sinds start':'—'],
+['Gewicht trend',w.trendText,w.detail],
+['Weekgemiddelde',w.avgText,w.avgDetail],
+['Buik',lwa?fmt(n(lwa.waist),' cm'):'geen meting',lwa&&settings.startWaist?fmt(n(lwa.waist)-settings.startWaist,' cm')+' sinds start':'—']
+];
+$('dashTiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
+draw('chartWalk',arr,'walkMin');draw('chartDistance',arr,'distanceKm');draw('chartLoad',arr,'load');drawWeightTrend('chartWeight',arr)
+}
+function weightStats(arr){
+ const vals=arr.filter(e=>n(e.weight)!==null).map(e=>({date:e.date,weight:n(e.weight)}));
+ if(vals.length<2)return{trendText:'—',detail:'minstens 2 metingen nodig',avgText:'—',avgDetail:'nog geen weekgemiddelde'};
+ const first=vals[0].weight,last=vals[vals.length-1].weight,diff=last-first;
+ const last7=vals.slice(-7),prev7=vals.slice(-14,-7);
+ const avg=a=>a.reduce((s,x)=>s+x.weight,0)/(a.length||1);
+ const a7=avg(last7),p7=prev7.length?avg(prev7):null;
+ return{
+  trendText:(diff>0?'+':'')+fmt(diff,' kg'),
+  detail:`van ${fmt(first,' kg')} naar ${fmt(last,' kg')}`,
+  avgText:fmt(a7,' kg'),
+  avgDetail:p7!==null?`vs vorige 7 metingen: ${(a7-p7>0?'+':'')+fmt(a7-p7,' kg')}`:'laatste metingen gemiddeld'
+ }
+}
+function drawWeightTrend(id,arr){
+ const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);const w=c.clientWidth,h=c.clientHeight;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#6f84a8';ctx.strokeRect(8,8,w-16,h-16);
+ const vals=arr.filter(e=>n(e.weight)!==null).map(e=>n(e.weight));
+ if(vals.length<2){ctx.fillStyle='#b7c4d8';ctx.font='13px system-ui';ctx.fillText('Minstens 2 gewichtsmetingen nodig',20,34);return}
+ const avg=vals.map((_,i)=>{const s=vals.slice(Math.max(0,i-6),i+1);return s.reduce((a,b)=>a+b,0)/s.length});
+ const all=vals.concat(avg),min=Math.min(...all),max=Math.max(...all),span=max-min||1;
+ const plot=(series,width)=>{ctx.beginPath();ctx.lineWidth=width;series.forEach((v,i)=>{const x=16+i*(w-32)/(series.length-1),y=h-16-(v-min)*(h-32)/span;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};
+ ctx.strokeStyle='rgba(255,255,255,.35)';plot(vals,1);
+ ctx.strokeStyle='#fff';plot(avg,3);
+ ctx.fillStyle='#b7c4d8';ctx.font='12px system-ui';ctx.fillText('dunne lijn = daggewicht · dikke lijn = 7-metingen trend',18,h-18)
+}
 function draw(id,arr,k){const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);const w=c.clientWidth,h=c.clientHeight;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#6f84a8';ctx.strokeRect(8,8,w-16,h-16);const vals=arr.map(e=>n(e[k])).filter(v=>v!==null&&!isNaN(v));if(vals.length<2){ctx.fillStyle='#b7c4d8';ctx.font='13px system-ui';ctx.fillText('Niet genoeg data',20,34);return}const min=Math.min(...vals),max=Math.max(...vals),span=max-min||1;ctx.beginPath();ctx.strokeStyle='#fff';ctx.lineWidth=2;vals.forEach((v,i)=>{const x=16+i*(w-32)/(vals.length-1),y=h-16-(v-min)*(h-32)/span;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
 function setTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));[...document.querySelectorAll('.tab')][['today','history','dashboard','settings'].indexOf(id)].classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');renderAll()}
 function renderAll(){loadSettings();autoFillFromYesterday();renderCoach();renderHistory();renderDash();lock()}
@@ -79,7 +135,7 @@ function parseDur(v){if(!v)return 0;const s=String(v).trim();if(s.includes(':'))
 function exportJson(){const blob=new Blob([JSON.stringify({settings,entries},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v21_backup.json';a.click()}
 async function importJSON(ev){const f=ev.target.files[0];if(!f)return;const data=JSON.parse(await f.text());if(data.settings)settings=Object.assign(settings,data.settings);if(Array.isArray(data.entries))entries=data.entries;localStorage.setItem(KEY,JSON.stringify(entries));localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
 function wipeAll(){if(confirm('Alle lokale data wissen?')){localStorage.removeItem(KEY);localStorage.removeItem(SETKEY);localStorage.removeItem(SYNC_KEY);entries=[];location.reload()}}
-['sleep','rhr','bb','stepsYesterday','form','fatigue','fitness','stress','feeling','timeAvail','weather','weight','waist','note','steps','walkMin','distanceKm','speed','avgHr','load','strengthMin','yogaMin'].forEach(id=>$(id).addEventListener('input',renderCoach));$('date').addEventListener('change',()=>{fill(entries.find(e=>e.date===$('date').value));renderAll()});loadSettings();fill(entries.find(e=>e.date===today));renderAll();autoSyncOncePerDay();
+['sleep','rhr','bb','stepsYesterday','form','fatigue','fitness','stress','feeling','timeAvail','weather','weight','waist','note','steps','walkMin','distanceKm','speed','avgHr','load','strengthMin','yogaMin'].forEach(id=>$(id).addEventListener('input',renderCoach));$('date').addEventListener('change',()=>{fill(entries.find(e=>e.date===$('date').value));renderAll()});loadSettings();fill(entries.find(e=>e.date===today));renderAll();autoSyncOnOpen();
 </script>
 </body>
 </html>
