@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V22</title>
+<title>ProCoach V23</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--amber:#96550b;--green:#0d6f42;--blue:#1d4f8f;--red:#9d1c1c}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#091527 70%,#160722);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
@@ -26,8 +26,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="app">
-<div class="top"><div><h1>ProCoach V22 🧠</h1><div class="sub">Dagflow: automatische sync bij openen + betere dashboardtrends voor gewicht, vetverlies en consistentie.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
-<div class="card"><div class="grid"><div><label>Periode dashboard</label><select id="period" onchange="renderAll()"><option value="start">Sinds startdatum</option><option value="6m">Laatste 6 maanden</option><option value="3m">Laatste 3 maanden</option><option value="1m">Laatste maand</option><option value="1w">Laatste week</option></select></div><div class="tile"><div class="k">Periode-info</div><div id="periodInfo" class="d">—</div></div></div><div id="syncMsg" class="small" style="margin-top:10px">Intervals sync: nog niet gestart.</div></div>
+<div class="top"><div><h1>ProCoach V23 🧠</h1><div class="sub">Dashboard-upgrade: gezondheidsscore, fitnessleeftijd, BMI-trend, buikomtrek en moving-period filters.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
+<div class="card"><div class="grid"><div><label>Periode dashboard</label><select id="period" onchange="renderAll()"><option value="1w">Moving week</option><option value="1m">Moving month</option><option value="3m">Moving 3 months</option><option value="6m">Moving 6 months</option><option value="1y">Moving last year</option><option value="all">All time</option></select></div><div class="tile"><div class="k">Periode-info</div><div id="periodInfo" class="d">—</div></div></div><div id="syncMsg" class="small" style="margin-top:10px">Intervals sync: nog niet gestart.</div></div>
 <div class="tabs"><div class="tab active" onclick="setTab('today')">Vandaag</div><div class="tab" onclick="setTab('history')">Historiek</div><div class="tab" onclick="setTab('dashboard')">Dashboard</div><div class="tab" onclick="setTab('settings')">Instellingen</div></div>
 <section id="today" class="section active">
 <div id="lockedBanner" class="lock hidden">✅ Vandaag is al bewaard. Ochtendinput is vergrendeld. Gebruik “Reset vandaag” alleen bij fout.</div>
@@ -37,20 +37,19 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 <section id="history" class="section"><div class="card"><h2>Historiek</h2><div class="tablewrap"><table id="historyTable"></table></div></div></section>
 <section id="dashboard" class="section"><div class="card"><h2>Dashboard</h2><div id="dashTiles" class="grid3"></div></div><div class="grid"><div class="card"><h3>Wandelen</h3><canvas id="chartWalk"></canvas></div><div class="card"><h3>Afstand</h3><canvas id="chartDistance"></canvas></div><div class="card"><h3>Belasting</h3><canvas id="chartLoad"></canvas></div><div class="card"><h3>Gewicht</h3><canvas id="chartWeight"></canvas></div></div></section>
-<section id="settings" class="section"><div class="card"><h2>Instellingen</h2><div class="grid"><div><label>Startdatum</label><input id="startDate" type="date"></div><div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div><div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div><div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div><div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div><div><label>Coachstijl</label><select id="coachStyle"><option>Scherp</option><option>Normaal</option><option>Zacht</option></select></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveSettings()">Bewaar instellingen</button><button class="danger" onclick="wipeAll()">Wis alle lokale data</button></div></div></section>
+<section id="settings" class="section"><div class="card"><h2>Instellingen</h2><div class="grid"><div><label>Startdatum</label><input id="startDate" type="date"></div><div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div><div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div><div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div><div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div><div><label>Lengte cm</label><input id="heightCm" type="text" inputmode="decimal"></div><div><label>Coachstijl</label><select id="coachStyle"><option>Scherp</option><option>Normaal</option><option>Zacht</option></select></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveSettings()">Bewaar instellingen</button><button class="danger" onclick="wipeAll()">Wis alle lokale data</button></div></div></section>
 </div>
 <script>
-const KEY='procoach_v22_data',SETKEY='procoach_v22_settings',SYNC_KEY='procoach_v22_last_sync';
+const KEY='procoach_v23_data',SETKEY='procoach_v23_settings',SYNC_KEY='procoach_v23_last_sync';
 const INTERVALS_API='https://getintervalsdata-u52cb43h2a-uc.a.run.app';
 let entries=JSON.parse(localStorage.getItem(KEY)||'[]');
-let oldEntries=JSON.parse(localStorage.getItem('procoach_v20_data')||'[]');
+let oldEntries=JSON.parse(localStorage.getItem('procoach_v22_data')||localStorage.getItem('procoach_v21_data')||localStorage.getItem('procoach_v20_data')||'[]');
 if(entries.length===0&&oldEntries.length){entries=oldEntries;localStorage.setItem(KEY,JSON.stringify(entries));}
-let v21Entries=JSON.parse(localStorage.getItem('procoach_v21_data')||'[]');
-if(entries.length===0&&v21Entries.length){entries=v21Entries;localStorage.setItem(KEY,JSON.stringify(entries));}
-let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:86,startWaist:116,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v21_settings')||localStorage.getItem('procoach_v20_settings')||'{}'));
+let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:99,startWaist:116,heightCm:174,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v22_settings')||localStorage.getItem('procoach_v21_settings')||localStorage.getItem('procoach_v20_settings')||'{}'));
+settings.startWeight=99;settings.startWaist=116;settings.heightCm=174;
 const $=id=>document.getElementById(id);const n=v=>{if(v===undefined||v===null||v==='')return null;return Number(String(v).replace(',','.').replace(/\s/g,''))};const dstr=dt=>new Date(dt.getTime()-dt.getTimezoneOffset()*60000).toISOString().slice(0,10);const today=dstr(new Date());$('date').value=today;
-function saveSettings(){['startDate','goalWalk','goalStrength','startWeight','startWaist','coachStyle'].forEach(id=>settings[id]=$(id).value);settings.goalWalk=n(settings.goalWalk)||240;settings.goalStrength=n(settings.goalStrength)||60;settings.startWeight=n(settings.startWeight)||null;settings.startWaist=n(settings.startWaist)||null;localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
-function loadSettings(){$('startDate').value=settings.startDate;$('goalWalk').value=settings.goalWalk;$('goalStrength').value=settings.goalStrength;$('startWeight').value=settings.startWeight??'';$('startWaist').value=settings.startWaist??'';$('coachStyle').value=settings.coachStyle}
+function saveSettings(){['startDate','goalWalk','goalStrength','startWeight','startWaist','heightCm','coachStyle'].forEach(id=>settings[id]=$(id).value);settings.goalWalk=n(settings.goalWalk)||240;settings.goalStrength=n(settings.goalStrength)||60;settings.startWeight=n(settings.startWeight)||99;settings.startWaist=n(settings.startWaist)||116;settings.heightCm=n(settings.heightCm)||174;localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
+function loadSettings(){$('startDate').value=settings.startDate;$('goalWalk').value=settings.goalWalk;$('goalStrength').value=settings.goalStrength;$('startWeight').value=settings.startWeight??99;$('startWaist').value=settings.startWaist??116;if($('heightCm'))$('heightCm').value=settings.heightCm??174;$('coachStyle').value=settings.coachStyle}
 function entry(){return{date:$('date').value||today,sleep:n($('sleep').value),rhr:n($('rhr').value),bodyBattery:n($('bb').value),stepsYesterday:n($('stepsYesterday').value),form:n($('form').value),fatigue:n($('fatigue').value),fitness:n($('fitness').value),stress:$('stress').value,feeling:$('feeling').value,timeAvail:$('timeAvail').value,weather:$('weather').value,weight:n($('weight').value),waist:n($('waist').value),note:$('note').value,steps:n($('steps').value),walkMin:n($('walkMin').value),distanceKm:n($('distanceKm').value),speed:n($('speed').value),avgHr:n($('avgHr').value),load:n($('load').value),strengthMin:n($('strengthMin').value),yogaMin:n($('yogaMin').value),updatedAt:new Date().toISOString()}}
 function fill(e){if(!e)return;const m={sleep:'sleep',rhr:'rhr',bodyBattery:'bb',stepsYesterday:'stepsYesterday',form:'form',fatigue:'fatigue',fitness:'fitness',stress:'stress',feeling:'feeling',timeAvail:'timeAvail',weather:'weather',weight:'weight',waist:'waist',note:'note',steps:'steps',walkMin:'walkMin',distanceKm:'distanceKm',speed:'speed',avgHr:'avgHr',load:'load',strengthMin:'strengthMin',yogaMin:'yogaMin'};Object.entries(m).forEach(([k,id])=>{if(e[k]!==undefined&&e[k]!==null)$(id).value=e[k]})}
 function saved(){return entries.some(e=>e.date===($('date').value||today))}
@@ -71,7 +70,7 @@ function mapIntervals(items){const by={};items.forEach(a=>{const date=normDate(a
 function mergeEntries(days){const map=new Map(entries.map(e=>[e.date,e]));Object.values(days).forEach(day=>{const old=map.get(day.date)||{};map.set(day.date,Object.assign({},old,day,{updatedAt:new Date().toISOString()}))});entries=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem(KEY,JSON.stringify(entries))}
 function coach(e=entry()){const y=lastBefore(e.date),week=last7(e.date),load7=sum(week,'load'),strength7=sum(week,'strengthMin'),active7=active(week),stepsY=e.stepsYesterday??(y?n(y.steps):null);let risk=0,reasons=[];if(e.feeling==='ziek'){risk+=100;reasons.push('Ziek gevoel: herstel is vandaag de training.')}if(e.feeling==='pijn'){risk+=35;reasons.push('Pijn gemeld: belasting beperken.')}if(e.sleep!==null&&e.sleep<5.5){risk+=35;reasons.push('Slaap is zwak: herstel beschermen.')}else if(e.sleep!==null&&e.sleep<6.3){risk+=18;reasons.push('Slaap is matig: slim doseren.')}if(e.bodyBattery!==null&&e.bodyBattery<35){risk+=32;reasons.push('Body Battery laag: geen heroïsche training.')}else if(e.bodyBattery!==null&&e.bodyBattery<50){risk+=14;reasons.push('Body Battery middelmatig: voorzichtig opbouwen.')}if(e.stress==='hoog'){risk+=18;reasons.push('Stress hoog: rustige zone 2 is veiliger.')}if(e.stress==='zeer hoog'){risk+=35;reasons.push('Stress zeer hoog: herstel gaat voor.')}if(e.form!==null&&e.form<-30){risk+=22;reasons.push('Form/TSB zwaar negatief: vermoeidheidsrisico.')}else if(e.form!==null&&e.form<-20){risk+=12;reasons.push('Form/TSB negatief: niet stapelen.')}if(load7>360){risk+=18;reasons.push('7-dagenbelasting is stevig: geen extra pieken.')}if(y&&(n(y.walkMin)||0)>90){risk+=16;reasons.push('Gisteren was actief: vandaag niet stapelen.')}if(stepsY!==null&&stepsY>15000){risk+=14;reasons.push('Gisteren veel stappen: benen kunnen vermoeid zijn.')}else if(stepsY!==null&&stepsY>10000){risk+=7;reasons.push('Gisteren ruim voldoende stappen: vandaag doseren.')}if(strength7<20)reasons.push('Krachtachterstand: korte krachtprikkel nodig.');let mode='light',title='VANDAAG: AANPASSEN — SLIM DOSEREN',actions=[],dont=[];if(e.feeling==='ziek'||risk>=75){mode='stop';title='VANDAAG: STOP. HERSTEL EERST.';actions=['Wandelen: max. 10–20 min rustig indien ok','Mobiliteit: 5–10 min','Vroeg stoppen bij duizeligheid/pijn'];dont=['Geen kracht','Geen versnellingen','Geen lange wandeling']}else if(risk>=50){mode='recover';title='VANDAAG: HERSTELDAG. NIET FORCEREN.';actions=['Wandelen: 20–30 min rustig, 4.5–5.2 km/u','Yoga/mobiliteit: 10–15 min','Kracht alleen als je duidelijk opknapt'];dont=['Geen versnellingen','Geen lange wandeling','Geen zware kracht']}else if(strength7<20){mode='light';title='VANDAAG: 20 MIN KRACHT. GEEN DISCUSSIE.';actions=['Kracht: 15–20 min licht, gecontroleerd','Wandelen: 20–40 min rustig optioneel','Stop met 2 herhalingen reserve'];dont=['Geen maximale sets','Geen sprint/versnellingen','Geen extra lange wandeling']}else{mode='go';title='VANDAAG: DOEN — NORMALE TRAININGSDAG';actions=['Wandelen: 40–60 min zone 2, 4.8–5.6 km/u','Kracht: 15–25 min als je fris blijft','Versnellingen: alleen 2–3 x 1 min als benen goed voelen'];dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn']}if(!reasons.length)reasons.push('Geen duidelijke rode vlaggen ingevuld.');return{mode,title,actions:actions.slice(0,3),dont:dont.slice(0,3),reasons:reasons.slice(0,3),y,stepsY,ctx:{risk,load7,strength7,active7}}}
 function renderCoach(){const c=coach();$('mainDecision').className='decision '+c.mode;$('mainDecision').textContent=c.title;$('oneLine').innerHTML=`Context: risico ${Math.round(c.ctx.risk)}/100 · belasting 7d ${Math.round(c.ctx.load7)} · kracht 7d ${Math.round(c.ctx.strength7)} min · actief ${c.ctx.active7}/7 dagen.`;$('mustDo').textContent=c.actions[0]?.split(':')[0]||'—';$('mustDoDetail').textContent=c.actions[0]||'';$('mayDo').textContent=c.actions[1]?.split(':')[0]||'—';$('mayDoDetail').textContent=c.actions[1]||'';$('dontDo').textContent=c.dont[0]||'—';$('dontDoDetail').textContent=c.dont.slice(1).join(' · ');$('whyList').innerHTML=c.reasons.map(x=>`<div class="item">${x}</div>`).join('');$('yesterdayBox').innerHTML=c.y?[['Stappen gisteren',c.stepsY!==null?Math.round(c.stepsY)+' stappen':'niet gevonden in Intervals'],['Wandelen',Math.round(n(c.y.walkMin)||0)+' min · '+(n(c.y.distanceKm)||0).toFixed(1)+' km'],['Belasting',Math.round(n(c.y.load)||0)],['Kracht/yoga',Math.round(n(c.y.strengthMin)||0)+' / '+Math.round(n(c.y.yogaMin)||0)+' min']].map(a=>`<div class="item"><strong>${a[0]}</strong>${a[1]}</div>`).join(''):'<div class="item">Nog geen vorige dag gevonden. Klik Sync Intervals of bewaar vandaag.</div>'}
-function range(){const end=new Date();let start=new Date(settings.startDate),p=$('period').value;if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);return{start:dstr(start),end:dstr(end),label:$('period').selectedOptions[0].text}}
+function range(){const end=new Date();let start=new Date(settings.startDate),p=$('period').value;if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);if(p==='1y')start=new Date(end.getFullYear()-1,end.getMonth(),end.getDate());if(p==='all')start=new Date(settings.startDate||'2026-02-10');return{start:dstr(start),end:dstr(end),label:$('period').selectedOptions[0].text}}
 function filtered(){const r=range();return entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date))}function fmt(v,s=''){return v===null||isNaN(v)?'—':(Math.round(v*10)/10).toFixed(1)+s}function latest(k){return [...entries].reverse().find(e=>n(e[k])!==null)}
 function renderHistory(){const arr=filtered().slice().reverse();$('historyTable').innerHTML='<tr><th>Datum</th><th>Advies</th><th>Stappen</th><th>Wandelen</th><th>Afstand</th><th>Belasting</th><th>Kracht</th><th>Yoga</th><th>Gewicht</th></tr>'+arr.map(e=>`<tr><td>${e.date}</td><td>${e.decision||'—'}</td><td>${n(e.steps)||'—'}</td><td>${Math.round(n(e.walkMin)||0)} min</td><td>${fmt(n(e.distanceKm),' km')}</td><td>${Math.round(n(e.load)||0)}</td><td>${Math.round(n(e.strengthMin)||0)} min</td><td>${Math.round(n(e.yogaMin)||0)} min</td><td>${n(e.weight)||'—'}</td></tr>`).join('')}
 function renderDash(){
@@ -82,23 +81,55 @@ const fat=walk+yoga*.6;
 const score=Math.max(0,Math.min(100,Math.round((fat/(arr.length*50||1))*100)));
 const activeDays=active(arr);
 const consistency=arr.length?Math.round(activeDays/arr.length*100):0;
-const w=weightStats(arr);
+const w=weightStats(arr), waist=waistStats(arr), bmi=bmiStats(arr), health=healthScore(arr), fAge=fitnessAge(arr);
 const tiles=[
-['Periode',r.label,`${r.start} t/m ${r.end}`],
-['Wandelen',Math.round(walk)+' min',fmt(distance,' km')],
-['Stappen',Math.round(steps),'indien beschikbaar'],
-['Kracht',Math.round(strength)+' min','Intervals + manueel'],
-['Belasting',Math.round(load),'periode'],
-['Belasting 7d',Math.round(sum(last7(),'load')),'coachcontext'],
-['Vetverbranding',score+'/100',Math.round(fat)+' rustige minuten'],
-['Consistentie',consistency+'%',activeDays+' actieve dagen'],
+['Gezondheidsscore',health.score+'/100',health.detail],
+['Fitnessleeftijd',fAge.age+' jaar',fAge.detail],
+['BMI nu',bmi.currentText,bmi.detail],
+['BMI evolutie',bmi.deltaText,bmi.startText+' → '+bmi.currentText],
+['Buik nu',waist.currentText,waist.detail],
+['Buik evolutie',waist.deltaText,waist.startText+' → '+waist.currentText],
 ['Gewicht nu',lw?fmt(n(lw.weight),' kg'):'geen meting',lw&&settings.startWeight?fmt(n(lw.weight)-settings.startWeight,' kg')+' sinds start':'—'],
 ['Gewicht trend',w.trendText,w.detail],
 ['Weekgemiddelde',w.avgText,w.avgDetail],
-['Buik',lwa?fmt(n(lwa.waist),' cm'):'geen meting',lwa&&settings.startWaist?fmt(n(lwa.waist)-settings.startWaist,' cm')+' sinds start':'—']
+['Wandelen',Math.round(walk)+' min',fmt(distance,' km')],
+['Kracht',Math.round(strength)+' min','Intervals + manueel'],
+['Belasting 7d',Math.round(sum(last7(),'load')),'coachcontext'],
+['Vetverbranding',score+'/100',Math.round(fat)+' rustige minuten'],
+['Consistentie',consistency+'%',activeDays+' actieve dagen'],
+['Stappen',Math.round(steps),'indien beschikbaar'],
+['Periode',r.label,`${r.start} t/m ${r.end}`]
 ];
 $('dashTiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
 draw('chartWalk',arr,'walkMin');draw('chartDistance',arr,'distanceKm');draw('chartLoad',arr,'load');drawWeightTrend('chartWeight',arr)
+}
+function bmiValue(weight){const h=(n(settings.heightCm)||174)/100;return weight&&h?weight/(h*h):null}
+function bmiStats(arr){
+ const lw=latest('weight');const cur=lw?n(lw.weight):null;const start=n(settings.startWeight)||99;const bStart=bmiValue(start),bCur=bmiValue(cur);if(!bCur)return{currentText:'—',deltaText:'—',startText:fmt(bStart,''),detail:'geen gewicht'};
+ const d=bCur-bStart;let zone=bCur<25?'gezonde zone':bCur<30?'overgewicht':bCur<35?'obesitas klasse I':'hoog risico';
+ return{currentText:fmt(bCur,''),deltaText:(d>0?'+':'')+fmt(d,''),startText:fmt(bStart,''),detail:zone+' · lengte '+(settings.heightCm||174)+' cm'}
+}
+function waistStats(arr){
+ const vals=entries.filter(e=>n(e.waist)!==null).sort((a,b)=>a.date.localeCompare(b.date));const start=n(settings.startWaist)||116;const cur=vals.length?n(vals[vals.length-1].waist):null;if(!cur)return{currentText:'geen meting',deltaText:'—',startText:fmt(start,' cm'),detail:'vul buikomtrek in'};
+ const d=cur-start;let zone=cur<94?'sterk':cur<102?'aandacht':'verhoogd risico';return{currentText:fmt(cur,' cm'),deltaText:(d>0?'+':'')+fmt(d,' cm'),startText:fmt(start,' cm'),detail:zone+' · start '+fmt(start,' cm')}
+}
+function healthScore(arr){
+ const bmi=bmiStats(arr),waist=waistStats(arr),w=weightStats(arr);let score=50,parts=[];const b=n(bmi.currentText);const wc=n(waist.currentText);const wd=n(waist.deltaText);const weightDelta=n(w.trendText);
+ if(b){score+=b<25?18:b<30?8:b<35?-4:-12;parts.push('BMI '+fmt(b,''));}
+ if(wc){score+=wc<94?22:wc<102?8:-8;parts.push('buik '+fmt(wc,' cm'));}
+ if(wd!==null&&!isNaN(wd)){score+=wd<0?Math.min(15,Math.abs(wd)*.8):Math.max(-10,-wd*.5);}
+ if(weightDelta!==null&&!isNaN(weightDelta)){score+=weightDelta<0?Math.min(10,Math.abs(weightDelta)*1.1):Math.max(-8,-weightDelta*.5);}
+ const a=active(arr),cons=arr.length?a/arr.length:0;score+=cons>.5?10:cons>.3?5:-3;
+ const strength=sum(arr,'strengthMin');score+=strength>=60?8:strength>=20?4:-4;
+ score=Math.max(0,Math.min(100,Math.round(score)));
+ return{score,detail:parts.join(' · ')||'meer metingen nodig'}
+}
+function fitnessAge(arr){
+ const chronological=63;const h=healthScore(arr);let age=chronological;
+ age-=Math.round((h.score-50)/7);
+ const consistency=arr.length?active(arr)/arr.length:0;if(consistency>.55)age-=2;else if(consistency<.25)age+=2;
+ const strength=sum(arr,'strengthMin');if(strength>=60)age-=2;else if(strength<20)age+=1;
+ age=Math.max(48,Math.min(78,age));return{age,detail:(age<chronological?'jonger dan kalenderleeftijd':'boven kalenderleeftijd')+' · indicatief'}
 }
 function weightStats(arr){
  const vals=arr.filter(e=>n(e.weight)!==null).map(e=>({date:e.date,weight:n(e.weight)}));
