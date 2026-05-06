@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V23</title>
+<title>ProCoach V24</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--amber:#96550b;--green:#0d6f42;--blue:#1d4f8f;--red:#9d1c1c}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#091527 70%,#160722);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
@@ -19,14 +19,14 @@ label{display:block;font-size:15px;font-weight:1000;color:#d8e3f4;margin:12px 0 
 .notice{background:#2a344b;border-left:6px solid #e8aa2d;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}.lock{background:#10351f;border:1px solid #1f8a4d;color:#b8f7d0;border-radius:16px;padding:12px;font-weight:950;margin-bottom:12px}.hidden{display:none!important}
 .tile{background:#263852;border:1px solid #506480;border-radius:17px;padding:13px;min-height:88px}.k{font-size:12px;color:var(--muted);font-weight:1000;text-transform:uppercase}.v{font-size:24px;font-weight:1000;margin-top:6px}.d{font-size:13px;color:#d5dfef;font-weight:800;margin-top:5px;line-height:1.25}
 .list{display:grid;gap:8px}.item{background:#263852;border:1px solid #506480;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}.item strong{display:block;margin-bottom:4px}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #344762;padding:9px 8px;text-align:left;white-space:nowrap}.tablewrap{overflow:auto;max-height:70vh}canvas{width:100%;height:200px;background:#24344d;border:1px solid #455976;border-radius:16px}
-@media(max-width:760px){.top{display:block}.buttons{justify-content:flex-start;margin-top:14px}.grid,.grid3{grid-template-columns:1fr}.tabs{grid-template-columns:1fr 1fr}.buttons button{flex:1}}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #344762;padding:9px 8px;text-align:left;white-space:nowrap}.tablewrap{overflow:auto;max-height:70vh}canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;border-radius:16px}.scorebar{height:10px;background:#102033;border-radius:99px;overflow:hidden;margin-top:10px;border:1px solid #405777}.scorebar span{display:block;height:100%;background:linear-gradient(90deg,#dc2626,#d97706,#16a34a);border-radius:99px}.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:760px){.charts{grid-template-columns:1fr}.top{display:block}.buttons{justify-content:flex-start;margin-top:14px}.grid,.grid3{grid-template-columns:1fr}.tabs{grid-template-columns:1fr 1fr}.buttons button{flex:1}}
 @media(max-width:430px){.app{padding:12px}h1{font-size:44px}.card{padding:15px}input,select,textarea{font-size:20px;padding:16px}label{font-size:18px}.tile .v{font-size:30px}.item{font-size:18px}}
 </style>
 </head>
 <body>
 <div class="app">
-<div class="top"><div><h1>ProCoach V23 🧠</h1><div class="sub">Dashboard-upgrade: gezondheidsscore, fitnessleeftijd, BMI-trend, buikomtrek en moving-period filters.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
+<div class="top"><div><h1>ProCoach V24 🧠</h1><div class="sub">Quasi-finale dashboardversie: gezondheidsscore, fitnessleeftijd, BMI, buikomtrek, trends en rapporten. Coachbeslissing blijft ongewijzigd.</div><div class="small">Lokaal actief — data blijft in deze browser/iPhone. Backend: Intervals API via Firebase.</div></div><div class="buttons"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="syncIntervals(true)">Sync Intervals</button><button onclick="csvFile.click()">Importeer CSV</button><button onclick="exportJson()">Exporteer JSON</button><button onclick="jsonFile.click()">Importeer JSON</button><input id="csvFile" type="file" accept=".csv,text/csv" hidden onchange="importCSV(event)"><input id="jsonFile" type="file" accept=".json" hidden onchange="importJSON(event)"></div></div>
 <div class="card"><div class="grid"><div><label>Periode dashboard</label><select id="period" onchange="renderAll()"><option value="1w">Moving week</option><option value="1m">Moving month</option><option value="3m">Moving 3 months</option><option value="6m">Moving 6 months</option><option value="1y">Moving last year</option><option value="all">All time</option></select></div><div class="tile"><div class="k">Periode-info</div><div id="periodInfo" class="d">—</div></div></div><div id="syncMsg" class="small" style="margin-top:10px">Intervals sync: nog niet gestart.</div></div>
 <div class="tabs"><div class="tab active" onclick="setTab('today')">Vandaag</div><div class="tab" onclick="setTab('history')">Historiek</div><div class="tab" onclick="setTab('dashboard')">Dashboard</div><div class="tab" onclick="setTab('settings')">Instellingen</div></div>
 <section id="today" class="section active">
@@ -36,16 +36,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="card"><h2>Dagactiviteit</h2><div class="notice">Activiteit komt automatisch uit Intervals. Manueel invullen mag nog als correctie.</div><div class="grid"><div><label>Stappen vandaag</label><input id="steps" type="text" inputmode="numeric"></div><div><label>Wandelen minuten</label><input id="walkMin" type="text" inputmode="numeric"></div><div><label>Afstand km</label><input id="distanceKm" type="text" inputmode="decimal"></div><div><label>Snelheid km/u</label><input id="speed" type="text" inputmode="decimal"></div><div><label>Gem. HR</label><input id="avgHr" type="text" inputmode="numeric"></div><div><label>Belasting</label><input id="load" type="text" inputmode="numeric"></div><div><label>Kracht minuten</label><input id="strengthMin" type="text" inputmode="numeric"></div><div><label>Yoga minuten</label><input id="yogaMin" type="text" inputmode="numeric"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveToday()">Bewaar / update dag</button><button class="danger" onclick="resetToday()">Reset vandaag</button></div><div id="saveMsg" class="small" style="margin-top:10px"></div></div></div>
 </section>
 <section id="history" class="section"><div class="card"><h2>Historiek</h2><div class="tablewrap"><table id="historyTable"></table></div></div></section>
-<section id="dashboard" class="section"><div class="card"><h2>Dashboard</h2><div id="dashTiles" class="grid3"></div></div><div class="grid"><div class="card"><h3>Wandelen</h3><canvas id="chartWalk"></canvas></div><div class="card"><h3>Afstand</h3><canvas id="chartDistance"></canvas></div><div class="card"><h3>Belasting</h3><canvas id="chartLoad"></canvas></div><div class="card"><h3>Gewicht</h3><canvas id="chartWeight"></canvas></div></div></section>
+<section id="dashboard" class="section"><div class="card"><h2>Dashboard</h2><div id="dashTiles" class="grid3"></div></div><div class="card"><h2>Rapport</h2><div id="reportBox" class="grid3"></div></div><div class="charts"><div class="card"><h3>Gewicht + trend</h3><canvas id="chartWeight"></canvas></div><div class="card"><h3>BMI-evolutie</h3><canvas id="chartBMI"></canvas></div><div class="card"><h3>Buikomtrek</h3><canvas id="chartWaist"></canvas></div><div class="card"><h3>Gezondheidsscore</h3><canvas id="chartHealth"></canvas></div><div class="card"><h3>Wandelen</h3><canvas id="chartWalk"></canvas></div><div class="card"><h3>Belasting</h3><canvas id="chartLoad"></canvas></div></div></section>
 <section id="settings" class="section"><div class="card"><h2>Instellingen</h2><div class="grid"><div><label>Startdatum</label><input id="startDate" type="date"></div><div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div><div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div><div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div><div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div><div><label>Lengte cm</label><input id="heightCm" type="text" inputmode="decimal"></div><div><label>Coachstijl</label><select id="coachStyle"><option>Scherp</option><option>Normaal</option><option>Zacht</option></select></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveSettings()">Bewaar instellingen</button><button class="danger" onclick="wipeAll()">Wis alle lokale data</button></div></div></section>
 </div>
 <script>
-const KEY='procoach_v23_data',SETKEY='procoach_v23_settings',SYNC_KEY='procoach_v23_last_sync';
+const KEY='procoach_v24_data',SETKEY='procoach_v24_settings',SYNC_KEY='procoach_v24_last_sync';
 const INTERVALS_API='https://getintervalsdata-u52cb43h2a-uc.a.run.app';
 let entries=JSON.parse(localStorage.getItem(KEY)||'[]');
-let oldEntries=JSON.parse(localStorage.getItem('procoach_v22_data')||localStorage.getItem('procoach_v21_data')||localStorage.getItem('procoach_v20_data')||'[]');
+let oldEntries=JSON.parse(localStorage.getItem('procoach_v23_data')||localStorage.getItem('procoach_v22_data')||localStorage.getItem('procoach_v21_data')||localStorage.getItem('procoach_v20_data')||'[]');
 if(entries.length===0&&oldEntries.length){entries=oldEntries;localStorage.setItem(KEY,JSON.stringify(entries));}
-let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:99,startWaist:116,heightCm:174,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v22_settings')||localStorage.getItem('procoach_v21_settings')||localStorage.getItem('procoach_v20_settings')||'{}'));
+let settings=Object.assign({startDate:'2026-02-10',goalWalk:240,goalStrength:60,startWeight:99,startWaist:116,heightCm:174,coachStyle:'Scherp'},JSON.parse(localStorage.getItem(SETKEY)||localStorage.getItem('procoach_v23_settings')||localStorage.getItem('procoach_v22_settings')||localStorage.getItem('procoach_v21_settings')||localStorage.getItem('procoach_v20_settings')||'{}'));
 settings.startWeight=99;settings.startWaist=116;settings.heightCm=174;
 const $=id=>document.getElementById(id);const n=v=>{if(v===undefined||v===null||v==='')return null;return Number(String(v).replace(',','.').replace(/\s/g,''))};const dstr=dt=>new Date(dt.getTime()-dt.getTimezoneOffset()*60000).toISOString().slice(0,10);const today=dstr(new Date());$('date').value=today;
 function saveSettings(){['startDate','goalWalk','goalStrength','startWeight','startWaist','heightCm','coachStyle'].forEach(id=>settings[id]=$(id).value);settings.goalWalk=n(settings.goalWalk)||240;settings.goalStrength=n(settings.goalStrength)||60;settings.startWeight=n(settings.startWeight)||99;settings.startWaist=n(settings.startWaist)||116;settings.heightCm=n(settings.heightCm)||174;localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
@@ -83,7 +83,7 @@ const activeDays=active(arr);
 const consistency=arr.length?Math.round(activeDays/arr.length*100):0;
 const w=weightStats(arr), waist=waistStats(arr), bmi=bmiStats(arr), health=healthScore(arr), fAge=fitnessAge(arr);
 const tiles=[
-['Gezondheidsscore',health.score+'/100',health.detail],
+['Gezondheidsscore',health.score+'/100',health.detail+' <div class="scorebar"><span style="width:'+health.score+'%"></span></div>'],
 ['Fitnessleeftijd',fAge.age+' jaar',fAge.detail],
 ['BMI nu',bmi.currentText,bmi.detail],
 ['BMI evolutie',bmi.deltaText,bmi.startText+' → '+bmi.currentText],
@@ -101,7 +101,7 @@ const tiles=[
 ['Periode',r.label,`${r.start} t/m ${r.end}`]
 ];
 $('dashTiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
-draw('chartWalk',arr,'walkMin');draw('chartDistance',arr,'distanceKm');draw('chartLoad',arr,'load');drawWeightTrend('chartWeight',arr)
+draw('chartWalk',arr,'walkMin');draw('chartLoad',arr,'load');drawWeightTrend('chartWeight',arr);drawBMITrend('chartBMI',arr);drawWaistTrend('chartWaist',arr);drawHealthTrend('chartHealth',arr);renderReport(arr,{health,fAge,bmi,waist,w,walk,strength,load,activeDays,consistency})
 }
 function bmiValue(weight){const h=(n(settings.heightCm)||174)/100;return weight&&h?weight/(h*h):null}
 function bmiStats(arr){
@@ -145,6 +145,28 @@ function weightStats(arr){
   avgDetail:p7!==null?`vs vorige 7 metingen: ${(a7-p7>0?'+':'')+fmt(a7-p7,' kg')}`:'laatste metingen gemiddeld'
  }
 }
+function renderReport(arr,m){
+ const lines=[];
+ const wd=n(m.waist.deltaText), wt=n(m.w.trendText), bmi=n(m.bmi.currentText);
+ if(!isNaN(wd)&&wd<0)lines.push(['Buikomtrek daalt','Sterk signaal voor gezondheidswinst, ook als gewicht schommelt.']);
+ if(!isNaN(wt)&&wt<0)lines.push(['Gewicht daalt','Je zit onder je startgewicht van 99 kg.']);
+ if(m.consistency>=50)lines.push(['Consistentie goed','Je bent op meer dan de helft van de dagen actief.']);
+ if(m.strength<20)lines.push(['Kracht aandachtspunt','Voor spierbehoud is krachttraining de snelste winst.']);
+ if(!isNaN(bmi)&&bmi>=30)lines.push(['BMI blijft aandachtspunt','De trend is belangrijker dan één dagwaarde.']);
+ if(!lines.length)lines.push(['Meer data nodig','Vul gewicht en buikomtrek regelmatig in voor sterkere rapporten.']);
+ const box=document.getElementById('reportBox');
+ if(box)box.innerHTML=lines.slice(0,6).map(x=>`<div class="item"><strong>${x[0]}</strong>${x[1]}</div>`).join('');
+}
+function trendCanvas(id,vals,label){
+ const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);const w=c.clientWidth,h=c.clientHeight;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#6f84a8';ctx.strokeRect(8,8,w-16,h-16);
+ vals=vals.filter(v=>v!==null&&!isNaN(v));if(vals.length<2){ctx.fillStyle='#b7c4d8';ctx.font='13px system-ui';ctx.fillText('Minstens 2 metingen nodig',20,34);return}
+ const avg=vals.map((_,i)=>{const s=vals.slice(Math.max(0,i-6),i+1);return s.reduce((a,b)=>a+b,0)/s.length});const all=vals.concat(avg),min=Math.min(...all),max=Math.max(...all),span=max-min||1;
+ const plot=(series,width,alpha)=>{ctx.beginPath();ctx.lineWidth=width;ctx.strokeStyle=`rgba(255,255,255,${alpha})`;series.forEach((v,i)=>{const x=16+i*(w-32)/(series.length-1),y=h-16-(v-min)*(h-32)/span;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};
+ plot(vals,1,.35);plot(avg,3,1);ctx.fillStyle='#b7c4d8';ctx.font='12px system-ui';ctx.fillText(label+' · dun=dagwaarde · dik=trend',18,h-18)
+}
+function drawBMITrend(id,arr){trendCanvas(id,arr.filter(e=>n(e.weight)!==null).map(e=>bmiValue(n(e.weight))),'BMI')}
+function drawWaistTrend(id,arr){trendCanvas(id,arr.filter(e=>n(e.waist)!==null).map(e=>n(e.waist)),'cm')}
+function drawHealthTrend(id,arr){trendCanvas(id,arr.map((e,i)=>healthScore(arr.slice(0,i+1)).score),'score')}
 function drawWeightTrend(id,arr){
  const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);const w=c.clientWidth,h=c.clientHeight;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#6f84a8';ctx.strokeRect(8,8,w-16,h-16);
  const vals=arr.filter(e=>n(e.weight)!==null).map(e=>n(e.weight));
@@ -163,7 +185,7 @@ async function importCSV(ev){const f=ev.target.files[0];if(!f)return;const text=
 function parseCSV(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){const ch=text[i],nx=text[i+1];if(ch==='"'&&q&&nx==='"'){cur+='"';i++}else if(ch==='"')q=!q;else if((ch===','||ch===';'||ch==='\t')&&!q){row.push(cur);cur=''}else if((ch==='\n'||ch==='\r')&&!q){if(cur||row.length){row.push(cur);rows.push(row);row=[];cur=''}if(ch==='\r'&&nx==='\n')i++}else cur+=ch}if(cur||row.length){row.push(cur);rows.push(row)}return rows.filter(r=>r.some(x=>String(x).trim()))}
 function normDate(v){const s=String(v||'').trim();let m=s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);if(m)return`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;m=s.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);if(m)return`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;const dt=new Date(s);return isNaN(dt)?null:dstr(dt)}
 function parseDur(v){if(!v)return 0;const s=String(v).trim();if(s.includes(':')){const p=s.split(':').map(Number);if(p.length===3)return p[0]*60+p[1]+p[2]/60;if(p.length===2)return p[0]*60+p[1]}return n(s)||0}
-function exportJson(){const blob=new Blob([JSON.stringify({settings,entries},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v21_backup.json';a.click()}
+function exportJson(){const blob=new Blob([JSON.stringify({settings,entries},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v24_backup.json';a.click()}
 async function importJSON(ev){const f=ev.target.files[0];if(!f)return;const data=JSON.parse(await f.text());if(data.settings)settings=Object.assign(settings,data.settings);if(Array.isArray(data.entries))entries=data.entries;localStorage.setItem(KEY,JSON.stringify(entries));localStorage.setItem(SETKEY,JSON.stringify(settings));renderAll()}
 function wipeAll(){if(confirm('Alle lokale data wissen?')){localStorage.removeItem(KEY);localStorage.removeItem(SETKEY);localStorage.removeItem(SYNC_KEY);entries=[];location.reload()}}
 ['sleep','rhr','bb','stepsYesterday','form','fatigue','fitness','stress','feeling','timeAvail','weather','weight','waist','note','steps','walkMin','distanceKm','speed','avgHr','load','strengthMin','yogaMin'].forEach(id=>$(id).addEventListener('input',renderCoach));$('date').addEventListener('change',()=>{fill(entries.find(e=>e.date===$('date').value));renderAll()});loadSettings();fill(entries.find(e=>e.date===today));renderAll();autoSyncOnOpen();
