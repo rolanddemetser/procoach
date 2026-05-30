@@ -116,7 +116,7 @@ function safeJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)|
 function setText(id,value){const el=$(id);if(el)el.textContent=value}
 function getNested(o,paths){for(const path of paths){let cur=o,ok=true;for(const part of path.split('.')){if(cur&&Object.prototype.hasOwnProperty.call(cur,part))cur=cur[part];else{ok=false;break}}if(ok&&cur!==undefined&&cur!==null&&cur!=='')return cur}return null}
 
-let settings=Object.assign({version:VERSION,startDate:'2026-02-10',heightCm:174,startWeight:99,startWaist:116,goalWalk:240,goalStrength:60,intervalsApiUrl:DEFAULT_INTERVALS_API,autoSync:true},safeJson(SETKEY,'{}'),safeJson(LEGACY_SETKEY,'{}'));
+let settings=Object.assign({version:VERSION,startDate:'2026-02-10',heightCm:174,startWeight:99,startWaist:116,currentWeight:86.6,currentWaist:101,goalWalk:240,goalStrength:60,intervalsApiUrl:DEFAULT_INTERVALS_API,autoSync:true},safeJson(SETKEY,'{}'),safeJson(LEGACY_SETKEY,'{}'));
 settings.version=VERSION;settings.heightCm=num(settings.heightCm)||174;settings.startWeight=num(settings.startWeight)||99;settings.startWaist=num(settings.startWaist)||116;settings.startDate='2026-02-10';settings.intervalsApiUrl=settings.intervalsApiUrl||DEFAULT_INTERVALS_API;settings.autoSync=settings.autoSync!==false;
 let entries=safeJson(KEY,'[]');
 let activityDays=safeJson(ACTKEY,'[]');
