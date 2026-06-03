@@ -168,7 +168,21 @@ async function syncIntervals(manual=false){if(syncState.isSyncing){if(manual)ale
 function payloadItems(raw){if(Array.isArray(raw))return raw;if(raw&&Array.isArray(raw.activities))return raw.activities;if(raw&&Array.isArray(raw.items))return raw.items;if(raw&&Array.isArray(raw.data))return raw.data;if(raw&&Array.isArray(raw.wellness))return raw.wellness;return null}
 function mergeActivityDays(days){const map=new Map(activityDays.map(e=>[e.date,e]));days.forEach(day=>{const old=map.get(day.date)||{date:day.date};map.set(day.date,Object.assign({},old,day,{source:'intervals',syncedAt:new Date().toISOString()}))});activityDays=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date))}
 function classifyIntervals(items){const by={};items.forEach(a=>{const date=normalDataDate(a);if(!date)return;if(!by[date])by[date]={date,steps:null,walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,source:'intervals',syncedAt:new Date().toISOString()};const day=by[date];const steps=num(getNested(a,['steps','step_count','total_steps','daily_steps','wellness.steps']));if(steps!==null)day.steps=Math.max(day.steps||0,steps);const sleep=extractSleep(a);if(sleep!==null)day.sleepHours=sleep;const rhr=num(getNested(a,['resting_hr','resting_heart_rate','resting_heartrate','rhr','wellness.resting_hr']));if(rhr!==null)day.rhr=rhr;const bbMorning=num(getNested(a,['body_battery_morning','morning_body_battery']));const bb=bbMorning??num(getNested(a,['body_battery','bodyBattery','wellness.body_battery','garmin.body_battery']));if(bb!==null){day.bodyBattery=bb;day.bodyBatteryMorning=bbMorning!==null}const name=String(getNested(a,['name','type','sport','activity_type'])||'').toLowerCase();const type=String(getNested(a,['type','sport','activity_type'])||'').toLowerCase();const min=activityMinutes(a);const isWalk=type.includes('walk')||name.includes('walk')||name.includes('wandel')||type.includes('hike')||name.includes('hike');const isStrength=type.includes('strength')||name.includes('kracht')||name.includes('strength')||name.includes('workout');const isYoga=type.includes('yoga')||name.includes('yoga')||name.includes('mobiliteit')||name.includes('mobility');if(min>0&&isWalk&&min>=20){day.walkMin+=min;day.activityMin+=min}else if(min>0&&isStrength){day.strengthMin+=min;day.activityMin+=min}else if(min>0&&isYoga){day.yogaMin+=min;day.activityMin+=min}else if(min>0&&(num(getNested(a,['distance']))||0)>0&&min>=20){day.walkMin+=min;day.activityMin+=min}});return Object.values(by)}
-function activityMinutes(a){const raw=getNested(a,['moving_time','elapsed_time','duration','minutes']);const v=num(raw);if(v===null)return 0;if(String(raw).includes(':'))return 0;if(v>600)return Math.round(v/60);return Math.round(v)}
+function activityMinutes(a){
+  const raw=getNested(a,['moving_time','elapsed_time','duration','minutes']);
+  const v=num(raw);
+
+  if(v===null) return 0;
+  if(String(raw).includes(':')) return 0;
+
+  let mins=v;
+
+  if(v>600) mins=Math.round(v/60);
+
+  if(mins>600) return 0;
+
+  return Math.round(mins);
+}
 function valueAt(o,path){let cur=o;for(const part of path.split('.')){if(cur&&Object.prototype.hasOwnProperty.call(cur,part))cur=cur[part];else return null}return cur}
 function extractSleep(a){const paths=['sleep_hours','sleep_duration_hours','sleep_seconds','sleep.minutes','sleep_minutes','sleep.seconds','sleep.duration','sleep.total','sleep_duration','total_sleep'];for(const path of paths){const raw=valueAt(a,path),n=num(raw);if(n===null)continue;let hours=n;if(path.includes('second'))hours=n/3600;else if(path.includes('minute'))hours=n/60;else if(!path.includes('hour'))hours=n>1000?n/3600:(n>24?n/60:n);if(hours>0&&hours<18)return Math.round(hours*10)/10}return null}
 function normalDataDate(a){const sleepEnd=getNested(a,['wake_date','end_date_local','end_date']);const sleep=extractSleep(a);if(sleep!==null&&sleepEnd)return normalDate(sleepEnd);return normalDate(getNested(a,['start_date_local','start_date','date','calendar_date','day'])||sleepEnd)}
