@@ -144,7 +144,7 @@ function lastBefore(date){return entries.filter(e=>e.date<date).sort((a,b)=>b.da
 function range(){const end=new Date();let start=new Date('2026-02-10'),p=$('period').value;if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());if(p==='1y')start=new Date(end.getFullYear()-1,end.getMonth(),end.getDate());if(p==='start'||p==='all')start=new Date('2026-02-10');return{start:toDateString(start),end:toDateString(end),label:$('period').selectedOptions[0].text}}
 function filtered(){const r=range();return entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date))}
 function sum(arr,k){return arr.reduce((s,e)=>s+(num(e[k])||0),0)}
-function dailyWalkTotal(e){return num(e.walkMin)??((num(e.recoveryWalkMin)||0)+(num(e.trainingWalkMin)||0)+(num(e.neatMin)||0))}
+function dailyWalkTotal(e){const a=getActivityDay(e.date);return num(a&&a.walkMin)??num(e.walkMin)??((num(e.recoveryWalkMin)||0)+(num(e.trainingWalkMin)||0)+(num(e.neatMin)||0))}
 function active(arr){return arr.filter(e=>dailyWalkTotal(e)>=20||(num(e.strengthMin)||0)>=10||(num(e.yogaMin)||0)>=20).length}
 function normalizeStress(v){v=String(v||'normaal').toLowerCase().replace(' ','_');return v==='zeer_hoog'||v==='zeer hoog'? 'zeer_hoog':v}
 function displayStress(v){return normalizeStress(v).replace('_',' ')}
