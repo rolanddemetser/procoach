@@ -18,6 +18,7 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
     restingHR: 52,
     hrv: 41,
     weight: 93.2,
+    Steps: 12420,
   });
 
   assert.equal(record.date, '2026-05-28');
@@ -28,6 +29,7 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
   assert.equal(record.resting_hr, 52);
   assert.equal(record.hrv_rmssd, 41);
   assert.equal(record.weight, 93.2);
+  assert.equal(record.steps, 12420);
 });
 
 test('handler appends normalized wellness records to unchanged activities', async () => {
@@ -43,7 +45,7 @@ test('handler appends normalized wellness records to unchanged activities', asyn
       return jsonResponse([{ id: 'activity-1', date: '2026-05-28', type: 'Ride' }]);
     }
     if (url.pathname.endsWith('/wellness')) {
-      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7 }]);
+      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7, Steps: '12420' }]);
     }
     throw new Error(`unexpected URL ${url}`);
   };
@@ -69,6 +71,7 @@ test('handler appends normalized wellness records to unchanged activities', asyn
   assert.equal(payload[1].rhr, 50);
   assert.equal(payload[1].hrv_rmssd, 44);
   assert.equal(payload[1].weight, 92.7);
+  assert.equal(payload[1].steps, 12420);
 });
 
 function jsonResponse(payload) {
