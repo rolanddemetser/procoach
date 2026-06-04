@@ -198,6 +198,7 @@ function firstNumber(record, keys) {
   return null;
 }
 
+
 function maxNumber(record, keys) {
   const values = keys
     .map((key) => valueAt(record, key))
