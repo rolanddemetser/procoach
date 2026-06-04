@@ -1,6 +1,7 @@
 const DEFAULT_BASE_URL = 'https://intervals.icu/api/v1';
 const DEFAULT_OLDEST = '2026-02-10';
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const STEP_KEYS = ['steps', 'Steps', 'stepCount', 'step_count', 'totalSteps', 'total_steps', 'dailySteps', 'daily_steps', 'wellness.steps', 'wellness.Steps'];
 
 export async function handleGetIntervalsData(req, res, options = {}) {
   setCorsHeaders(res);
@@ -85,7 +86,7 @@ export function normalizeWellnessRecord(record) {
   const restingHR = firstNumber(record, ['restingHR', 'restingHr', 'resting_hr', 'resting_heart_rate', 'rhr']);
   const hrvRmssd = firstNumber(record, ['hrv', 'hrvRMSSD', 'hrvRmssd', 'hrv_rmssd', 'rmssd']);
   const weight = firstNumber(record, ['weight', 'weightKg', 'weight_kg']);
-  const steps = firstNumber(record, ['steps', 'stepCount', 'step_count']);
+  const steps = firstNumber(record, STEP_KEYS);
 
   return {
     ...record,
@@ -173,11 +174,22 @@ function firstString(record, keys) {
 
 function firstNumber(record, keys) {
   for (const key of keys) {
-    const value = record[key];
+    const value = valueAt(record, key);
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value))) return Number(value);
   }
   return null;
+}
+
+function valueAt(record, path) {
+  if (!record || typeof record !== 'object') return undefined;
+
+  let current = record;
+  for (const part of path.split('.')) {
+    if (!current || typeof current !== 'object' || !Object.prototype.hasOwnProperty.call(current, part)) return undefined;
+    current = current[part];
+  }
+  return current;
 }
 
 function collectKeys(items) {

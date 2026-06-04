@@ -20,6 +20,7 @@ test("normalizes sleep, resting HR, HRV rMSSD and weight from wellness", () => {
     restingHR: 52,
     hrv: 41,
     weight: 93.2,
+    Steps: 12420,
   });
 
   assert.equal(record.date, "2026-05-28");
@@ -27,6 +28,7 @@ test("normalizes sleep, resting HR, HRV rMSSD and weight from wellness", () => {
   assert.equal(record.rhr, 52);
   assert.equal(record.hrv_rmssd, 41);
   assert.equal(record.weight, 93.2);
+  assert.equal(record.steps, 12420);
 });
 
 
@@ -45,7 +47,7 @@ test("handler appends normalized wellness to unchanged activities", async () => 
       return jsonResponse([{ id: "activity-1", date: "2026-05-28", type: "Ride" }]);
     }
     if (url.pathname.endsWith("/wellness")) {
-      return jsonResponse([{ id: "2026-05-28", sleepTime: 28800, restingHR: 50, hrv: 44, weight: 92.7 }]);
+      return jsonResponse([{ id: "2026-05-28", sleepTime: 28800, restingHR: 50, hrv: 44, weight: 92.7, Steps: "12420" }]);
     }
     throw new Error(`unexpected URL ${url}`);
   };
@@ -72,6 +74,7 @@ test("handler appends normalized wellness to unchanged activities", async () => 
   assert.equal(payload[1].rhr, 50);
   assert.equal(payload[1].hrv_rmssd, 44);
   assert.equal(payload[1].weight, 92.7);
+  assert.equal(payload[1].steps, 12420);
 });
 
 test("handler keeps activities working when wellness fetch fails", async () => {
