@@ -183,7 +183,7 @@ function activityMinutes(a){
   return Math.round(mins);
 }
 function valueAt(o,path){let cur=o;for(const part of path.split('.')){if(cur&&Object.prototype.hasOwnProperty.call(cur,part))cur=cur[part];else return null}return cur}
-function extractSteps(a){return num(getNested(a,['steps','Steps','stepCount','step_count','totalSteps','total_steps','dailySteps','daily_steps','wellness.steps','wellness.Steps']))}
+function extractSteps(a){const vals=['steps','Steps','stepCount','step_count','totalSteps','total_steps','dailySteps','daily_steps','wellness.steps','wellness.Steps'].map(p=>num(getNested(a,[p]))).filter(v=>v!==null);return vals.length?Math.max(...vals):null}
 function stepFieldPaths(items){const found=new Set();(items||[]).slice(0,500).forEach(item=>collectStepFields(item,'',found));return [...found].sort().slice(0,30)}
 function collectStepFields(o,prefix,found){if(!o||typeof o!=='object')return;Object.keys(o).forEach(k=>{const path=prefix?prefix+'.'+k:k;if(k.toLowerCase().includes('step'))found.add(path);const v=o[k];if(v&&typeof v==='object'&&!Array.isArray(v))collectStepFields(v,path,found)})}
 function extractSleep(a){const paths=['sleep_hours','sleep_duration_hours','sleep_seconds','sleep.minutes','sleep_minutes','sleep.seconds','sleep.duration','sleep.total','sleep_duration','total_sleep'];for(const path of paths){const raw=valueAt(a,path),n=num(raw);if(n===null)continue;let hours=n;if(path.includes('second'))hours=n/3600;else if(path.includes('minute'))hours=n/60;else if(!path.includes('hour'))hours=n>1000?n/3600:(n>24?n/60:n);if(hours>0&&hours<18)return Math.round(hours*10)/10}return null}

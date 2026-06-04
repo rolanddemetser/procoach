@@ -18,7 +18,8 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
     restingHR: 52,
     hrv: 41,
     weight: 93.2,
-    Steps: 12420,
+    steps: 9226,
+    wellness: { steps: 12420 },
   });
 
   assert.equal(record.date, '2026-05-28');
@@ -45,7 +46,7 @@ test('handler appends normalized wellness records to unchanged activities', asyn
       return jsonResponse([{ id: 'activity-1', date: '2026-05-28', type: 'Ride' }]);
     }
     if (url.pathname.endsWith('/wellness')) {
-      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7, Steps: '12420' }]);
+      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7, steps: 9226, wellness: { steps: '12420' } }]);
     }
     throw new Error(`unexpected URL ${url}`);
   };

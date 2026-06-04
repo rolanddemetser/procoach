@@ -86,7 +86,7 @@ export function normalizeWellnessRecord(record) {
   const restingHR = firstNumber(record, ['restingHR', 'restingHr', 'resting_hr', 'resting_heart_rate', 'rhr']);
   const hrvRmssd = firstNumber(record, ['hrv', 'hrvRMSSD', 'hrvRmssd', 'hrv_rmssd', 'rmssd']);
   const weight = firstNumber(record, ['weight', 'weightKg', 'weight_kg']);
-  const steps = firstNumber(record, STEP_KEYS);
+  const steps = maxNumber(record, STEP_KEYS);
 
   return {
     ...record,
@@ -178,6 +178,20 @@ function firstNumber(record, keys) {
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value))) return Number(value);
   }
+  return null;
+}
+
+function maxNumber(record, keys) {
+  const values = keys
+    .map((key) => valueAt(record, key))
+    .map(parseFiniteNumber)
+    .filter((value) => value !== null);
+  return values.length ? Math.max(...values) : null;
+}
+
+function parseFiniteNumber(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value))) return Number(value);
   return null;
 }
 
