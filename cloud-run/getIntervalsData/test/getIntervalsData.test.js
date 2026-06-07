@@ -18,6 +18,8 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
     restingHR: 52,
     hrv: 41,
     weight: 93.2,
+    steps: 9226,
+    wellness: { steps: 12420 },
   });
 
   assert.equal(record.date, '2026-05-28');
@@ -28,22 +30,25 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
   assert.equal(record.resting_hr, 52);
   assert.equal(record.hrv_rmssd, 41);
   assert.equal(record.weight, 93.2);
+  assert.equal(record.steps, 12420);
 });
 
 test('handler appends normalized wellness records to unchanged activities', async () => {
   const previousEnv = { ...process.env };
   process.env.INTERVALS_ATHLETE_ID = 'athlete-1';
-  process.env.INTERVALS_API_KEY = 'secret';
+  process.env.INTERVALS_API_KEY = ' secret\n';
   process.env.INTERVALS_BASE_URL = 'https://intervals.test/api/v1';
 
   const calls = [];
-  const fetchImpl = async (url) => {
+  const fetchImpl = async (url, options = {}) => {
     calls.push(url.toString());
+    assert.equal(options.headers.Authorization, `Basic ${Buffer.from('API_KEY:secret', 'utf8').toString('base64')}`);
+    assert.equal(options.headers.Accept, 'application/json');
     if (url.pathname.endsWith('/activities')) {
       return jsonResponse([{ id: 'activity-1', date: '2026-05-28', type: 'Ride' }]);
     }
     if (url.pathname.endsWith('/wellness')) {
-      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7 }]);
+      return jsonResponse([{ id: '2026-05-28', sleepTime: 28_800, restingHR: 50, hrv: 44, weight: 92.7, steps: 9226, wellness: { steps: '12420' } }]);
     }
     throw new Error(`unexpected URL ${url}`);
   };
@@ -69,6 +74,7 @@ test('handler appends normalized wellness records to unchanged activities', asyn
   assert.equal(payload[1].rhr, 50);
   assert.equal(payload[1].hrv_rmssd, 44);
   assert.equal(payload[1].weight, 92.7);
+  assert.equal(payload[1].steps, 12420);
 });
 
 function jsonResponse(payload) {

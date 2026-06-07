@@ -6,6 +6,7 @@ const DEFAULT_BASE_URL = "https://intervals.icu/api/v1";
 const DEFAULT_OLDEST = "2026-02-10";
 const DEFAULT_REGION = "us-central1";
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const STEP_KEYS = ["steps", "Steps", "stepCount", "step_count", "totalSteps", "total_steps", "dailySteps", "daily_steps", "wellness.steps", "wellness.Steps"];
 
 async function getIntervalsDataHandler(req, res) {
   setCorsHeaders(res);
@@ -46,6 +47,7 @@ async function getIntervalsDataHandler(req, res) {
       wellnessEndpoint: redactUrl(wellnessUrl),
       oldest: config.oldest,
       newest: config.newest,
+      authMode: authMode(config),
     });
 
     const [activitiesResult, wellnessResult] = await Promise.allSettled([
@@ -88,10 +90,10 @@ function readConfig(requestUrl) {
 
   return {
     baseUrl: configValue("INTERVALS_BASE_URL", ["intervals", "base_url"]) || DEFAULT_BASE_URL,
-    athleteId: configValue("INTERVALS_ATHLETE_ID", ["intervals", "athlete_id"]) || env("ATHLETE_ID") || env("INTERVALS_ATHLETE"),
-    apiKey: configValue("INTERVALS_API_KEY", ["intervals", "api_key"]) || env("API_KEY") || env("INTERVALS_KEY"),
-    basicAuth: configValue("INTERVALS_BASIC_AUTH", ["intervals", "basic_auth"]) || env("BASIC_AUTH"),
-    bearerToken: configValue("INTERVALS_BEARER_TOKEN", ["intervals", "bearer_token"]) || env("INTERVALS_TOKEN"),
+    athleteId: cleanConfigValue(configValue("INTERVALS_ATHLETE_ID", ["intervals", "athlete_id"]) || env("ATHLETE_ID") || env("INTERVALS_ATHLETE")),
+    apiKey: cleanConfigValue(configValue("INTERVALS_API_KEY", ["intervals", "api_key"]) || env("API_KEY") || env("INTERVALS_KEY")),
+    basicAuth: cleanConfigValue(configValue("INTERVALS_BASIC_AUTH", ["intervals", "basic_auth"]) || env("BASIC_AUTH")),
+    bearerToken: cleanConfigValue(configValue("INTERVALS_BEARER_TOKEN", ["intervals", "bearer_token"]) || env("INTERVALS_TOKEN")),
     oldest,
     newest,
   };
@@ -125,7 +127,7 @@ function normalizeWellnessRecord(record) {
   const restingHr = firstNumber(record, ["restingHR", "restingHr", "resting_hr", "resting_heart_rate", "resting_heartrate", "rhr"]);
   const hrvRmssd = firstNumber(record, ["hrv", "hrvRMSSD", "hrvRmssd", "hrv_rmssd", "rmssd"]);
   const weight = firstNumber(record, ["weight", "weightKg", "weight_kg"]);
-  const steps = firstNumber(record, ["steps", "stepCount", "step_count"]);
+  const steps = maxNumber(record, STEP_KEYS);
 
   return {
     ...record,
@@ -153,16 +155,29 @@ function buildIntervalsUrl(baseUrl, path, params) {
 }
 
 function authHeaders(config) {
-  if (config.bearerToken) {
-    return { Authorization: `Bearer ${config.bearerToken}`, Accept: "application/json" };
+  const bearerToken = cleanConfigValue(config.bearerToken);
+  if (bearerToken) {
+    return { Authorization: `Bearer ${bearerToken}`, Accept: "application/json" };
   }
 
-  if (config.basicAuth) {
-    return { Authorization: `Basic ${config.basicAuth}`, Accept: "application/json" };
+  const preencodedBasicAuth = cleanConfigValue(config.basicAuth);
+  if (preencodedBasicAuth) {
+    const basicAuth = preencodedBasicAuth.startsWith("Basic ") ? preencodedBasicAuth : `Basic ${preencodedBasicAuth}`;
+    return { Authorization: basicAuth, Accept: "application/json" };
   }
 
-  const token = Buffer.from(`API_KEY:${config.apiKey}`, "utf8").toString("base64");
+  // Intervals.icu personal API keys use Basic auth with the literal username
+  // "API_KEY" and the user's generated API key as the password.
+  const apiKey = cleanConfigValue(config.apiKey);
+  const token = Buffer.from(`API_KEY:${apiKey}`, "utf8").toString("base64");
   return { Authorization: `Basic ${token}`, Accept: "application/json" };
+}
+
+function authMode(config) {
+  if (cleanConfigValue(config.bearerToken)) return "bearer_token";
+  if (cleanConfigValue(config.basicAuth)) return "basic_preencoded";
+  if (cleanConfigValue(config.apiKey)) return "basic_api_key_username";
+  return "none";
 }
 
 function ensureArray(payload) {
@@ -190,11 +205,36 @@ function firstString(record, keys) {
 
 function firstNumber(record, keys) {
   for (const key of keys) {
-    const value = record[key];
+    const value = valueAt(record, key);
     if (typeof value === "number" && Number.isFinite(value)) return value;
     if (typeof value === "string" && value.trim() !== "" && Number.isFinite(Number(value))) return Number(value);
   }
   return null;
+}
+
+function maxNumber(record, keys) {
+  const values = keys
+    .map((key) => valueAt(record, key))
+    .map(parseFiniteNumber)
+    .filter((value) => value !== null);
+  return values.length ? Math.max(...values) : null;
+}
+
+function parseFiniteNumber(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "" && Number.isFinite(Number(value))) return Number(value);
+  return null;
+}
+
+function valueAt(record, path) {
+  if (!record || typeof record !== "object") return undefined;
+
+  let current = record;
+  for (const part of path.split(".")) {
+    if (!current || typeof current !== "object" || !Object.prototype.hasOwnProperty.call(current, part)) return undefined;
+    current = current[part];
+  }
+  return current;
 }
 
 function collectKeys(items) {
@@ -210,6 +250,10 @@ function setCorsHeaders(res) {
 
 function env(name) {
   return process.env[name];
+}
+
+function cleanConfigValue(value) {
+  return typeof value === "string" ? value.trim() : value;
 }
 
 function configValue(envName, configPath) {
@@ -259,4 +303,6 @@ exports._test = {
   buildIntervalsUrl,
   getIntervalsDataHandler,
   normalizeWellnessRecord,
+  authHeaders,
+  authMode,
 };
