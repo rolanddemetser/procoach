@@ -13,6 +13,19 @@ test("builds the Intervals wellness range endpoint", () => {
   assert.equal(url.toString(), "https://intervals.icu/api/v1/athlete/123/wellness?oldest=2026-02-10&newest=2026-05-29");
 });
 
+test("uses Intervals API key Basic auth format", () => {
+  const headers = _test.authHeaders({ apiKey: " secret\n" });
+
+  assert.equal(headers.Authorization, `Basic ${Buffer.from("API_KEY:secret", "utf8").toString("base64")}`);
+  assert.equal(headers.Accept, "application/json");
+  assert.equal(_test.authMode({ apiKey: "secret" }), "basic_api_key_username");
+});
+
+test("reports bearer auth mode without exposing tokens", () => {
+  assert.equal(_test.authMode({ bearerToken: "token" }), "bearer_token");
+  assert.equal(_test.authMode({ basicAuth: "encoded" }), "basic_preencoded");
+});
+
 test("normalizes sleep, resting HR, HRV rMSSD and weight from wellness", () => {
   const record = _test.normalizeWellnessRecord({
     id: "2026-05-28",
@@ -37,13 +50,15 @@ test("normalizes sleep, resting HR, HRV rMSSD and weight from wellness", () => {
 test("handler appends normalized wellness to unchanged activities", async () => {
   const previousEnv = { ...process.env };
   process.env.INTERVALS_ATHLETE_ID = "athlete-1";
-  process.env.INTERVALS_API_KEY = "secret";
+  process.env.INTERVALS_API_KEY = " secret\n";
   process.env.INTERVALS_BASE_URL = "https://intervals.test/api/v1";
 
   const calls = [];
   const originalFetch = global.fetch;
-  global.fetch = async (url) => {
+  global.fetch = async (url, options = {}) => {
     calls.push(url.toString());
+    assert.equal(options.headers.Authorization, `Basic ${Buffer.from("API_KEY:secret", "utf8").toString("base64")}`);
+    assert.equal(options.headers.Accept, "application/json");
     if (url.pathname.endsWith("/activities")) {
       return jsonResponse([{ id: "activity-1", date: "2026-05-28", type: "Ride" }]);
     }

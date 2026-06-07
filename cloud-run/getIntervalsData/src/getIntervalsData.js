@@ -24,7 +24,7 @@ export async function handleGetIntervalsData(req, res, options = {}) {
 
     if (!fetchImpl) throw new Error('Fetch API is not available in this runtime');
     if (!config.athleteId) throw new Error('Missing INTERVALS_ATHLETE_ID');
-    if (!config.apiKey && !config.bearerToken) throw new Error('Missing INTERVALS_API_KEY or INTERVALS_BEARER_TOKEN');
+    if (!config.apiKey && !config.basicAuth && !config.bearerToken) throw new Error('Missing INTERVALS_API_KEY, INTERVALS_BASIC_AUTH or INTERVALS_BEARER_TOKEN');
 
     const activityUrl = buildIntervalsUrl(config.baseUrl, `/athlete/${encodeURIComponent(config.athleteId)}/activities`, {
       oldest: config.oldest,
@@ -40,6 +40,7 @@ export async function handleGetIntervalsData(req, res, options = {}) {
       wellnessEndpoint: redactUrl(wellnessUrl),
       oldest: config.oldest,
       newest: config.newest,
+      authMode: authMode(config),
     });
 
     const [activities, wellness] = await Promise.all([
@@ -119,9 +120,10 @@ function readConfig(requestUrl) {
 
   return {
     baseUrl: process.env.INTERVALS_BASE_URL || DEFAULT_BASE_URL,
-    athleteId: process.env.INTERVALS_ATHLETE_ID || process.env.ATHLETE_ID,
-    apiKey: process.env.INTERVALS_API_KEY || process.env.API_KEY,
-    bearerToken: process.env.INTERVALS_BEARER_TOKEN || process.env.INTERVALS_TOKEN,
+    athleteId: cleanConfigValue(process.env.INTERVALS_ATHLETE_ID || process.env.ATHLETE_ID),
+    apiKey: cleanConfigValue(process.env.INTERVALS_API_KEY || process.env.API_KEY),
+    basicAuth: cleanConfigValue(process.env.INTERVALS_BASIC_AUTH || process.env.BASIC_AUTH),
+    bearerToken: cleanConfigValue(process.env.INTERVALS_BEARER_TOKEN || process.env.INTERVALS_TOKEN),
     oldest,
     newest,
   };
@@ -138,13 +140,32 @@ async function fetchJson(fetchImpl, url, config) {
   return text ? JSON.parse(text) : [];
 }
 
-function authHeaders(config) {
-  if (config.bearerToken) return { Authorization: `Bearer ${config.bearerToken}`, Accept: 'application/json' };
+function cleanConfigValue(value) {
+  return typeof value === 'string' ? value.trim() : value;
+}
 
-  // Intervals.icu personal API keys use HTTP Basic auth. The common curl form is
-  // -u "API_KEY:<key>"; deployments may alternatively pass the complete basic token.
-  const token = Buffer.from(`API_KEY:${config.apiKey}`, 'utf8').toString('base64');
+function authHeaders(config) {
+  const bearerToken = cleanConfigValue(config.bearerToken);
+  if (bearerToken) return { Authorization: `Bearer ${bearerToken}`, Accept: 'application/json' };
+
+  const preencodedBasicAuth = cleanConfigValue(config.basicAuth);
+  if (preencodedBasicAuth) {
+    const basicAuth = preencodedBasicAuth.startsWith('Basic ') ? preencodedBasicAuth : `Basic ${preencodedBasicAuth}`;
+    return { Authorization: basicAuth, Accept: 'application/json' };
+  }
+
+  // Intervals.icu personal API keys use Basic auth with the literal username
+  // 'API_KEY' and the user's generated API key as the password.
+  const apiKey = cleanConfigValue(config.apiKey);
+  const token = Buffer.from(`API_KEY:${apiKey}`, 'utf8').toString('base64');
   return { Authorization: `Basic ${token}`, Accept: 'application/json' };
+}
+
+function authMode(config) {
+  if (cleanConfigValue(config.bearerToken)) return 'bearer_token';
+  if (cleanConfigValue(config.basicAuth)) return 'basic_preencoded';
+  if (cleanConfigValue(config.apiKey)) return 'basic_api_key_username';
+  return 'none';
 }
 
 function ensureArray(payload) {

@@ -36,12 +36,14 @@ test('normalizes wellness sleep, resting HR, HRV rMSSD and weight for ProCoach',
 test('handler appends normalized wellness records to unchanged activities', async () => {
   const previousEnv = { ...process.env };
   process.env.INTERVALS_ATHLETE_ID = 'athlete-1';
-  process.env.INTERVALS_API_KEY = 'secret';
+  process.env.INTERVALS_API_KEY = ' secret\n';
   process.env.INTERVALS_BASE_URL = 'https://intervals.test/api/v1';
 
   const calls = [];
-  const fetchImpl = async (url) => {
+  const fetchImpl = async (url, options = {}) => {
     calls.push(url.toString());
+    assert.equal(options.headers.Authorization, `Basic ${Buffer.from('API_KEY:secret', 'utf8').toString('base64')}`);
+    assert.equal(options.headers.Accept, 'application/json');
     if (url.pathname.endsWith('/activities')) {
       return jsonResponse([{ id: 'activity-1', date: '2026-05-28', type: 'Ride' }]);
     }
