@@ -43,10 +43,18 @@ export async function handleGetIntervalsData(req, res, options = {}) {
       authMode: authMode(config),
     });
 
-    const [activities, wellness] = await Promise.all([
-      fetchJson(fetchImpl, activityUrl, config),
-      fetchJson(fetchImpl, wellnessUrl, config),
-    ]);
+    let activities = [];
+let wellness = [];
+
+activities = await fetchJson(fetchImpl, activityUrl, config);
+
+try {
+  wellness = await fetchJson(fetchImpl, wellnessUrl, config);
+} catch (error) {
+  logError('Wellness failed, continuing with activities only', {
+    error: error.message
+  });
+}
 
     const activityItems = ensureArray(activities);
     const wellnessItems = ensureArray(wellness);
