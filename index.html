@@ -165,7 +165,35 @@ function payloadKeys(item){return item&&typeof item==='object'&&!Array.isArray(i
 function renderSyncDiagnostics(){const keys=Array.isArray(syncState.lastPayloadKeys)?syncState.lastPayloadKeys:[],stepKeys=Array.isArray(syncState.lastStepKeys)?syncState.lastStepKeys:[];const lines=[['Payloadvorm',syncState.lastPayloadShape||'—'],['Aantal ontvangen items',syncState.lastPayloadCount??'—'],['Aantal geclassificeerde dagen',syncState.lastClassifiedCount??'—'],['Eerste keys van eerste payload-item',keys.length?keys.join(', '):'—'],['Gevonden stapvelden',stepKeys.length?stepKeys.join(', '):'—']];const el=$('syncDiagnostics');if(el)el.innerHTML=lines.map(a=>`${a[0]}: ${escapeHtml(a[1])}`).join('<br>')}
 async function syncIntervals(manual=false){if(syncState.isSyncing){if(manual)alert('Intervals sync is al bezig.');return}syncState.isSyncing=true;syncState.lastAttemptAt=new Date().toISOString();syncState.lastError=null;saveSyncState();syncMessage('Intervals sync: bezig...');try{const controller=window.AbortController?new AbortController():null;const timer=controller?setTimeout(()=>controller.abort(),20000):null;const url=(settings.intervalsApiUrl||DEFAULT_INTERVALS_API)+(settings.intervalsApiUrl.includes('?')?'&':'?')+'t='+Date.now();const res=await fetch(url,{cache:'no-store',signal:controller?controller.signal:undefined});if(timer)clearTimeout(timer);if(!res.ok)throw new Error('HTTP '+res.status);const raw=await res.json();const items=payloadItems(raw);syncState.lastPayloadShape=payloadShape(raw);syncState.lastPayloadKeys=Array.isArray(items)&&items.length?payloadKeys(items[0]):[];syncState.lastStepKeys=Array.isArray(items)?stepFieldPaths(items):[];syncState.lastPayloadCount=Array.isArray(items)?items.length:0;syncState.lastClassifiedCount=0;renderSyncDiagnostics();if(!Array.isArray(items))throw new Error('Geen lijst ontvangen');const days=classifyIntervals(items);syncState.lastClassifiedCount=days.length;mergeActivityDays(days);entries=entries.map(deriveYesterday);const date=$('date').value||today;const current=getEntry(date);if(current){const enriched=applyAutoRecovery(date);entries=entries.filter(e=>e.date!==date).concat([enriched])}saveActivityDays();saveEntries();syncState.isSyncing=false;clearRetryTimer();syncState.lastSuccessAt=new Date().toISOString();syncState.lastError=null;syncState.retryCount=0;syncState.nextRetryAt=null;syncState.lastPayloadCount=items.length;syncState.lastDataDate=activityDays.length?activityDays[activityDays.length-1].date:null;saveSyncState();syncMessage(`Intervals sync: ${days.length} dagen bijgewerkt om ${new Date().toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'})}.`);if(manual)alert('Sync klaar: '+days.length+' dagen bijgewerkt.');fill(applyAutoRecovery(date));renderAll()}catch(err){syncState.isSyncing=false;syncState.lastError=err.name==='AbortError'?'Timeout bij Intervals sync':err.message;syncState.retryCount=(syncState.retryCount||0)+1;saveSyncState();syncMessage('Intervals sync fout: '+syncState.lastError);renderSyncDiagnostics();if(manual)alert('Intervals sync fout: '+syncState.lastError);scheduleRetry()}}
 function payloadItems(raw){if(Array.isArray(raw))return raw;if(raw&&Array.isArray(raw.activities))return raw.activities;if(raw&&Array.isArray(raw.items))return raw.items;if(raw&&Array.isArray(raw.data))return raw.data;if(raw&&Array.isArray(raw.wellness))return raw.wellness;return null}
-function mergeActivityDays(days){const map=new Map(activityDays.map(e=>[e.date,e]));days.forEach(day=>{const old=map.get(day.date)||{date:day.date};map.set(day.date,Object.assign({},old,day,{source:'intervals',syncedAt:new Date().toISOString()}))});activityDays=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date))}
+function mergeActivityDays(days){
+  const map=new Map(activityDays.map(e=>[e.date,e]));
+
+  days.forEach(day=>{
+    const old=map.get(day.date)||{date:day.date};
+    map.set(day.date,Object.assign({},old,day,{
+      source:'intervals',
+      syncedAt:new Date().toISOString()
+    }));
+  });
+
+  activityDays=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));
+
+  const entryMap=new Map(entries.map(e=>[e.date,e]));
+
+  activityDays.forEach(day=>{
+    if(!entryMap.has(day.date)){
+      entryMap.set(day.date,{
+        date:day.date,
+        feeling:'ok',
+        stressFeeling:'normaal',
+        createdAt:new Date().toISOString(),
+        updatedAt:new Date().toISOString()
+      });
+    }
+  });
+
+  entries=[...entryMap.values()].map(deriveYesterday);
+}
 function classifyIntervals(items){const by={};items.forEach(a=>{const date=normalDataDate(a);if(!date)return;if(!by[date])by[date]={date,steps:null,walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,source:'intervals',syncedAt:new Date().toISOString()};const day=by[date];const steps=extractSteps(a);if(steps!==null)day.steps=Math.max(day.steps||0,steps);const sleep=extractSleep(a);if(sleep!==null)day.sleepHours=sleep;const rhr=num(getNested(a,['resting_hr','resting_heart_rate','resting_heartrate','rhr','wellness.resting_hr']));if(rhr!==null)day.rhr=rhr;const bbMorning=num(getNested(a,['body_battery_morning','morning_body_battery']));const bb=bbMorning??num(getNested(a,['body_battery','bodyBattery','wellness.body_battery','garmin.body_battery']));if(bb!==null){day.bodyBattery=bb;day.bodyBatteryMorning=bbMorning!==null}const name=String(getNested(a,['name','type','sport','activity_type'])||'').toLowerCase();const type=String(getNested(a,['type','sport','activity_type'])||'').toLowerCase();const min=activityMinutes(a);const isWalk=type.includes('walk')||name.includes('walk')||name.includes('wandel')||type.includes('hike')||name.includes('hike');const isStrength=type.includes('strength')||name.includes('kracht')||name.includes('strength')||name.includes('workout');const isYoga=type.includes('yoga')||name.includes('yoga')||name.includes('mobiliteit')||name.includes('mobility');if(min>0&&isWalk&&min>=20&&min<=180){day.walkMin+=min;day.activityMin+=min}else if(min>0&&isStrength){day.strengthMin+=min;day.activityMin+=min}else if(min>0&&isYoga){day.yogaMin+=min;day.activityMin+=min}});return Object.values(by)} 
 function activityMinutes(a){
   const raw=getNested(a,['moving_time','elapsed_time','duration','minutes']);
