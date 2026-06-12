@@ -149,7 +149,19 @@ function active(arr){return arr.filter(e=>dailyWalkTotal(e)>=20||(num(e.strength
 function normalizeStress(v){v=String(v||'normaal').toLowerCase().replace(' ','_');return v==='zeer_hoog'||v==='zeer hoog'? 'zeer_hoog':v}
 function displayStress(v){return normalizeStress(v).replace('_',' ')}
 
-function deriveYesterday(entry){const e=Object.assign({},entry),yDate=addDays(e.date,-1),a=getActivityDay(yDate),prev=lastBefore(e.date)||{};e.yesterdaySteps=num(prev.steps)??num(a&&a.steps)??num(e.yesterdaySteps);e.yesterdayWalkMin=(num(a&&a.walkMin)??num(prev.walkMin)??num(e.yesterdayWalkMin))||0;e.yesterdayActivityMin=(num(a&&a.activityMin)??num(prev.activityMin)??num(e.yesterdayActivityMin))||0;e.yesterdayStrengthMin=(num(a&&a.strengthMin)??num(prev.strengthMin)??num(e.yesterdayStrengthMin))||0;e.yesterdayYogaMin=(num(a&&a.yogaMin)??num(prev.yogaMin)??num(e.yesterdayYogaMin))||0;return e}
+function deriveYesterday(entry){
+  const e=Object.assign({},entry);
+  const yDate=addDays(e.date,-1);
+  const a=getActivityDay(yDate);
+
+  e.yesterdaySteps=num(a&&a.steps)??0;
+  e.yesterdayWalkMin=num(a&&a.walkMin)??0;
+  e.yesterdayActivityMin=num(a&&a.activityMin)??0;
+  e.yesterdayStrengthMin=num(a&&a.strengthMin)??0;
+  e.yesterdayYogaMin=num(a&&a.yogaMin)??0;
+
+  return e;
+}
 function applyAutoRecovery(date){const cur=getEntry(date)||{date,feeling:'ok',stressFeeling:'normaal',createdAt:new Date().toISOString()};const todayActivity=getActivityDay(date);let e=deriveYesterday(cur);if(todayActivity){if(num(e.sleepHours)===null||e.sleepSource!=='manual'){const v=num(todayActivity.sleepHours);if(v!==null){e.sleepHours=v;e.sleepSource='intervals'}}if(num(e.rhr)===null||e.rhrSource!=='manual'){const v=num(todayActivity.rhr);if(v!==null){e.rhr=v;e.rhrSource='intervals'}}if(num(e.bodyBattery)===null||e.bodyBatterySource!=='manual'){const v=num(todayActivity.bodyBattery);if(v!==null){e.bodyBattery=v;e.bodyBatteryMorning=todayActivity.bodyBatteryMorning===true;e.bodyBatterySource='intervals'}}}return e}
 function sourceFor(field,value,current){if(value===null)return'unknown';if(manualTouched[field])return'manual';return current||'manual'}
 function currentForm(){const date=$('date').value||today;const cur=applyAutoRecovery(date);const sleep=num($('sleep').value),rhr=num($('rhr').value),bb=num($('bb').value);return deriveYesterday(Object.assign({},cur,{date,sleepHours:sleep,sleepSource:sourceFor('sleep',sleep,cur.sleepSource),rhr,rhrSource:sourceFor('rhr',rhr,cur.rhrSource),bodyBattery:bb,bodyBatteryMorning:bb!==null&&(manualTouched.bb||cur.bodyBatteryMorning===true||cur.bodyBatterySource==='manual'),bodyBatterySource:sourceFor('bb',bb,cur.bodyBatterySource),feeling:$('feeling').value,stressFeeling:normalizeStress($('stress').value),updatedAt:new Date().toISOString(),createdAt:cur.createdAt||new Date().toISOString()}))}
