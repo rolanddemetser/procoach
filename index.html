@@ -6,11 +6,57 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V31</title>
+<title>ProCoach V32</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--green:#0d6f42;--blue:#1d4f8f;--amber:#96550b;--red:#9d1c1c}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#091527 70%,#160722);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.app{max-width:1120px;margin:auto;padding:14px}h1{font-size:clamp(38px,7vw,62px);line-height:.95;margin:0;font-weight:1000;letter-spacing:-.055em}h2{font-size:30px;margin:0 0 12px}h3{font-size:22px;margin:14px 0 8px}.sub{color:var(--muted);font-size:15px;font-weight:850;line-height:1.35;margin-top:10px}.small{color:var(--muted);font-size:12px;font-weight:850}.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px}.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}button{border:0;border-radius:16px;background:var(--panel2);color:var(--text);font-weight:950;padding:12px 15px;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}button.primary{background:linear-gradient(135deg,var(--purple),#6f37dd);box-shadow:none}button.danger{background:#842020}.card{background:rgba(20,34,53,.96);border:1px solid var(--line);border-radius:24px;padding:16px;margin-bottom:12px}.hero{border:2px solid var(--purple);background:linear-gradient(180deg,rgba(50,24,90,.95),rgba(20,34,53,.98))}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.tab{background:#253752;border:1px solid var(--line);border-radius:16px;text-align:center;font-weight:1000;padding:14px 8px;cursor:pointer}.tab.active{background:linear-gradient(135deg,var(--purple),#6f37dd)}label{display:block;font-size:15px;font-weight:1000;color:#d8e3f4;margin:12px 0 6px}input,select,textarea{width:100%;background:#0b1526;color:var(--text);border:1px solid #435a78;border-radius:15px;padding:14px;font-size:18px;font-weight:850;outline:none}textarea{min-height:84px}.section{display:none}.section.active{display:block}.decision{font-size:clamp(28px,7vw,50px);font-weight:1000;text-align:center;letter-spacing:-.04em;border-radius:20px;padding:22px 12px;margin:10px 0;background:var(--amber);color:#fff0bd}.decision.go{background:var(--green);color:#b8f7d0}.decision.recover{background:var(--blue);color:#dbeafe}.decision.stop{background:var(--red);color:#fee2e2}.notice{background:#2a344b;border-left:6px solid #e8aa2d;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}.lock{background:#10351f;border:1px solid #1f8a4d;color:#b8f7d0;border-radius:16px;padding:12px;font-weight:950;margin-bottom:12px}.hidden{display:none!important}.tile{background:#263852;border:1px solid #506480;border-radius:17px;padding:13px;min-height:88px}.tile.big{min-height:118px}.k{font-size:11px;color:var(--muted);font-weight:1000;text-transform:uppercase}.v{font-size:24px;font-weight:1000;margin-top:6px}.big .v{font-size:32px}.d{font-size:12px;color:#d5dfef;font-weight:800;margin-top:5px;line-height:1.25}.list{display:grid;gap:8px}.item{background:#263852;border:1px solid #506480;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}.item strong{display:block;margin-bottom:4px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #344762;padding:9px 8px;text-align:left;white-space:nowrap}.tablewrap{overflow:auto;max-height:70vh}canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;border-radius:16px}.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.scorebar{height:10px;background:#102033;border-radius:99px;overflow:hidden;margin-top:10px;border:1px solid #405777}.scorebar span{display:block;height:100%;background:linear-gradient(90deg,#dc2626,#d97706,#16a34a);border-radius:99px}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#07111f,#091527 70%,#160722);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.app{max-width:1120px;margin:auto;padding:14px}
+h1{font-size:clamp(38px,7vw,62px);line-height:.95;margin:0;font-weight:1000;letter-spacing:-.055em}
+h2{font-size:30px;margin:0 0 12px}
+h3{font-size:22px;margin:14px 0 8px}
+.sub{color:var(--muted);font-size:15px;font-weight:850;line-height:1.35;margin-top:10px}
+.small{color:var(--muted);font-size:12px;font-weight:850}
+.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px}
+.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+button{border:0;border-radius:16px;background:var(--panel2);color:var(--text);font-weight:950;padding:12px 15px;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+button.primary{background:linear-gradient(135deg,var(--purple),#6f37dd);box-shadow:none}
+button.danger{background:#842020}
+.card{background:rgba(20,34,53,.96);border:1px solid var(--line);border-radius:24px;padding:16px;margin-bottom:12px}
+.hero{border:2px solid var(--purple);background:linear-gradient(180deg,rgba(50,24,90,.95),rgba(20,34,53,.98))}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.tab{background:#253752;border:1px solid var(--line);border-radius:16px;text-align:center;font-weight:1000;padding:14px 8px;cursor:pointer}
+.tab.active{background:linear-gradient(135deg,var(--purple),#6f37dd)}
+label{display:block;font-size:15px;font-weight:1000;color:#d8e3f4;margin:12px 0 6px}
+input,select,textarea{width:100%;background:#0b1526;color:var(--text);border:1px solid #435a78;border-radius:15px;padding:14px;font-size:18px;font-weight:850;outline:none}
+textarea{min-height:84px}
+.section{display:none}.section.active{display:block}
+.decision{font-size:clamp(28px,7vw,50px);font-weight:1000;text-align:center;letter-spacing:-.04em;border-radius:20px;padding:22px 12px;margin:10px 0;background:var(--amber);color:#fff0bd}
+.decision.go{background:var(--green);color:#b8f7d0}.decision.recover{background:var(--blue);color:#dbeafe}.decision.stop{background:var(--red);color:#fee2e2}
+.notice{background:#2a344b;border-left:6px solid #e8aa2d;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}
+.lock{background:#10351f;border:1px solid #1f8a4d;color:#b8f7d0;border-radius:16px;padding:12px;font-weight:950;margin-bottom:12px}
+.hidden{display:none!important}
+.tile{background:#263852;border:1px solid #506480;border-radius:17px;padding:13px;min-height:88px}
+.tile.big{min-height:118px}
+.k{font-size:11px;color:var(--muted);font-weight:1000;text-transform:uppercase}
+.v{font-size:24px;font-weight:1000;margin-top:6px}.big .v{font-size:32px}
+.d{font-size:12px;color:#d5dfef;font-weight:800;margin-top:5px;line-height:1.25}
+.list{display:grid;gap:8px}
+.item{background:#263852;border:1px solid #506480;border-radius:15px;padding:12px;font-weight:900;line-height:1.35}
+.item strong{display:block;margin-bottom:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border-bottom:1px solid #344762;padding:9px 8px;text-align:left;white-space:nowrap}
+.tablewrap{overflow:auto;max-height:70vh}
+.bad{color:#ffbf7a;font-weight:1000}
+.good{color:#b8f7d0;font-weight:1000}
+.warnrow td{background:rgba(150,85,11,.18)}
+canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;border-radius:16px}
+.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.scorebar{height:10px;background:#102033;border-radius:99px;overflow:hidden;margin-top:10px;border:1px solid #405777}
+.scorebar span{display:block;height:100%;background:linear-gradient(90deg,#dc2626,#d97706,#16a34a);border-radius:99px}
 @media(max-width:880px){.top{display:block}.buttons{justify-content:flex-start;margin-top:14px}.grid,.grid3,.grid4,.charts{grid-template-columns:1fr}.tabs{grid-template-columns:1fr 1fr}.buttons button{flex:1}}
 @media(max-width:430px){.app{padding:10px}h1{font-size:42px}.card{padding:13px}input,select,textarea{font-size:19px;padding:15px}label{font-size:17px}.tile .v{font-size:28px}.item{font-size:16px}}
 </style>
@@ -19,9 +65,9 @@
 <div class="app">
   <div class="top">
     <div>
-      <h1>ProCoach V31 🧠</h1>
-      <div class="sub">Schone versie. Historiek toont nu dagwaarden. Coach gebruikt gisterenbelasting. Stapwaarden onder 9000 worden genegeerd als dagtotaal.</div>
-      <div class="small">GO / RECOVER / STOP op basis van herstel vandaag + belasting gisteren.</div>
+      <h1>ProCoach V32 🧠</h1>
+      <div class="sub">Diepe rebuild. Historiek toont dagwaarden. Coach gebruikt gisterenbelasting. Intervals-data wordt niet meer stil gefilterd of verschoven.</div>
+      <div class="small">Belangrijk: als Intervals een laag dagtotaal levert, toont V32 dat met een waarschuwing in plaats van het te verbergen.</div>
     </div>
     <div class="buttons">
       <button class="primary" onclick="saveToday()">Bewaar vandaag</button>
@@ -35,34 +81,129 @@
 
   <div class="card">
     <div class="grid">
-      <div><label>Dashboardperiode</label><select id="period" onchange="renderAll()"><option value="1w">Moving week</option><option value="1m">Moving month</option><option value="3m">Moving 3 months</option><option value="6m">Moving 6 months</option><option value="1y">Moving last year</option><option value="start">Vanaf 10/02/2026</option><option value="all">All time</option></select></div>
-      <div class="tile"><div class="k">Status</div><div id="periodInfo" class="d">—</div><div id="syncMsg" class="small" style="margin-top:8px">Nog niet gesynchroniseerd.</div><div id="syncDiagnostics" class="small" style="margin-top:8px">Payloadvorm: —<br>Aantal ontvangen items: —</div></div>
+      <div>
+        <label>Dashboardperiode</label>
+        <select id="period" onchange="renderAll()">
+          <option value="1w">Moving week</option>
+          <option value="1m">Moving month</option>
+          <option value="3m">Moving 3 months</option>
+          <option value="6m">Moving 6 months</option>
+          <option value="1y">Moving last year</option>
+          <option value="start">Vanaf 10/02/2026</option>
+          <option value="all">All time</option>
+        </select>
+      </div>
+      <div class="tile">
+        <div class="k">Status</div>
+        <div id="periodInfo" class="d">—</div>
+        <div id="syncMsg" class="small" style="margin-top:8px">Nog niet gesynchroniseerd.</div>
+        <div id="syncDiagnostics" class="small" style="margin-top:8px">Payloadvorm: —<br>Aantal ontvangen items: —</div>
+      </div>
     </div>
   </div>
 
-  <div class="tabs"><div class="tab active" onclick="setTab('today')">Vandaag</div><div class="tab" onclick="setTab('history')">Historiek</div><div class="tab" onclick="setTab('dashboard')">Dashboard</div><div class="tab" onclick="setTab('settings')">Instellingen</div></div>
+  <div class="tabs">
+    <div class="tab active" onclick="setTab('today')">Vandaag</div>
+    <div class="tab" onclick="setTab('history')">Historiek</div>
+    <div class="tab" onclick="setTab('dashboard')">Dashboard</div>
+    <div class="tab" onclick="setTab('settings')">Instellingen</div>
+  </div>
 
   <section id="today" class="section active">
     <div id="lockedBanner" class="lock hidden">✅ Vandaag is bewaard. Ochtendinput is vergrendeld. Gebruik reset enkel bij fout.</div>
     <div class="card hero">
-      <div class="small">🌅 Wat doe ik vandaag?</div><div id="mainDecision" class="decision">VANDAAG: INVULLEN</div><div id="oneLine" class="notice">Vul hersteldata in. Activiteit van gisteren komt uit Intervals.</div>
-      <div class="grid3" style="margin-top:12px"><div class="tile"><div class="k">MOET</div><div id="mustDo" class="v">—</div><div id="mustDoDetail" class="d"></div></div><div class="tile"><div class="k">MAG</div><div id="mayDo" class="v">—</div><div id="mayDoDetail" class="d"></div></div><div class="tile"><div class="k">NIET DOEN</div><div id="dontDo" class="v">—</div><div id="dontDoDetail" class="d"></div></div></div>
-      <div class="grid" style="margin-top:12px"><div><h3>Waarom?</h3><div id="whyList" class="list"></div></div><div><h3>Gisteren</h3><div id="yesterdayBox" class="list"></div></div></div>
+      <div class="small">🌅 Wat doe ik vandaag?</div>
+      <div id="mainDecision" class="decision">VANDAAG: INVULLEN</div>
+      <div id="oneLine" class="notice">Vul hersteldata in. Activiteit van gisteren komt uit Intervals.</div>
+      <div class="grid3" style="margin-top:12px">
+        <div class="tile"><div class="k">MOET</div><div id="mustDo" class="v">—</div><div id="mustDoDetail" class="d"></div></div>
+        <div class="tile"><div class="k">MAG</div><div id="mayDo" class="v">—</div><div id="mayDoDetail" class="d"></div></div>
+        <div class="tile"><div class="k">NIET DOEN</div><div id="dontDo" class="v">—</div><div id="dontDoDetail" class="d"></div></div>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div><h3>Waarom?</h3><div id="whyList" class="list"></div></div>
+        <div><h3>Gisteren</h3><div id="yesterdayBox" class="list"></div></div>
+      </div>
     </div>
-    <div class="grid"><div class="card"><h2>Ochtendcheck</h2><div class="grid"><div><label>Datum</label><input id="date" type="date"></div><div><label>Slaapduur uren</label><input id="sleep" type="text" inputmode="decimal" placeholder="auto of bv. 6,5"></div><div><label>Gevoel</label><select id="feeling"><option>ok</option><option>goed</option><option>moe</option><option>pijn</option><option>ziek</option></select></div><div><label>Stressgevoel</label><select id="stress"><option>normaal</option><option>laag</option><option>hoog</option><option>zeer hoog</option></select></div><div><label>Rusthartslag</label><input id="rhr" type="text" inputmode="numeric" placeholder="auto of bv. 58"></div><div><label>Body Battery bij opstaan</label><input id="bb" type="text" inputmode="numeric" placeholder="auto indien beschikbaar"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveToday()">Bewaar vandaag</button><button onclick="fillFromYesterday()">Vul auto-data aan</button><button class="danger" onclick="resetToday()">Reset vandaag</button></div><div id="saveMsg" class="small" style="margin-top:10px"></div></div>
-    <div class="card"><h2>Automatisch uit Intervals</h2><div class="notice">V31 gebruikt Intervals voor activiteit, stappen, slaap, RHR en Body Battery waar beschikbaar.</div><div class="list" id="autoDataBox"><div class="item">Sync Intervals om automatische data bij te werken.</div></div></div></div>
+
+    <div class="grid">
+      <div class="card"><h2>Ochtendcheck</h2>
+        <div class="grid">
+          <div><label>Datum</label><input id="date" type="date"></div>
+          <div><label>Slaapduur uren</label><input id="sleep" type="text" inputmode="decimal" placeholder="auto of bv. 6,5"></div>
+          <div><label>Gevoel</label><select id="feeling"><option>ok</option><option>goed</option><option>moe</option><option>pijn</option><option>ziek</option></select></div>
+          <div><label>Stressgevoel</label><select id="stress"><option>normaal</option><option>laag</option><option>hoog</option><option>zeer hoog</option></select></div>
+          <div><label>Rusthartslag</label><input id="rhr" type="text" inputmode="numeric" placeholder="auto of bv. 58"></div>
+          <div><label>Body Battery bij opstaan</label><input id="bb" type="text" inputmode="numeric" placeholder="auto indien beschikbaar"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <button class="primary" onclick="saveToday()">Bewaar vandaag</button>
+          <button onclick="fillFromAuto()">Vul auto-data aan</button>
+          <button class="danger" onclick="resetToday()">Reset vandaag</button>
+        </div>
+        <div id="saveMsg" class="small" style="margin-top:10px"></div>
+      </div>
+      <div class="card"><h2>Automatisch uit Intervals</h2>
+        <div class="notice">V32 bewaart dagtotalen apart van ochtendinput. De historiek toont de dag zelf; de coachkaart gebruikt gisteren.</div>
+        <div class="list" id="autoDataBox"><div class="item">Sync Intervals om automatische data bij te werken.</div></div>
+      </div>
+    </div>
   </section>
 
-  <section id="history" class="section"><div class="card"><h2>Historiek</h2><div class="notice">Deze tabel toont de waarden van de dag zelf. De coachkaart “Gisteren” gebruikt intern de vorige dag.</div><div class="tablewrap"><table id="historyTable"></table></div></div></section>
-  <section id="dashboard" class="section"><div class="card"><h2>Dashboard</h2><div id="dashTiles" class="grid4"></div></div><div class="card"><h2>Rapport</h2><div id="reportBox" class="grid3"></div></div><div class="charts"><div class="card"><h3>Gewicht</h3><canvas id="chartWeight"></canvas></div><div class="card"><h3>BMI</h3><canvas id="chartBMI"></canvas></div><div class="card"><h3>Buikomtrek</h3><canvas id="chartWaist"></canvas></div><div class="card"><h3>Gezondheidsscore</h3><canvas id="chartHealth"></canvas></div><div class="card"><h3>Wandelen totaal</h3><canvas id="chartWalk"></canvas></div><div class="card"><h3>Training load</h3><canvas id="chartLoad"></canvas></div></div></section>
-  <section id="settings" class="section"><div class="card"><h2>Instellingen</h2><div class="grid"><div><label>Startdatum</label><input id="startDate" type="date"></div><div><label>Lengte cm</label><input id="heightCm" type="text" inputmode="decimal"></div><div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div><div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div><div><label>Huidig gewicht kg</label><input id="currentWeight" type="text" inputmode="decimal"></div><div><label>Huidige buikomtrek cm</label><input id="currentWaist" type="text" inputmode="decimal"></div><div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div><div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div><div><label>Intervals endpoint</label><input id="intervalsApiUrl" type="text"></div><div><label>Auto-sync</label><select id="autoSync"><option value="true">aan</option><option value="false">uit</option></select></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="saveSettings()">Bewaar instellingen</button><button onclick="seedProfile(true)">Herstel profielcurve</button><button class="danger" onclick="wipeAll()">Wis alle V31-data</button></div></div></section>
+  <section id="history" class="section">
+    <div class="card">
+      <h2>Historiek</h2>
+      <div class="notice">Deze tabel toont waarden van de datum zelf. Lage stapwaarden worden niet verstopt maar gemarkeerd, zodat je ziet wat Intervals echt levert.</div>
+      <div class="tablewrap"><table id="historyTable"></table></div>
+    </div>
+  </section>
+
+  <section id="dashboard" class="section">
+    <div class="card"><h2>Dashboard</h2><div id="dashTiles" class="grid4"></div></div>
+    <div class="card"><h2>Rapport</h2><div id="reportBox" class="grid3"></div></div>
+    <div class="charts">
+      <div class="card"><h3>Gewicht</h3><canvas id="chartWeight"></canvas></div>
+      <div class="card"><h3>BMI</h3><canvas id="chartBMI"></canvas></div>
+      <div class="card"><h3>Buikomtrek</h3><canvas id="chartWaist"></canvas></div>
+      <div class="card"><h3>Gezondheidsscore</h3><canvas id="chartHealth"></canvas></div>
+      <div class="card"><h3>Wandelen totaal</h3><canvas id="chartWalk"></canvas></div>
+      <div class="card"><h3>Stappen</h3><canvas id="chartSteps"></canvas></div>
+    </div>
+  </section>
+
+  <section id="settings" class="section">
+    <div class="card">
+      <h2>Instellingen</h2>
+      <div class="grid">
+        <div><label>Startdatum</label><input id="startDate" type="date"></div>
+        <div><label>Lengte cm</label><input id="heightCm" type="text" inputmode="decimal"></div>
+        <div><label>Startgewicht kg</label><input id="startWeight" type="text" inputmode="decimal"></div>
+        <div><label>Start buikomtrek cm</label><input id="startWaist" type="text" inputmode="decimal"></div>
+        <div><label>Huidig gewicht kg</label><input id="currentWeight" type="text" inputmode="decimal"></div>
+        <div><label>Huidige buikomtrek cm</label><input id="currentWaist" type="text" inputmode="decimal"></div>
+        <div><label>Doel wandelen/week min</label><input id="goalWalk" type="text" inputmode="numeric"></div>
+        <div><label>Doel kracht/week min</label><input id="goalStrength" type="text" inputmode="numeric"></div>
+        <div><label>Minimum verwachte stappen</label><input id="minExpectedSteps" type="text" inputmode="numeric"></div>
+        <div><label>Intervals endpoint</label><input id="intervalsApiUrl" type="text"></div>
+        <div><label>Auto-sync</label><select id="autoSync"><option value="true">aan</option><option value="false">uit</option></select></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+        <button class="primary" onclick="saveSettings()">Bewaar instellingen</button>
+        <button onclick="seedProfile(true)">Herstel profielcurve</button>
+        <button class="danger" onclick="wipeAll()">Wis V32 data</button>
+      </div>
+    </div>
+  </section>
 </div>
+
 <script>
-const VERSION='v31';
-const KEY='procoach_v31_daily_entries',ACTKEY='procoach_v31_activity_days',SETKEY='procoach_v31_settings',SYNC_STATE_KEY='procoach_v31_sync_state';
-const OLD_KEY='procoach_v29_daily_entries',OLD_ACTKEY='procoach_v29_activity_days',OLD_SETKEY='procoach_v29_settings';
+const VERSION='v32';
+const KEY='procoach_v32_entries';
+const ACTKEY='procoach_v32_activity_days';
+const SETKEY='procoach_v32_settings';
+const SYNC_STATE_KEY='procoach_v32_sync_state';
 const DEFAULT_INTERVALS_API='https://getintervalsdata-u52cb43h2a-uc.a.run.app';
-const MIN_DAILY_STEPS=9000,MAX_DAILY_STEPS=50000;
+
 const today=toDateString(new Date());
 const $=id=>document.getElementById(id);
 const num=v=>{if(v===undefined||v===null||v==='')return null;const x=Number(String(v).replace(',','.').replace(/\s/g,''));return isNaN(x)?null:x};
@@ -75,90 +216,524 @@ function dur(mins){mins=Math.round(num(mins)||0);const d=Math.floor(mins/1440),h
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 function safeJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||fallback)}catch(e){return JSON.parse(fallback)}}
 function setText(id,value){const el=$(id);if(el)el.textContent=value}
+function escapeHtml(v){return String(v).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
 function valueAt(o,path){let cur=o;for(const part of String(path).split('.')){if(cur&&Object.prototype.hasOwnProperty.call(cur,part))cur=cur[part];else return null}return cur}
-function getNested(o,paths){for(const path of paths){const v=valueAt(o,path);if(v!==undefined&&v!==null&&v!=='')return v}return null}
-function normalDate(v){const s=String(v||'').trim();let m=s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);if(m)return`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;const dt=new Date(s);return isNaN(dt)?null:toDateString(dt)}
+function getNested(o,paths){for(const p of paths){const v=valueAt(o,p);if(v!==undefined&&v!==null&&v!=='')return v}return null}
 
-let settings=Object.assign({version:VERSION,startDate:'2026-02-10',heightCm:174,startWeight:99,startWaist:116,currentWeight:86.6,currentWaist:101,goalWalk:240,goalStrength:60,intervalsApiUrl:DEFAULT_INTERVALS_API,autoSync:true},safeJson(SETKEY,'{}'),safeJson(OLD_SETKEY,'{}'));
-settings.version=VERSION;settings.startDate='2026-02-10';settings.heightCm=num(settings.heightCm)||174;settings.startWeight=num(settings.startWeight)||99;settings.startWaist=num(settings.startWaist)||116;settings.intervalsApiUrl=settings.intervalsApiUrl||DEFAULT_INTERVALS_API;settings.autoSync=settings.autoSync!==false;
+let settings=Object.assign({
+  version:VERSION,startDate:'2026-02-10',heightCm:174,startWeight:99,startWaist:116,
+  currentWeight:86.6,currentWaist:101,goalWalk:240,goalStrength:60,minExpectedSteps:9000,
+  intervalsApiUrl:DEFAULT_INTERVALS_API,autoSync:true
+},safeJson(SETKEY,'{}'));
+settings.version=VERSION;
+settings.startDate='2026-02-10';
+settings.heightCm=num(settings.heightCm)||174;
+settings.startWeight=num(settings.startWeight)||99;
+settings.startWaist=num(settings.startWaist)||116;
+settings.goalWalk=num(settings.goalWalk)||240;
+settings.goalStrength=num(settings.goalStrength)||60;
+settings.minExpectedSteps=num(settings.minExpectedSteps)||9000;
+settings.intervalsApiUrl=settings.intervalsApiUrl||DEFAULT_INTERVALS_API;
+settings.autoSync=settings.autoSync!==false;
+
 let entries=safeJson(KEY,'[]');
 let activityDays=safeJson(ACTKEY,'[]');
-let syncState=Object.assign({isSyncing:false,lastAttemptAt:null,lastSuccessAt:null,lastError:null,retryCount:0,nextRetryAt:null,lastDataDate:null,lastPayloadCount:0,lastPayloadShape:null,lastPayloadKeys:[],lastStepKeys:[],lastClassifiedCount:0},safeJson(SYNC_STATE_KEY,'{}'),{isSyncing:false});
-let retryTimer=null,manualTouched={sleep:false,rhr:false,bb:false};
+let syncState=Object.assign({
+  isSyncing:false,lastAttemptAt:null,lastSuccessAt:null,lastError:null,retryCount:0,nextRetryAt:null,
+  lastDataDate:null,lastPayloadCount:0,lastPayloadShape:null,lastPayloadKeys:[],lastStepKeys:[],lastClassifiedCount:0,
+  lowStepDates:[],missingStepDates:[]
+},safeJson(SYNC_STATE_KEY,'{}'),{isSyncing:false});
+let retryTimer=null;
+let manualTouched={sleep:false,rhr:false,bb:false};
 
 saveSettings(false);saveEntries();saveActivityDays();saveSyncState();
 
 function saveEntries(){entries.sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem(KEY,JSON.stringify(entries))}
 function saveActivityDays(){activityDays.sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem(ACTKEY,JSON.stringify(activityDays))}
 function saveSyncState(){localStorage.setItem(SYNC_STATE_KEY,JSON.stringify(Object.assign({},syncState,{isSyncing:false})))}
-function saveSettings(render=true){['startDate','heightCm','startWeight','startWaist','currentWeight','currentWaist','goalWalk','goalStrength','intervalsApiUrl'].forEach(id=>{if($(id))settings[id]=$(id).value||settings[id]});if($('autoSync'))settings.autoSync=$('autoSync').value!=='false';settings.heightCm=num(settings.heightCm)||174;settings.startWeight=num(settings.startWeight)||99;settings.startWaist=num(settings.startWaist)||116;settings.goalWalk=num(settings.goalWalk)||240;settings.goalStrength=num(settings.goalStrength)||60;settings.startDate='2026-02-10';settings.intervalsApiUrl=settings.intervalsApiUrl||DEFAULT_INTERVALS_API;localStorage.setItem(SETKEY,JSON.stringify(settings));if(render)renderAll()}
-function loadSettings(){['startDate','heightCm','startWeight','startWaist','currentWeight','currentWaist','goalWalk','goalStrength','intervalsApiUrl'].forEach(id=>{if($(id))$(id).value=settings[id]??''});if($('autoSync'))$('autoSync').value=settings.autoSync===false?'false':'true'}
-function seedProfile(force=false){if(localStorage.getItem('procoach_v31_seeded')&&!force)return;const anchors=[{date:'2026-02-10',weight:99,waist:116},{date:'2026-03-07',weight:91,waist:105},{date:'2026-04-01',weight:88,waist:100},{date:today,weight:num(settings.currentWeight)||86.6,waist:num(settings.currentWaist)||101}];const map=new Map(entries.map(e=>[e.date,e]));for(let i=0;i<anchors.length-1;i++){const a=anchors[i],b=anchors[i+1],total=Math.max(1,daysBetween(a.date,b.date));for(let d=0;d<=total;d++){const date=addDays(a.date,d),t=d/total;const old=map.get(date)||{date,feeling:'ok',stressFeeling:'normaal'};map.set(date,Object.assign({},old,{weight:old.weight??Math.round((a.weight+(b.weight-a.weight)*t)*10)/10,waist:old.waist??Math.round((a.waist+(b.waist-a.waist)*t)*10)/10,profileSeed:true,updatedAt:old.updatedAt||new Date().toISOString(),createdAt:old.createdAt||new Date().toISOString()}))}}entries=[...map.values()].map(deriveYesterday);saveEntries();localStorage.setItem('procoach_v31_seeded','1');if(force)alert('Profielcurve opnieuw aangevuld.');renderAll()}
+function saveSettings(render=true){
+  ['startDate','heightCm','startWeight','startWaist','currentWeight','currentWaist','goalWalk','goalStrength','minExpectedSteps','intervalsApiUrl'].forEach(id=>{if($(id))settings[id]=$(id).value||settings[id]});
+  if($('autoSync'))settings.autoSync=$('autoSync').value!=='false';
+  settings.heightCm=num(settings.heightCm)||174;settings.startWeight=num(settings.startWeight)||99;settings.startWaist=num(settings.startWaist)||116;
+  settings.goalWalk=num(settings.goalWalk)||240;settings.goalStrength=num(settings.goalStrength)||60;settings.minExpectedSteps=num(settings.minExpectedSteps)||9000;
+  settings.startDate='2026-02-10';settings.intervalsApiUrl=settings.intervalsApiUrl||DEFAULT_INTERVALS_API;
+  localStorage.setItem(SETKEY,JSON.stringify(settings));
+  if(render)renderAll();
+}
+function loadSettings(){
+  ['startDate','heightCm','startWeight','startWaist','currentWeight','currentWaist','goalWalk','goalStrength','minExpectedSteps','intervalsApiUrl'].forEach(id=>{if($(id))$(id).value=settings[id]??''});
+  if($('autoSync'))$('autoSync').value=settings.autoSync===false?'false':'true';
+}
+
+function seedProfile(force=false){
+  if(localStorage.getItem('procoach_v32_seeded')&&!force)return;
+  const anchors=[{date:'2026-02-10',weight:99,waist:116},{date:'2026-03-07',weight:91,waist:105},{date:'2026-04-01',weight:88,waist:100},{date:today,weight:num(settings.currentWeight)||86.6,waist:num(settings.currentWaist)||101}];
+  const map=new Map(entries.map(e=>[e.date,e]));
+  for(let i=0;i<anchors.length-1;i++){
+    const a=anchors[i],b=anchors[i+1],total=Math.max(1,daysBetween(a.date,b.date));
+    for(let d=0;d<=total;d++){
+      const date=addDays(a.date,d),t=d/total;
+      const weight=Math.round((a.weight+(b.weight-a.weight)*t)*10)/10;
+      const waist=Math.round((a.waist+(b.waist-a.waist)*t)*10)/10;
+      const old=map.get(date)||{date,feeling:'ok',stressFeeling:'normaal'};
+      map.set(date,Object.assign({},old,{weight:old.weight??weight,waist:old.waist??waist,profileSeed:true,updatedAt:old.updatedAt||new Date().toISOString(),createdAt:old.createdAt||new Date().toISOString()}));
+    }
+  }
+  entries=[...map.values()].map(deriveYesterday);
+  saveEntries();localStorage.setItem('procoach_v32_seeded','1');
+  if(force)alert('Profielcurve opnieuw aangevuld.');
+  renderAll();
+}
 function getEntry(date){return entries.find(e=>e.date===date)||null}
 function getActivityDay(date){return activityDays.find(e=>e.date===date)||null}
-function range(){const end=new Date();let start=new Date('2026-02-10'),p=$('period').value;if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());if(p==='1y')start=new Date(end.getFullYear()-1,end.getMonth(),end.getDate());if(p==='start'||p==='all')start=new Date('2026-02-10');return{start:toDateString(start),end:toDateString(end),label:$('period').selectedOptions[0].text}}
+function ensureEntry(date){
+  let e=getEntry(date);
+  if(!e){e={date,feeling:'ok',stressFeeling:'normaal',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};entries.push(e);saveEntries()}
+  return e;
+}
+function range(){
+  const end=new Date();let start=new Date('2026-02-10'),p=$('period').value;
+  if(p==='1w')start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-7);
+  if(p==='1m')start=new Date(end.getFullYear(),end.getMonth()-1,end.getDate());
+  if(p==='3m')start=new Date(end.getFullYear(),end.getMonth()-3,end.getDate());
+  if(p==='6m')start=new Date(end.getFullYear(),end.getMonth()-6,end.getDate());
+  if(p==='1y')start=new Date(end.getFullYear()-1,end.getMonth(),end.getDate());
+  if(p==='start'||p==='all')start=new Date('2026-02-10');
+  return{start:toDateString(start),end:toDateString(end),label:$('period').selectedOptions[0].text}
+}
 function filtered(){const r=range();return entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date))}
+function activityFiltered(){const r=range();return activityDays.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date))}
 function sum(arr,k){return arr.reduce((s,e)=>s+(num(e[k])||0),0)}
 function dailyWalkTotal(e){const a=getActivityDay(e.date);return num(a&&a.walkMin)??num(e.walkMin)??0}
 function active(arr){return arr.filter(e=>dailyWalkTotal(e)>=20||(num(e.strengthMin)||0)>=10||(num(e.yogaMin)||0)>=20).length}
 function normalizeStress(v){v=String(v||'normaal').toLowerCase().replace(' ','_');return v==='zeer_hoog'||v==='zeer hoog'?'zeer_hoog':v}
 function displayStress(v){return normalizeStress(v).replace('_',' ')}
 
-function deriveYesterday(entry){const e=Object.assign({},entry),a=getActivityDay(addDays(e.date,-1));e.yesterdaySteps=num(a&&a.steps)??0;e.yesterdayWalkMin=num(a&&a.walkMin)??0;e.yesterdayActivityMin=num(a&&a.activityMin)??0;e.yesterdayStrengthMin=num(a&&a.strengthMin)??0;e.yesterdayYogaMin=num(a&&a.yogaMin)??0;return e}
-function applyAutoRecovery(date){const cur=getEntry(date)||{date,feeling:'ok',stressFeeling:'normaal',createdAt:new Date().toISOString()};const todayActivity=getActivityDay(date);let e=deriveYesterday(cur);if(todayActivity){if(num(e.sleepHours)===null||e.sleepSource!=='manual'){const v=num(todayActivity.sleepHours);if(v!==null){e.sleepHours=v;e.sleepSource='intervals'}}if(num(e.rhr)===null||e.rhrSource!=='manual'){const v=num(todayActivity.rhr);if(v!==null){e.rhr=v;e.rhrSource='intervals'}}if(num(e.bodyBattery)===null||e.bodyBatterySource!=='manual'){const v=num(todayActivity.bodyBattery);if(v!==null){e.bodyBattery=v;e.bodyBatteryMorning=todayActivity.bodyBatteryMorning===true;e.bodyBatterySource='intervals'}}}return e}
+function deriveYesterday(entry){
+  const e=Object.assign({},entry);
+  const a=getActivityDay(addDays(e.date,-1));
+  e.yesterdaySteps=num(a&&a.steps);
+  e.yesterdayWalkMin=num(a&&a.walkMin)??0;
+  e.yesterdayActivityMin=num(a&&a.activityMin)??0;
+  e.yesterdayStrengthMin=num(a&&a.strengthMin)??0;
+  e.yesterdayYogaMin=num(a&&a.yogaMin)??0;
+  return e;
+}
+function applyAutoRecovery(date){
+  const cur=ensureEntry(date);
+  const todayActivity=getActivityDay(date);
+  let e=deriveYesterday(cur);
+  if(todayActivity){
+    if(num(e.sleepHours)===null||e.sleepSource!=='manual'){const v=num(todayActivity.sleepHours);if(v!==null){e.sleepHours=v;e.sleepSource='intervals'}}
+    if(num(e.rhr)===null||e.rhrSource!=='manual'){const v=num(todayActivity.rhr);if(v!==null){e.rhr=v;e.rhrSource='intervals'}}
+    if(num(e.bodyBattery)===null||e.bodyBatterySource!=='manual'){const v=num(todayActivity.bodyBattery);if(v!==null){e.bodyBattery=v;e.bodyBatteryMorning=todayActivity.bodyBatteryMorning===true;e.bodyBatterySource='intervals'}}
+  }
+  return e;
+}
 function sourceFor(field,value,current){if(value===null)return'unknown';if(manualTouched[field])return'manual';return current||'manual'}
-function currentForm(){const date=$('date').value||today;const cur=applyAutoRecovery(date);const sleep=num($('sleep').value),rhr=num($('rhr').value),bb=num($('bb').value);return deriveYesterday(Object.assign({},cur,{date,sleepHours:sleep,sleepSource:sourceFor('sleep',sleep,cur.sleepSource),rhr,rhrSource:sourceFor('rhr',rhr,cur.rhrSource),bodyBattery:bb,bodyBatteryMorning:bb!==null&&(manualTouched.bb||cur.bodyBatteryMorning===true||cur.bodyBatterySource==='manual'),bodyBatterySource:sourceFor('bb',bb,cur.bodyBatterySource),feeling:$('feeling').value,stressFeeling:normalizeStress($('stress').value),updatedAt:new Date().toISOString(),createdAt:cur.createdAt||new Date().toISOString()}))}
-function fill(e){if(!e)return;const h=applyAutoRecovery(e.date);manualTouched={sleep:false,rhr:false,bb:false};$('date').value=h.date||today;$('sleep').value=num(h.sleepHours)!==null?h.sleepHours:'';$('rhr').value=num(h.rhr)!==null?h.rhr:'';$('bb').value=num(h.bodyBattery)!==null?h.bodyBattery:'';$('feeling').value=h.feeling||'ok';$('stress').value=displayStress(h.stressFeeling||'normaal')}
-function fillFromYesterday(){const date=$('date').value||today;fill(applyAutoRecovery(date));renderAll()}
-function saveToday(){let e=currentForm();const c=coach(e);e.decision=c.mode.toUpperCase();e.decisionReason=c.reasons[0]||'Geen rode vlaggen.';e.decisionAt=new Date().toISOString();entries=entries.filter(x=>x.date!==e.date).concat([e]);saveEntries();$('saveMsg').textContent='✅ Bewaard. Vandaag is vergrendeld.';renderAll()}
+function currentForm(){
+  const date=$('date').value||today;
+  const cur=applyAutoRecovery(date);
+  const sleep=num($('sleep').value),rhr=num($('rhr').value),bb=num($('bb').value);
+  return deriveYesterday(Object.assign({},cur,{
+    date,sleepHours:sleep,sleepSource:sourceFor('sleep',sleep,cur.sleepSource),
+    rhr,rhrSource:sourceFor('rhr',rhr,cur.rhrSource),
+    bodyBattery:bb,bodyBatteryMorning:bb!==null&&(manualTouched.bb||cur.bodyBatteryMorning===true||cur.bodyBatterySource==='manual'),
+    bodyBatterySource:sourceFor('bb',bb,cur.bodyBatterySource),
+    feeling:$('feeling').value,stressFeeling:normalizeStress($('stress').value),
+    updatedAt:new Date().toISOString(),createdAt:cur.createdAt||new Date().toISOString()
+  }));
+}
+function fill(e){
+  if(!e)return;
+  const hydrated=applyAutoRecovery(e.date);
+  manualTouched={sleep:false,rhr:false,bb:false};
+  $('date').value=hydrated.date||today;
+  $('sleep').value=num(hydrated.sleepHours)!==null?hydrated.sleepHours:'';
+  $('rhr').value=num(hydrated.rhr)!==null?hydrated.rhr:'';
+  $('bb').value=num(hydrated.bodyBattery)!==null?hydrated.bodyBattery:'';
+  $('feeling').value=hydrated.feeling||'ok';
+  $('stress').value=displayStress(hydrated.stressFeeling||'normaal');
+}
+function fillFromAuto(){const date=$('date').value||today;fill(applyAutoRecovery(date));renderAll()}
+function saveToday(){
+  let e=currentForm();
+  const c=coach(e);
+  e.decision=c.mode.toUpperCase();e.decisionReason=c.reasons[0]||'Geen rode vlaggen.';e.decisionAt=new Date().toISOString();
+  entries=entries.filter(x=>x.date!==e.date).concat([e]);
+  saveEntries();$('saveMsg').textContent='✅ Bewaard. Vandaag is vergrendeld.';renderAll();
+}
 function resetToday(){if(!confirm('Vandaag resetten?'))return;const date=$('date').value||today;entries=entries.filter(e=>e.date!==date);saveEntries();location.reload()}
 function lock(){const e=getEntry($('date').value||today),l=!!(e&&e.decision);$('lockedBanner').classList.toggle('hidden',!l);['sleep','rhr','bb','feeling','stress'].forEach(id=>$(id).disabled=l)}
 
 function syncMessage(text){setText('syncMsg',text)}
 function payloadShape(raw){if(Array.isArray(raw))return'array';if(raw&&typeof raw==='object'){const listKey=['activities','items','data','wellness'].find(k=>Array.isArray(raw[k]));return listKey?'object.'+listKey:'object'}return raw===null?'null':typeof raw}
-function payloadKeys(item){return item&&typeof item==='object'&&!Array.isArray(item)?Object.keys(item).slice(0,20):[]}
-function escapeHtml(v){return String(v).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
-function renderSyncDiagnostics(){const keys=Array.isArray(syncState.lastPayloadKeys)?syncState.lastPayloadKeys:[],stepKeys=Array.isArray(syncState.lastStepKeys)?syncState.lastStepKeys:[];const lines=[['Payloadvorm',syncState.lastPayloadShape||'—'],['Aantal ontvangen items',syncState.lastPayloadCount??'—'],['Aantal geclassificeerde dagen',syncState.lastClassifiedCount??'—'],['Eerste keys payload-item',keys.length?keys.join(', '):'—'],['Gevonden stapvelden',stepKeys.length?stepKeys.join(', '):'—'],['Stapfilter','dagtotaal moet ≥ '+MIN_DAILY_STEPS]];const el=$('syncDiagnostics');if(el)el.innerHTML=lines.map(a=>`${a[0]}: ${escapeHtml(a[1])}`).join('<br>')}
-async function syncIntervals(manual=false){if(syncState.isSyncing){if(manual)alert('Intervals sync is al bezig.');return}syncState.isSyncing=true;syncState.lastAttemptAt=new Date().toISOString();syncState.lastError=null;saveSyncState();syncMessage('Intervals sync: bezig...');try{const controller=window.AbortController?new AbortController():null;const timer=controller?setTimeout(()=>controller.abort(),20000):null;const url=(settings.intervalsApiUrl||DEFAULT_INTERVALS_API)+(settings.intervalsApiUrl.includes('?')?'&':'?')+'t='+Date.now();const res=await fetch(url,{cache:'no-store',signal:controller?controller.signal:undefined});if(timer)clearTimeout(timer);if(!res.ok)throw new Error('HTTP '+res.status);const raw=await res.json();const items=payloadItems(raw);syncState.lastPayloadShape=payloadShape(raw);syncState.lastPayloadKeys=Array.isArray(items)&&items.length?payloadKeys(items[0]):[];syncState.lastStepKeys=Array.isArray(items)?stepFieldPaths(items):[];syncState.lastPayloadCount=Array.isArray(items)?items.length:0;syncState.lastClassifiedCount=0;renderSyncDiagnostics();if(!Array.isArray(items))throw new Error('Geen lijst ontvangen');const days=classifyIntervals(items);syncState.lastClassifiedCount=days.length;mergeActivityDays(days);entries=entries.map(deriveYesterday);const date=$('date').value||today;const current=getEntry(date);if(current){const enriched=applyAutoRecovery(date);entries=entries.filter(e=>e.date!==date).concat([enriched])}saveActivityDays();saveEntries();syncState.isSyncing=false;clearRetryTimer();syncState.lastSuccessAt=new Date().toISOString();syncState.lastError=null;syncState.retryCount=0;syncState.nextRetryAt=null;syncState.lastPayloadCount=items.length;syncState.lastDataDate=activityDays.length?activityDays[activityDays.length-1].date:null;saveSyncState();syncMessage(`Intervals sync: ${days.length} dagen bijgewerkt om ${new Date().toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'})}.`);if(manual)alert('Sync klaar: '+days.length+' dagen bijgewerkt.');fill(applyAutoRecovery(date));renderAll()}catch(err){syncState.isSyncing=false;syncState.lastError=err.name==='AbortError'?'Timeout bij Intervals sync':err.message;syncState.retryCount=(syncState.retryCount||0)+1;saveSyncState();syncMessage('Intervals sync fout: '+syncState.lastError);renderSyncDiagnostics();if(manual)alert('Intervals sync fout: '+syncState.lastError);scheduleRetry()}}
+function payloadKeys(item){return item&&typeof item==='object'&&!Array.isArray(item)?Object.keys(item).slice(0,24):[]}
+function renderSyncDiagnostics(){
+  const keys=Array.isArray(syncState.lastPayloadKeys)?syncState.lastPayloadKeys:[];
+  const stepKeys=Array.isArray(syncState.lastStepKeys)?syncState.lastStepKeys:[];
+  const low=Array.isArray(syncState.lowStepDates)?syncState.lowStepDates:[];
+  const missing=Array.isArray(syncState.missingStepDates)?syncState.missingStepDates:[];
+  const lines=[
+    ['Payloadvorm',syncState.lastPayloadShape||'—'],
+    ['Aantal ontvangen items',syncState.lastPayloadCount??'—'],
+    ['Aantal geclassificeerde dagen',syncState.lastClassifiedCount??'—'],
+    ['Eerste keys payload-item',keys.length?keys.join(', '):'—'],
+    ['Gevonden stapvelden',stepKeys.length?stepKeys.join(', '):'—'],
+    ['Lage stapdagen',low.length?low.slice(-10).join(', '):'geen'],
+    ['Dagen zonder stappen',missing.length?missing.slice(-10).join(', '):'geen']
+  ];
+  const el=$('syncDiagnostics');if(el)el.innerHTML=lines.map(a=>`${a[0]}: ${escapeHtml(a[1])}`).join('<br>');
+}
+async function syncIntervals(manual=false){
+  if(syncState.isSyncing){if(manual)alert('Intervals sync is al bezig.');return}
+  syncState.isSyncing=true;syncState.lastAttemptAt=new Date().toISOString();syncState.lastError=null;saveSyncState();syncMessage('Intervals sync: bezig...');
+  try{
+    const controller=window.AbortController?new AbortController():null;
+    const timer=controller?setTimeout(()=>controller.abort(),25000):null;
+    const url=(settings.intervalsApiUrl||DEFAULT_INTERVALS_API)+(settings.intervalsApiUrl.includes('?')?'&':'?')+'t='+Date.now();
+    const res=await fetch(url,{cache:'no-store',signal:controller?controller.signal:undefined});
+    if(timer)clearTimeout(timer);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const raw=await res.json();
+    const items=payloadItems(raw);
+    syncState.lastPayloadShape=payloadShape(raw);
+    syncState.lastPayloadKeys=Array.isArray(items)&&items.length?payloadKeys(items[0]):[];
+    syncState.lastStepKeys=Array.isArray(items)?stepFieldPaths(items):[];
+    syncState.lastPayloadCount=Array.isArray(items)?items.length:0;
+    if(!Array.isArray(items))throw new Error('Geen lijst ontvangen');
+
+    const days=classifyIntervals(items);
+    syncState.lastClassifiedCount=days.length;
+    mergeActivityDays(days);
+    ensureEntriesForActivityDays();
+    entries=entries.map(deriveYesterday);
+
+    const min=num(settings.minExpectedSteps)||9000;
+    syncState.lowStepDates=activityDays.filter(d=>num(d.steps)!==null&&num(d.steps)<min).map(d=>d.date+':'+d.steps);
+    syncState.missingStepDates=activityDays.filter(d=>num(d.steps)===null).map(d=>d.date);
+
+    const date=$('date').value||today;
+    const current=getEntry(date);
+    if(current){const enriched=applyAutoRecovery(date);entries=entries.filter(e=>e.date!==date).concat([enriched])}
+
+    saveActivityDays();saveEntries();
+    syncState.isSyncing=false;clearRetryTimer();syncState.lastSuccessAt=new Date().toISOString();syncState.lastError=null;syncState.retryCount=0;syncState.nextRetryAt=null;syncState.lastPayloadCount=items.length;syncState.lastDataDate=activityDays.length?activityDays[activityDays.length-1].date:null;saveSyncState();
+
+    const lowCount=syncState.lowStepDates.length, missCount=syncState.missingStepDates.length;
+    syncMessage(`Intervals sync: ${days.length} dagen. Lage stapdagen: ${lowCount}. Zonder stappen: ${missCount}.`);
+    if(manual)alert(`Sync klaar: ${days.length} dagen. Lage stapdagen: ${lowCount}. Zonder stappen: ${missCount}.`);
+    fill(applyAutoRecovery(date));renderAll();
+  }catch(err){
+    syncState.isSyncing=false;syncState.lastError=err.name==='AbortError'?'Timeout bij Intervals sync':err.message;syncState.retryCount=(syncState.retryCount||0)+1;saveSyncState();
+    syncMessage('Intervals sync fout: '+syncState.lastError);renderSyncDiagnostics();if(manual)alert('Intervals sync fout: '+syncState.lastError);scheduleRetry();
+  }
+}
 function payloadItems(raw){if(Array.isArray(raw))return raw;if(raw&&Array.isArray(raw.activities))return raw.activities;if(raw&&Array.isArray(raw.items))return raw.items;if(raw&&Array.isArray(raw.data))return raw.data;if(raw&&Array.isArray(raw.wellness))return raw.wellness;return null}
-function emptyDay(date){return{date,steps:null,walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,source:'intervals',syncedAt:new Date().toISOString()}}
+
+function emptyDay(date){return{date,steps:null,stepsSource:'',stepCandidates:[],walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,source:'intervals',syncedAt:new Date().toISOString()}}
 function ensureDay(by,date){if(!date)return null;if(!by[date])by[date]=emptyDay(date);return by[date]}
-function mergeActivityDays(days){const map=new Map(activityDays.map(e=>[e.date,e]));days.forEach(day=>{const old=map.get(day.date)||{date:day.date};map.set(day.date,Object.assign({},old,day,{source:'intervals',syncedAt:new Date().toISOString()}))});activityDays=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));const entryMap=new Map(entries.map(e=>[e.date,e]));activityDays.forEach(day=>{if(!entryMap.has(day.date)){entryMap.set(day.date,{date:day.date,feeling:'ok',stressFeeling:'normaal',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})}});entries=[...entryMap.values()].map(deriveYesterday)}
-function classifyIntervals(items){const by={};items.forEach(a=>{const activityDate=activityDataDate(a);const sleepDate=sleepDataDate(a);const steps=extractSteps(a);if(steps!==null&&activityDate){const day=ensureDay(by,activityDate);day.steps=Math.max(day.steps||0,steps)}const sleep=extractSleep(a);if(sleep!==null){const day=ensureDay(by,sleepDate||activityDate);if(day)day.sleepHours=sleep}const rhr=num(getNested(a,['resting_hr','resting_heart_rate','resting_heartrate','rhr','wellness.resting_hr','wellness.resting_heart_rate']));if(rhr!==null){const day=ensureDay(by,activityDate||sleepDate);if(day)day.rhr=rhr}const bbMorning=num(getNested(a,['body_battery_morning','morning_body_battery','wellness.body_battery_morning']));const bb=bbMorning??num(getNested(a,['body_battery','bodyBattery','wellness.body_battery','wellness.bodyBattery','garmin.body_battery']));if(bb!==null){const day=ensureDay(by,activityDate||sleepDate);if(day){day.bodyBattery=bb;day.bodyBatteryMorning=bbMorning!==null}}const min=activityMinutes(a);if(min>0&&activityDate){const day=ensureDay(by,activityDate);const name=String(getNested(a,['name','type','sport','activity_type'])||'').toLowerCase();const type=String(getNested(a,['type','sport','activity_type'])||'').toLowerCase();const isWalk=type.includes('walk')||name.includes('walk')||name.includes('wandel')||type.includes('hike')||name.includes('hike');const isStrength=type.includes('strength')||name.includes('kracht')||name.includes('strength')||name.includes('workout');const isYoga=type.includes('yoga')||name.includes('yoga')||name.includes('mobiliteit')||name.includes('mobility');if(isWalk&&min>=20&&min<=180){day.walkMin+=min;day.activityMin+=min}else if(isStrength){day.strengthMin+=min;day.activityMin+=min}else if(isYoga){day.yogaMin+=min;day.activityMin+=min}}});return Object.values(by).sort((a,b)=>a.date.localeCompare(b.date))}
+function mergeActivityDays(days){
+  const map=new Map(activityDays.map(e=>[e.date,e]));
+  days.forEach(day=>{
+    const old=map.get(day.date)||{date:day.date};
+    map.set(day.date,Object.assign({},old,day,{source:'intervals',syncedAt:new Date().toISOString()}));
+  });
+  activityDays=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+function ensureEntriesForActivityDays(){
+  const map=new Map(entries.map(e=>[e.date,e]));
+  activityDays.forEach(day=>{
+    if(!map.has(day.date)){
+      map.set(day.date,{date:day.date,feeling:'ok',stressFeeling:'normaal',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    }
+  });
+  entries=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+/*
+V32-datalogica:
+1. Stapwaarden worden nooit verschoven door slaapdata.
+2. Alle stapvelden worden verzameld.
+3. De grootste plausibele stapwaarde wint.
+4. Waarden onder minExpectedSteps worden NIET verwijderd maar gemarkeerd.
+*/
+function classifyIntervals(items){
+  const by={};
+
+  items.forEach(a=>{
+    const activityDate=activityDataDate(a);
+    const sleepDate=sleepDataDate(a);
+
+    if(activityDate){
+      const day=ensureDay(by,activityDate);
+      const stepInfo=extractStepInfo(a);
+      if(stepInfo.value!==null){
+        day.stepCandidates=(day.stepCandidates||[]).concat(stepInfo.candidates.map(c=>Object.assign({itemDate:activityDate},c)));
+        if(num(day.steps)===null||stepInfo.value>day.steps){
+          day.steps=stepInfo.value;
+          day.stepsSource=stepInfo.source;
+        }
+      }
+
+      const min=activityMinutes(a);
+      if(min>0){
+        const name=String(getNested(a,['name','type','sport','activity_type'])||'').toLowerCase();
+        const type=String(getNested(a,['type','sport','activity_type'])||'').toLowerCase();
+        const isWalk=type.includes('walk')||name.includes('walk')||name.includes('wandel')||type.includes('hike')||name.includes('hike');
+        const isStrength=type.includes('strength')||name.includes('kracht')||name.includes('strength')||name.includes('workout');
+        const isYoga=type.includes('yoga')||name.includes('yoga')||name.includes('mobiliteit')||name.includes('mobility');
+        if(isWalk&&min>=20&&min<=180){day.walkMin+=min;day.activityMin+=min}
+        else if(isStrength){day.strengthMin+=min;day.activityMin+=min}
+        else if(isYoga){day.yogaMin+=min;day.activityMin+=min}
+      }
+    }
+
+    const sleep=extractSleep(a);
+    if(sleep!==null){
+      const day=ensureDay(by,sleepDate||activityDate);
+      if(day)day.sleepHours=sleep;
+    }
+
+    const rhr=num(getNested(a,['resting_hr','resting_heart_rate','resting_heartrate','rhr','wellness.resting_hr','wellness.resting_heart_rate']));
+    if(rhr!==null){
+      const day=ensureDay(by,activityDate||sleepDate);
+      if(day)day.rhr=rhr;
+    }
+
+    const bbMorning=num(getNested(a,['body_battery_morning','morning_body_battery','wellness.body_battery_morning']));
+    const bb=bbMorning??num(getNested(a,['body_battery','bodyBattery','wellness.body_battery','wellness.bodyBattery','garmin.body_battery']));
+    if(bb!==null){
+      const day=ensureDay(by,activityDate||sleepDate);
+      if(day){day.bodyBattery=bb;day.bodyBatteryMorning=bbMorning!==null}
+    }
+  });
+
+  return Object.values(by).sort((a,b)=>a.date.localeCompare(b.date));
+}
 function activityDataDate(a){return normalDate(getNested(a,['start_date_local','start_date','date','calendar_date','day','wellness.date','wellness.calendar_date']))}
-function sleepDataDate(a){const sleep=extractSleep(a);if(sleep===null)return null;return normalDate(getNested(a,['wake_date','end_date_local','end_date','sleep.end_date','sleep.wake_date']))||activityDataDate(a)}
-function activityMinutes(a){const raw=getNested(a,['moving_time','elapsed_time','duration','minutes']);const v=num(raw);if(v===null)return 0;if(String(raw).includes(':'))return 0;let mins=v;if(v>600)mins=Math.round(v/60);if(mins>600)return 0;return Math.round(mins)}
-function extractSteps(a){const wellness=num(valueAt(a,'wellness.steps'));if(wellness!==null&&wellness>=MIN_DAILY_STEPS&&wellness<MAX_DAILY_STEPS)return wellness;const vals=['wellness.Steps','wellness.stepCount','wellness.totalSteps','totalSteps','total_steps','dailySteps','daily_steps','stepCount','step_count','Steps','steps'].map(p=>num(valueAt(a,p))).filter(v=>v!==null&&v>=MIN_DAILY_STEPS&&v<MAX_DAILY_STEPS);return vals.length?Math.max(...vals):null}
-function stepFieldPaths(items){const found=new Set();(items||[]).slice(0,500).forEach(item=>collectStepFields(item,'',found));return [...found].sort().slice(0,30)}
+function sleepDataDate(a){
+  const sleep=extractSleep(a);
+  if(sleep===null)return null;
+  return normalDate(getNested(a,['wake_date','end_date_local','end_date','sleep.end_date','sleep.wake_date']))||activityDataDate(a);
+}
+function activityMinutes(a){
+  const raw=getNested(a,['moving_time','elapsed_time','duration','minutes']);
+  const v=num(raw);
+  if(v===null)return 0;
+  if(String(raw).includes(':'))return 0;
+  let mins=v;
+  if(v>600)mins=Math.round(v/60);
+  if(mins>600)return 0;
+  return Math.round(mins);
+}
+function extractStepInfo(a){
+  const paths=['wellness.steps','wellness.Steps','wellness.stepCount','wellness.totalSteps','wellness.total_steps','totalSteps','total_steps','dailySteps','daily_steps','stepCount','step_count','Steps','steps'];
+  const candidates=[];
+  paths.forEach(path=>{
+    const raw=valueAt(a,path),v=num(raw);
+    if(v!==null&&v>=0&&v<100000)candidates.push({path,value:v});
+  });
+  if(!candidates.length)return{value:null,source:'',candidates:[]};
+
+  candidates.sort((a,b)=>b.value-a.value);
+  const best=candidates[0];
+  return{value:best.value,source:best.path,candidates};
+}
+function stepFieldPaths(items){const found=new Set();(items||[]).slice(0,500).forEach(item=>collectStepFields(item,'',found));return [...found].sort().slice(0,40)}
 function collectStepFields(o,prefix,found){if(!o||typeof o!=='object')return;Object.keys(o).forEach(k=>{const path=prefix?prefix+'.'+k:k;if(k.toLowerCase().includes('step'))found.add(path);const v=o[k];if(v&&typeof v==='object'&&!Array.isArray(v))collectStepFields(v,path,found)})}
-function extractSleep(a){const paths=['sleep_hours','sleep_duration_hours','sleep_seconds','sleep.minutes','sleep_minutes','sleep.seconds','sleep.duration','sleep.total','sleep_duration','total_sleep','wellness.sleep_hours','wellness.sleep_seconds'];for(const path of paths){const raw=valueAt(a,path),n=num(raw);if(n===null)continue;let hours=n;if(path.includes('second'))hours=n/3600;else if(path.includes('minute'))hours=n/60;else if(!path.includes('hour'))hours=n>1000?n/3600:(n>24?n/60:n);if(hours>0&&hours<18)return Math.round(hours*10)/10}return null}
+function extractSleep(a){
+  const paths=['sleep_hours','sleep_duration_hours','sleep_seconds','sleep.minutes','sleep_minutes','sleep.seconds','sleep.duration','sleep.total','sleep_duration','total_sleep','wellness.sleep_hours','wellness.sleep_seconds'];
+  for(const path of paths){
+    const raw=valueAt(a,path),n=num(raw);
+    if(n===null)continue;
+    let hours=n;
+    if(path.includes('second'))hours=n/3600;
+    else if(path.includes('minute'))hours=n/60;
+    else if(!path.includes('hour'))hours=n>1000?n/3600:(n>24?n/60:n);
+    if(hours>0&&hours<18)return Math.round(hours*10)/10;
+  }
+  return null;
+}
+function normalDate(v){const s=String(v||'').trim();let m=s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);if(m)return`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;const dt=new Date(s);return isNaN(dt)?null:toDateString(dt)}
 function autoSyncOnOpen(){if(settings.autoSync!==false&&navigator.onLine!==false)syncIntervals(false)}
 function clearRetryTimer(){if(retryTimer){clearTimeout(retryTimer);retryTimer=null}}
 function scheduleRetry(){if(retryTimer||document.hidden)return;const delay=(syncState.retryCount||0)===1?30000:(syncState.retryCount===2?120000:600000);syncState.nextRetryAt=new Date(Date.now()+delay).toISOString();saveSyncState();retryTimer=setTimeout(()=>{retryTimer=null;if(!document.hidden&&settings.autoSync!==false)syncIntervals(false)},delay)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const last=syncState.lastSuccessAt?new Date(syncState.lastSuccessAt).getTime():0;if(settings.autoSync!==false&&Date.now()-last>15*60*1000)syncIntervals(false)});
 window.addEventListener('online',()=>{if(settings.autoSync!==false)syncIntervals(false)});
 
-function coach(e=currentForm()){e=deriveYesterday(e);const reasons=[];const sleep=num(e.sleepHours),bb=num(e.bodyBattery),bbMorning=e.bodyBatteryMorning===true||e.bodyBatterySource==='manual',rhr=num(e.rhr),stepsY=num(e.yesterdaySteps),walkY=num(e.yesterdayWalkMin)||0,activityY=num(e.yesterdayActivityMin)||0,stress=normalizeStress(e.stressFeeling),feeling=e.feeling||'ok';let mode='go',title='GO — NORMALE TRAININGSDAG',actions=['Wandelen: 40–60 min rustig als gepland','Kracht: licht/gecontroleerd optioneel','Stop als pijn of duidelijke vermoeidheid opkomt'],dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];if(feeling==='ziek'){mode='stop';reasons.push('Ziek gevoel: herstel is vandaag de training.')}else if(feeling==='pijn'){mode='stop';reasons.push('Pijn gemeld: blessurerisico gaat voor.')}else if(sleep!==null&&sleep<5){mode='stop';reasons.push('Minder dan 5 uur slaap: herstel eerst.')}else if(sleep!==null&&sleep<6&&stress==='zeer_hoog'){mode='stop';reasons.push('Weinig slaap plus zeer hoge stress: niet stapelen.')}else if(bb!==null&&bb<20&&bbMorning){mode='stop';reasons.push('Body Battery bij opstaan zeer laag: ondersteunend rood signaal.')}if(mode!=='stop'){if(sleep!==null&&sleep<6.5)reasons.push('Slaapduur is matig: herstel beschermen.');if(feeling==='moe')reasons.push('Je voelt je moe: rustige dag is veiliger.');if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stressgevoel is hoog: herstelstatus kwetsbaar.');if(stepsY!==null&&stepsY>=12000)reasons.push('Gisteren veel stappen: dit telt als belasting.');if(walkY>=60)reasons.push('Gisteren veel wandelen: benen kunnen vermoeid zijn.');if(activityY>=75)reasons.push('Gisteren veel totale activiteit: belasting stapelt.');if(bb!==null&&bb<35)reasons.push('Body Battery laag: ondersteunend herstelsignaal.');if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');if(reasons.length){mode='recover';title='RECOVER — HERSTELDAG';actions=['Wandelen: 20–30 min rustig','Mobiliteit: 5–15 min','Houd tempo en afstand ondergeschikt'];dont=['Geen versnellingen','Geen zware kracht','Geen extra lange wandeling']}}if(mode==='stop'){title='STOP — HERSTEL EERST';actions=['Rust: herstel is de training','Wandelen: max. 10–20 min zeer rustig als het goed voelt','Mobiliteit: 5–10 min indien pijnvrij'];dont=['Geen kracht','Geen versnellingen','Geen lange wandeling']}if(!reasons.length)reasons.push('Herstel is voldoende en gisterenbelasting is normaal.');return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling},y:getActivityDay(addDays(e.date,-1))||{}}}
+function coach(e=currentForm()){
+  e=deriveYesterday(e);
+  const reasons=[];
+  const sleep=num(e.sleepHours),bb=num(e.bodyBattery),bbMorning=e.bodyBatteryMorning===true||e.bodyBatterySource==='manual',rhr=num(e.rhr),stepsY=num(e.yesterdaySteps),walkY=num(e.yesterdayWalkMin)||0,activityY=num(e.yesterdayActivityMin)||0,stress=normalizeStress(e.stressFeeling),feeling=e.feeling||'ok';
+  let mode='go',title='GO — NORMALE TRAININGSDAG',actions=['Wandelen: 40–60 min rustig als gepland','Kracht: licht/gecontroleerd optioneel','Stop als pijn of duidelijke vermoeidheid opkomt'],dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];
+  if(feeling==='ziek'){mode='stop';reasons.push('Ziek gevoel: herstel is vandaag de training.')}
+  else if(feeling==='pijn'){mode='stop';reasons.push('Pijn gemeld: blessurerisico gaat voor.')}
+  else if(sleep!==null&&sleep<5){mode='stop';reasons.push('Minder dan 5 uur slaap: herstel eerst.')}
+  else if(sleep!==null&&sleep<6&&stress==='zeer_hoog'){mode='stop';reasons.push('Weinig slaap plus zeer hoge stress: niet stapelen.')}
+  else if(bb!==null&&bb<20&&bbMorning){mode='stop';reasons.push('Body Battery bij opstaan zeer laag: ondersteunend rood signaal.')}
+  if(mode!=='stop'){
+    if(sleep!==null&&sleep<6.5)reasons.push('Slaapduur is matig: herstel beschermen.');
+    if(feeling==='moe')reasons.push('Je voelt je moe: rustige dag is veiliger.');
+    if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stressgevoel is hoog: herstelstatus kwetsbaar.');
+    if(stepsY!==null&&stepsY>=12000)reasons.push('Gisteren veel stappen: dit telt als belasting.');
+    if(walkY>=60)reasons.push('Gisteren veel wandelen: benen kunnen vermoeid zijn.');
+    if(activityY>=75)reasons.push('Gisteren veel totale activiteit: belasting stapelt.');
+    if(bb!==null&&bb<35)reasons.push('Body Battery laag: ondersteunend herstelsignaal.');
+    if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');
+    if(reasons.length){mode='recover';title='RECOVER — HERSTELDAG';actions=['Wandelen: 20–30 min rustig','Mobiliteit: 5–15 min','Houd tempo en afstand ondergeschikt'];dont=['Geen versnellingen','Geen zware kracht','Geen extra lange wandeling']}
+  }
+  if(mode==='stop'){title='STOP — HERSTEL EERST';actions=['Rust: herstel is de training','Wandelen: max. 10–20 min zeer rustig als het goed voelt','Mobiliteit: 5–10 min indien pijnvrij'];dont=['Geen kracht','Geen versnellingen','Geen lange wandeling']}
+  if(!reasons.length)reasons.push('Herstel is voldoende en gisterenbelasting is normaal.');
+  return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling},y:getActivityDay(addDays(e.date,-1))||{}}
+}
 function isRhrElevated(rhr,date){if(rhr===null)return false;const vals=entries.filter(e=>e.date<date&&num(e.rhr)!==null).slice(-28).map(e=>num(e.rhr)).sort((a,b)=>a-b);if(vals.length<14)return false;const mid=Math.floor(vals.length/2),median=vals.length%2?vals[mid]:(vals[mid-1]+vals[mid])/2;return rhr>=median+8}
-function renderCoach(){const c=coach();$('mainDecision').className='decision '+c.mode;$('mainDecision').textContent=c.title;$('oneLine').innerHTML=`Slaap ${c.ctx.sleep!==null?fmt(c.ctx.sleep,' u'):'—'} · gevoel ${c.ctx.feeling} · stress ${displayStress(c.ctx.stress)} · Body Battery ${c.ctx.bb!==null?fmt0(c.ctx.bb):'—'}.`;$('mustDo').textContent=c.actions[0]?.split(':')[0]||'—';$('mustDoDetail').textContent=c.actions[0]||'';$('mayDo').textContent=c.actions[1]?.split(':')[0]||'—';$('mayDoDetail').textContent=c.actions[1]||'';$('dontDo').textContent=c.dont[0]||'—';$('dontDoDetail').textContent=c.dont.slice(1).join(' · ');$('whyList').innerHTML=c.reasons.map(x=>`<div class="item">${x}</div>`).join('');$('yesterdayBox').innerHTML=[['Stappen',c.ctx.stepsY!==null?fmt0(c.ctx.stepsY,' stappen'):'niet gevonden'],['Wandelen ≥20 min',dur(c.ctx.walkY)],['Totale activiteit',dur(c.ctx.activityY)],['Kracht/yoga',dur(num(c.y.strengthMin)||0)+' / '+dur(num(c.y.yogaMin)||0)],['Sync',syncState.lastSuccessAt?new Date(syncState.lastSuccessAt).toLocaleString('nl-BE'):'nog niet gelukt']].map(a=>`<div class="item"><strong>${a[0]}</strong>${a[1]}</div>`).join('');if($('autoDataBox'))$('autoDataBox').innerHTML=[['Slaapduur',c.ctx.sleep!==null?fmt(c.ctx.sleep,' u'):'niet gevonden'],['Rusthartslag',c.ctx.rhr!==null?fmt0(c.ctx.rhr,' bpm'):'niet gevonden'],['Body Battery',c.ctx.bb!==null?fmt0(c.ctx.bb):'niet gevonden'],['Gisteren stappen',c.ctx.stepsY!==null?fmt0(c.ctx.stepsY,' stappen'):'niet gevonden'],['Gisteren wandelen ≥20 min',dur(c.ctx.walkY)],['Gisteren activiteit',dur(c.ctx.activityY)]].map(a=>`<div class="item"><strong>${a[0]}</strong>${a[1]}</div>`).join('')}
+function renderCoach(){
+  const c=coach();
+  $('mainDecision').className='decision '+c.mode;
+  $('mainDecision').textContent=c.title;
+  $('oneLine').innerHTML=`Slaap ${c.ctx.sleep!==null?fmt(c.ctx.sleep,' u'):'—'} · gevoel ${c.ctx.feeling} · stress ${displayStress(c.ctx.stress)} · Body Battery ${c.ctx.bb!==null?fmt0(c.ctx.bb):'—'}.`;
+  $('mustDo').textContent=c.actions[0]?.split(':')[0]||'—';$('mustDoDetail').textContent=c.actions[0]||'';
+  $('mayDo').textContent=c.actions[1]?.split(':')[0]||'—';$('mayDoDetail').textContent=c.actions[1]||'';
+  $('dontDo').textContent=c.dont[0]||'—';$('dontDoDetail').textContent=c.dont.slice(1).join(' · ');
+  $('whyList').innerHTML=c.reasons.map(x=>`<div class="item">${x}</div>`).join('');
+  $('yesterdayBox').innerHTML=[
+    ['Stappen',c.ctx.stepsY!==null?fmt0(c.ctx.stepsY,' stappen'):'niet gevonden'],
+    ['Wandelen ≥20 min',dur(c.ctx.walkY)],
+    ['Totale activiteit',dur(c.ctx.activityY)],
+    ['Kracht/yoga',dur(num(c.y.strengthMin)||0)+' / '+dur(num(c.y.yogaMin)||0)],
+    ['Sync',syncState.lastSuccessAt?new Date(syncState.lastSuccessAt).toLocaleString('nl-BE'):'nog niet gelukt']
+  ].map(a=>`<div class="item"><strong>${a[0]}</strong>${a[1]}</div>`).join('');
+  if($('autoDataBox'))$('autoDataBox').innerHTML=[
+    ['Slaapduur',c.ctx.sleep!==null?fmt(c.ctx.sleep,' u'):'niet gevonden'],
+    ['Rusthartslag',c.ctx.rhr!==null?fmt0(c.ctx.rhr,' bpm'):'niet gevonden'],
+    ['Body Battery',c.ctx.bb!==null?fmt0(c.ctx.bb):'niet gevonden'],
+    ['Gisteren stappen',c.ctx.stepsY!==null?fmt0(c.ctx.stepsY,' stappen'):'niet gevonden'],
+    ['Gisteren wandelen ≥20 min',dur(c.ctx.walkY)],
+    ['Gisteren activiteit',dur(c.ctx.activityY)]
+  ].map(a=>`<div class="item"><strong>${a[0]}</strong>${a[1]}</div>`).join('');
+}
+
 function bmi(weight){const h=(settings.heightCm||174)/100;return weight?weight/(h*h):null}
-function metricSet(arr=filtered()){const r=range();const all=entries;const w=lastVal(all,'weight'),wa=lastVal(all,'waist');const b=bmi(w),bs=bmi(99);const wd=w!==null?w-99:null,wad=wa!==null?wa-116:null,bd=b!==null?b-bs:null;const actArr=activityDays.filter(e=>e.date>=r.start&&e.date<=r.end);const source=actArr.length?actArr:arr;const walk=sum(source,'walkMin')||source.reduce((s,e)=>s+dailyWalkTotal(e),0);const health=healthScore(source,w,wa);return{w,wa,b,bs,wd,wad,bd,walk,distance:sum(source,'distanceKm'),load:sum(source,'load'),strength:sum(source,'strengthMin'),yoga:sum(source,'yogaMin'),active:active(source),consistency:source.length?Math.round(active(source)/source.length*100):0,health,fitnessAge:fitnessAge(health,source)}}
+function metricSet(arr=filtered()){
+  const r=range();const all=entries;const actArr=activityFiltered();
+  const w=lastVal(all,'weight'),wa=lastVal(all,'waist');
+  const b=bmi(w),bs=bmi(99);
+  const wd=w!==null?w-99:null,wad=wa!==null?wa-116:null,bd=b!==null?b-bs:null;
+  const source=actArr.length?actArr:arr;
+  const walk=sum(source,'walkMin')||source.reduce((s,e)=>s+dailyWalkTotal(e),0);
+  const health=healthScore(source,w,wa);
+  return{w,wa,b,bs,wd,wad,bd,walk,steps:sum(source,'steps'),distance:sum(source,'distanceKm'),load:sum(source,'load'),strength:sum(source,'strengthMin'),yoga:sum(source,'yogaMin'),active:active(source),consistency:source.length?Math.round(active(source)/source.length*100):0,health,fitnessAge:fitnessAge(health,source)}
+}
 function lastVal(arr,k){const x=[...arr].reverse().find(e=>num(e[k])!==null);return x?num(x[k]):null}
-function healthScore(arr,w=lastVal(entries,'weight'),wa=lastVal(entries,'waist')){let s=50;const b=bmi(w);if(b){s+=b<25?18:b<30?8:b<35?-4:-12}if(wa){s+=wa<94?22:wa<102?8:-8}if(w!==null)s+=(w-99)<0?Math.min(10,Math.abs(w-99)*1.1):Math.max(-8,-(w-99)*.5);if(wa!==null)s+=(wa-116)<0?Math.min(15,Math.abs(wa-116)*.8):Math.max(-10,-(wa-116)*.5);const cons=arr.length?active(arr)/arr.length:0;s+=cons>.5?10:cons>.3?5:-3;s+=sum(arr,'strengthMin')>=60?8:sum(arr,'strengthMin')>=20?4:-4;return Math.round(clamp(s,0,100))}
+function healthScore(arr,w=lastVal(entries,'weight'),wa=lastVal(entries,'waist')){
+  let s=50;const b=bmi(w);
+  if(b){s+=b<25?18:b<30?8:b<35?-4:-12}
+  if(wa){s+=wa<94?22:wa<102?8:-8}
+  if(w!==null)s+=(w-99)<0?Math.min(10,Math.abs(w-99)*1.1):Math.max(-8,-(w-99)*.5);
+  if(wa!==null)s+=(wa-116)<0?Math.min(15,Math.abs(wa-116)*.8):Math.max(-10,-(wa-116)*.5);
+  const cons=arr.length?active(arr)/arr.length:0;s+=cons>.5?10:cons>.3?5:-3;
+  s+=sum(arr,'strengthMin')>=60?8:sum(arr,'strengthMin')>=20?4:-4;
+  return Math.round(clamp(s,0,100));
+}
 function fitnessAge(health,arr){let a=64-Math.round((health-50)/7);const cons=arr.length?active(arr)/arr.length:0;if(cons>.55)a-=2;else if(cons<.25)a+=2;if(sum(arr,'strengthMin')>=60)a-=2;else if(sum(arr,'strengthMin')<20)a+=1;return clamp(a,48,78)}
 function healthText(s){return s>=75?'sterk profiel':s>=60?'goede evolutie':s>=45?'werkpunt maar stabiel':'prioriteit gezondheid'}
-function renderDash(){const arr=filtered(),r=range(),m=metricSet(arr);$('periodInfo').innerHTML=`${r.label}<br>${r.start} t/m ${r.end}`;const syncLine=syncState.lastError?'Sync fout: '+syncState.lastError:(syncState.lastSuccessAt?'Laatste sync: '+new Date(syncState.lastSuccessAt).toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'}):'Nog niet gesynchroniseerd.');syncMessage(syncState.isSyncing?'Intervals sync: bezig...':syncLine);const tiles=[['Gezondheidsscore',m.health+'/100',healthText(m.health),true],['Fitnessleeftijd',m.fitnessAge+' jaar',m.fitnessAge<64?'jonger dan kalenderleeftijd':'boven kalenderleeftijd',true],['BMI nu',m.b?fmt(m.b,''):'—',m.b<25?'gezonde zone':m.b<30?'overgewicht':m.b<35?'obesitas klasse I':'hoog risico',true],['Buik nu',m.wa?fmt(m.wa,' cm'):'—',m.wa<94?'sterk':m.wa<102?'aandacht':'verhoogd risico',true],['Gewicht evolutie',m.wd!==null?(m.wd>0?'+':'')+fmt(m.wd,' kg'):'—','sinds 99 kg'],['BMI evolutie',m.bd!==null?(m.bd>0?'+':'')+fmt(m.bd,''):'—','sinds 10/02/2026'],['Buik evolutie',m.wad!==null?(m.wad>0?'+':'')+fmt(m.wad,' cm'):'—','sinds 116 cm'],['Wandelen',dur(m.walk),fmt(m.distance,' km')],['Kracht',dur(m.strength),'doel/week '+settings.goalStrength+' min'],['Yoga/mobiliteit',dur(m.yoga),'herstelondersteuning'],['Belasting',fmt0(m.load),'periode'],['Consistentie',m.consistency+'%',m.active+' actieve dagen'],['Periode',r.label,`${r.start} t/m ${r.end}`]];$('dashTiles').innerHTML=tiles.map(t=>`<div class="tile ${t[3]?'big':''}"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div>${t[0]==='Gezondheidsscore'?`<div class="scorebar"><span style="width:${m.health}%"></span></div>`:''}</div>`).join('');renderReport(arr,m);drawTrend('chartWeight',series(arr,'weight'),'kg');drawTrend('chartBMI',series(arr,'weight').map(x=>bmi(x)),'BMI');drawTrend('chartWaist',series(arr,'waist'),'cm');drawTrend('chartHealth',arr.map((_,i)=>healthScore(arr.slice(0,i+1))),'score');drawTrend('chartWalk',activityDays.filter(e=>e.date>=r.start&&e.date<=r.end).map(e=>num(e.walkMin)||0),'minuten');drawTrend('chartLoad',series(arr,'load'),'load')}
-function renderReport(arr,m){let lines=[];if(m.wad!==null&&m.wad<0)lines.push(['Buikomtrek daalt','Sterk signaal voor gezondheidswinst, ook als gewicht schommelt.']);if(m.wd!==null&&m.wd<0)lines.push(['Gewicht daalt','Je zit onder het startgewicht van 99 kg.']);if(m.consistency>=50)lines.push(['Consistentie goed','Je bent op meer dan de helft van de dagen actief.']);if(sum(arr,'strengthMin')<20)lines.push(['Kracht aandachtspunt','Voor spierbehoud is krachttraining de snelste winst.']);if(m.b&&m.b>=30)lines.push(['BMI blijft aandachtspunt','Trend is belangrijker dan één dagwaarde.']);if(!lines.length)lines.push(['Stabiel beeld','Gebruik ProCoach dagelijks verder om trends te verfijnen.']);$('reportBox').innerHTML=lines.slice(0,6).map(x=>`<div class="item"><strong>${x[0]}</strong>${x[1]}</div>`).join('')}
+function renderDash(){
+  const arr=filtered(),r=range(),m=metricSet(arr);
+  $('periodInfo').innerHTML=`${r.label}<br>${r.start} t/m ${r.end}`;
+  const syncLine=syncState.lastError?'Sync fout: '+syncState.lastError:(syncState.lastSuccessAt?'Laatste sync: '+new Date(syncState.lastSuccessAt).toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'}):'Nog niet gesynchroniseerd.');
+  syncMessage(syncState.isSyncing?'Intervals sync: bezig...':syncLine);
+  const tiles=[
+    ['Gezondheidsscore',m.health+'/100',healthText(m.health),true],
+    ['Fitnessleeftijd',m.fitnessAge+' jaar',m.fitnessAge<64?'jonger dan kalenderleeftijd':'boven kalenderleeftijd',true],
+    ['BMI nu',m.b?fmt(m.b,''):'—',m.b<25?'gezonde zone':m.b<30?'overgewicht':m.b<35?'obesitas klasse I':'hoog risico',true],
+    ['Buik nu',m.wa?fmt(m.wa,' cm'):'—',m.wa<94?'sterk':m.wa<102?'aandacht':'verhoogd risico',true],
+    ['Gewicht evolutie',m.wd!==null?(m.wd>0?'+':'')+fmt(m.wd,' kg'):'—','sinds 99 kg'],
+    ['BMI evolutie',m.bd!==null?(m.bd>0?'+':'')+fmt(m.bd,''):'—','sinds 10/02/2026'],
+    ['Buik evolutie',m.wad!==null?(m.wad>0?'+':'')+fmt(m.wad,' cm'):'—','sinds 116 cm'],
+    ['Wandelen',dur(m.walk),'periode'],
+    ['Stappen',fmt0(m.steps),'periode'],
+    ['Kracht',dur(m.strength),'doel/week '+settings.goalStrength+' min'],
+    ['Yoga/mobiliteit',dur(m.yoga),'herstelondersteuning'],
+    ['Consistentie',m.consistency+'%',m.active+' actieve dagen'],
+    ['Periode',r.label,`${r.start} t/m ${r.end}`]
+  ];
+  $('dashTiles').innerHTML=tiles.map(t=>`<div class="tile ${t[3]?'big':''}"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]}</div>${t[0]==='Gezondheidsscore'?`<div class="scorebar"><span style="width:${m.health}%"></span></div>`:''}</div>`).join('');
+  renderReport(arr,m);
+  drawTrend('chartWeight',series(arr,'weight'),'kg');
+  drawTrend('chartBMI',series(arr,'weight').map(x=>bmi(x)),'BMI');
+  drawTrend('chartWaist',series(arr,'waist'),'cm');
+  drawTrend('chartHealth',arr.map((_,i)=>healthScore(arr.slice(0,i+1))),'score');
+  drawTrend('chartWalk',activityFiltered().map(e=>num(e.walkMin)||0),'minuten');
+  drawTrend('chartSteps',activityFiltered().map(e=>num(e.steps)).filter(v=>v!==null),'stappen');
+}
+function renderReport(arr,m){
+  let lines=[];
+  const low=Array.isArray(syncState.lowStepDates)?syncState.lowStepDates.length:0;
+  const missing=Array.isArray(syncState.missingStepDates)?syncState.missingStepDates.length:0;
+  if(low)lines.push(['Lage stapwaarden gevonden','Intervals levert op '+low+' dagen minder dan je minimum. Die worden gemarkeerd, niet verborgen.']);
+  if(missing)lines.push(['Dagen zonder stappen','Voor '+missing+' dagen werd geen stapveld gevonden in de payload.']);
+  if(m.wad!==null&&m.wad<0)lines.push(['Buikomtrek daalt','Sterk signaal voor gezondheidswinst, ook als gewicht schommelt.']);
+  if(m.wd!==null&&m.wd<0)lines.push(['Gewicht daalt','Je zit onder het startgewicht van 99 kg.']);
+  if(m.consistency>=50)lines.push(['Consistentie goed','Je bent op meer dan de helft van de dagen actief.']);
+  if(sum(arr,'strengthMin')<20)lines.push(['Kracht aandachtspunt','Voor spierbehoud is krachttraining de snelste winst.']);
+  if(!lines.length)lines.push(['Stabiel beeld','Gebruik ProCoach dagelijks verder om trends te verfijnen.']);
+  $('reportBox').innerHTML=lines.slice(0,6).map(x=>`<div class="item"><strong>${x[0]}</strong>${x[1]}</div>`).join('');
+}
 function series(arr,k){return arr.map(e=>num(e[k])).filter(v=>v!==null&&!isNaN(v))}
-function drawTrend(id,vals,label){const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);const w=c.clientWidth,h=c.clientHeight,left=42,right=14,top=14,bottom=30;ctx.clearRect(0,0,w,h);vals=vals.filter(v=>v!==null&&!isNaN(v));ctx.strokeStyle='#6f84a8';ctx.strokeRect(left,top,w-left-right,h-top-bottom);if(vals.length<2){ctx.fillStyle='#b7c4d8';ctx.font='13px system-ui';ctx.fillText('Minstens 2 metingen nodig',left+8,top+24);return}const avg=vals.map((_,i)=>{const s=vals.slice(Math.max(0,i-6),i+1);return s.reduce((a,b)=>a+b,0)/s.length});const all=vals.concat(avg),min=Math.min(...all),max=Math.max(...all),pad=(max-min)*0.08||1,lo=min-pad,hi=max+pad,span=hi-lo||1;ctx.font='11px system-ui';ctx.fillStyle='#b7c4d8';[lo,(lo+hi)/2,hi].forEach(t=>{const y=h-bottom-(t-lo)*(h-top-bottom)/span;ctx.strokeStyle='rgba(255,255,255,.16)';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle='#b7c4d8';ctx.fillText(String(Math.round(t*10)/10),6,y+4)});ctx.fillText('start',left,h-9);ctx.fillText('nu',w-30,h-9);const plot=(s,width,alpha)=>{ctx.beginPath();ctx.lineWidth=width;ctx.strokeStyle=`rgba(255,255,255,${alpha})`;s.forEach((v,i)=>{const x=left+i*(w-left-right)/(s.length-1),y=h-bottom-(v-lo)*(h-top-bottom)/span;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};plot(vals,1,.35);plot(avg,3,1);ctx.fillStyle='#b7c4d8';ctx.font='11px system-ui';ctx.fillText(label+' · dun=dagwaarde · dik=trend',left+4,top+14)}
-function renderHistory(){const arr=filtered().slice().reverse();$('historyTable').innerHTML='<tr><th>Datum</th><th>Advies</th><th>Slaap</th><th>Gevoel</th><th>Stress</th><th>Body Battery</th><th>Stappen dag zelf</th><th>Wandelen dag zelf</th><th>Activiteit dag zelf</th></tr>'+arr.map(e=>{const a=getActivityDay(e.date)||{};return`<tr><td>${e.date}</td><td>${e.decision||'—'}</td><td>${num(e.sleepHours)!==null?fmt(e.sleepHours,' u'):'—'}</td><td>${e.feeling||'—'}</td><td>${displayStress(e.stressFeeling||'')}</td><td>${num(e.bodyBattery)!==null?fmt0(e.bodyBattery):'—'}</td><td>${num(a.steps)!==null?fmt0(a.steps):'—'}</td><td>${dur(num(a.walkMin)||0)}</td><td>${dur(num(a.activityMin)||0)}</td></tr>`}).join('')}
-function doctorReport(){const old=$('period').value;$('period').value='start';const arr=filtered(),r=range(),m=metricSet(arr);$('period').value=old;const html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><title>ProCoach artsrapport</title><style>body{font-family:Arial,sans-serif;margin:32px;color:#111;line-height:1.35}h1{margin:0 0 4px}h2{margin-top:24px;border-bottom:1px solid #ccc;padding-bottom:6px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.box{border:1px solid #ccc;border-radius:10px;padding:12px}.k{font-size:11px;color:#666;text-transform:uppercase;font-weight:bold}.v{font-size:24px;font-weight:bold;margin-top:4px}table{width:100%;border-collapse:collapse;margin-top:10px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}.note{background:#f4f4f4;padding:12px;border-radius:10px;margin-top:14px}.btn{background:#222;color:#fff;border:0;border-radius:8px;padding:10px 14px;margin-bottom:16px}@media print{.btn{display:none}body{margin:20mm}}</style></head><body><button class="btn" onclick="window.print()">Print / bewaar als PDF</button><h1>ProCoach artsrapport</h1><div>Periode: ${r.start} t/m ${r.end} · lengte ${settings.heightCm} cm</div><h2>Kerncijfers</h2><div class="grid"><div class="box"><div class="k">Gezondheidsscore</div><div class="v">${m.health}/100</div></div><div class="box"><div class="k">Fitnessleeftijd</div><div class="v">${m.fitnessAge} jaar</div></div><div class="box"><div class="k">BMI</div><div class="v">${m.b?fmt(m.b,''):'—'}</div></div><div class="box"><div class="k">Gewicht</div><div class="v">${m.w?fmt(m.w,' kg'):'—'}</div></div><div class="box"><div class="k">Buikomtrek</div><div class="v">${m.wa?fmt(m.wa,' cm'):'—'}</div></div><div class="box"><div class="k">Wandelen</div><div class="v">${dur(m.walk)}</div></div></div><div class="note">Indicatieve coachingrapportage, geen medische diagnose. Te bespreken met arts indien gewenst.</div></body></html>`;const win=window.open('','_blank');win.document.write(html);win.document.close()}
+function drawTrend(id,vals,label){
+  const c=$(id),ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;
+  c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.scale(dpr,dpr);
+  const w=c.clientWidth,h=c.clientHeight,left=42,right=14,top=14,bottom=30;
+  ctx.clearRect(0,0,w,h);vals=vals.filter(v=>v!==null&&!isNaN(v));
+  ctx.strokeStyle='#6f84a8';ctx.strokeRect(left,top,w-left-right,h-top-bottom);
+  if(vals.length<2){ctx.fillStyle='#b7c4d8';ctx.font='13px system-ui';ctx.fillText('Minstens 2 metingen nodig',left+8,top+24);return}
+  const avg=vals.map((_,i)=>{const s=vals.slice(Math.max(0,i-6),i+1);return s.reduce((a,b)=>a+b,0)/s.length});
+  const all=vals.concat(avg),min=Math.min(...all),max=Math.max(...all),pad=(max-min)*0.08||1,lo=min-pad,hi=max+pad,span=hi-lo||1;
+  ctx.font='11px system-ui';ctx.fillStyle='#b7c4d8';
+  [lo,(lo+hi)/2,hi].forEach(t=>{const y=h-bottom-(t-lo)*(h-top-bottom)/span;ctx.strokeStyle='rgba(255,255,255,.16)';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle='#b7c4d8';ctx.fillText(String(Math.round(t*10)/10),6,y+4)});
+  ctx.fillText('start',left,h-9);ctx.fillText('nu',w-30,h-9);
+  const plot=(s,width,alpha)=>{ctx.beginPath();ctx.lineWidth=width;ctx.strokeStyle=`rgba(255,255,255,${alpha})`;s.forEach((v,i)=>{const x=left+i*(w-left-right)/(s.length-1),y=h-bottom-(v-lo)*(h-top-bottom)/span;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};
+  plot(vals,1,.35);plot(avg,3,1);
+  ctx.fillStyle='#b7c4d8';ctx.font='11px system-ui';ctx.fillText(label+' · dun=dagwaarde · dik=trend',left+4,top+14);
+}
+function renderHistory(){
+  const r=range();
+  const actMap=new Map(activityDays.map(a=>[a.date,a]));
+  const dates=[...new Set(entries.map(e=>e.date).concat(activityDays.map(a=>a.date)))]
+    .filter(date=>date>=r.start&&date<=r.end).sort((a,b)=>b.localeCompare(a));
+  const min=num(settings.minExpectedSteps)||9000;
+  $('historyTable').innerHTML='<tr><th>Datum</th><th>Advies</th><th>Slaap</th><th>Gevoel</th><th>Stress</th><th>Body Battery</th><th>Stappen dag zelf</th><th>Bron</th><th>Wandelen dag zelf</th><th>Activiteit dag zelf</th></tr>'+
+    dates.map(date=>{
+      const e=getEntry(date)||{date,feeling:'ok',stressFeeling:'normaal'};
+      const a=actMap.get(date)||{};
+      const steps=num(a.steps);
+      const low=steps!==null&&steps<min;
+      const cls=low?' class="warnrow"':'';
+      const stepHtml=steps===null?'—':`<span class="${low?'bad':'good'}">${fmt0(steps)}</span>`;
+      const src=a.stepsSource||'—';
+      return `<tr${cls}><td>${date}</td><td>${e.decision||'—'}</td><td>${num(e.sleepHours)!==null?fmt(e.sleepHours,' u'):'—'}</td><td>${e.feeling||'—'}</td><td>${displayStress(e.stressFeeling||'')}</td><td>${num(e.bodyBattery)!==null?fmt0(e.bodyBattery):'—'}</td><td>${stepHtml}</td><td>${escapeHtml(src)}</td><td>${dur(num(a.walkMin)||0)}</td><td>${dur(num(a.activityMin)||0)}</td></tr>`;
+    }).join('');
+}
+function doctorReport(){
+  const old=$('period').value;$('period').value='start';const arr=filtered(),r=range(),m=metricSet(arr);$('period').value=old;
+  const html=`<!doctype html><html lang="nl"><head><meta charset="UTF-8"><title>ProCoach artsrapport</title><style>body{font-family:Arial,sans-serif;margin:32px;color:#111;line-height:1.35}h1{margin:0 0 4px}h2{margin-top:24px;border-bottom:1px solid #ccc;padding-bottom:6px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.box{border:1px solid #ccc;border-radius:10px;padding:12px}.k{font-size:11px;color:#666;text-transform:uppercase;font-weight:bold}.v{font-size:24px;font-weight:bold;margin-top:4px}table{width:100%;border-collapse:collapse;margin-top:10px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}.note{background:#f4f4f4;padding:12px;border-radius:10px;margin-top:14px}.btn{background:#222;color:#fff;border:0;border-radius:8px;padding:10px 14px;margin-bottom:16px}@media print{.btn{display:none}body{margin:20mm}}</style></head><body><button class="btn" onclick="window.print()">Print / bewaar als PDF</button><h1>ProCoach artsrapport</h1><div>Periode: ${r.start} t/m ${r.end} · lengte ${settings.heightCm} cm</div><h2>Kerncijfers</h2><div class="grid"><div class="box"><div class="k">Gezondheidsscore</div><div class="v">${m.health}/100</div></div><div class="box"><div class="k">Fitnessleeftijd</div><div class="v">${m.fitnessAge} jaar</div></div><div class="box"><div class="k">BMI</div><div class="v">${m.b?fmt(m.b,''):'—'}</div></div><div class="box"><div class="k">Gewicht</div><div class="v">${m.w?fmt(m.w,' kg'):'—'}</div></div><div class="box"><div class="k">Buikomtrek</div><div class="v">${m.wa?fmt(m.wa,' cm'):'—'}</div></div><div class="box"><div class="k">Wandelen</div><div class="v">${dur(m.walk)}</div></div></div><h2>Evolutie sinds 10/02/2026</h2><table><tr><th>Parameter</th><th>Start</th><th>Huidig</th><th>Verschil</th></tr><tr><td>Gewicht</td><td>99.0 kg</td><td>${m.w?fmt(m.w,' kg'):'—'}</td><td>${m.wd!==null?(m.wd>0?'+':'')+fmt(m.wd,' kg'):'—'}</td></tr><tr><td>Buikomtrek</td><td>116.0 cm</td><td>${m.wa?fmt(m.wa,' cm'):'—'}</td><td>${m.wad!==null?(m.wad>0?'+':'')+fmt(m.wad,' cm'):'—'}</td></tr><tr><td>BMI</td><td>${fmt(m.bs,'')}</td><td>${m.b?fmt(m.b,''):'—'}</td><td>${m.bd!==null?(m.bd>0?'+':'')+fmt(m.bd,''):'—'}</td></tr></table><h2>Activiteit</h2><table><tr><td>Wandelen totaal</td><td>${dur(m.walk)}</td></tr><tr><td>Stappen totaal</td><td>${fmt0(m.steps)}</td></tr><tr><td>Kracht</td><td>${dur(m.strength)}</td></tr><tr><td>Consistentie</td><td>${m.consistency}% · ${m.active} actieve dagen</td></tr></table><div class="note">Indicatieve coachingrapportage, geen medische diagnose. Te bespreken met arts indien gewenst.</div></body></html>`;
+  const win=window.open('','_blank');win.document.write(html);win.document.close();
+}
 function setTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));[...document.querySelectorAll('.tab')][['today','history','dashboard','settings'].indexOf(id)].classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');renderAll()}
 function renderAll(){loadSettings();renderCoach();renderHistory();renderDash();renderSyncDiagnostics();lock()}
-function exportJson(){const blob=new Blob([JSON.stringify({settings,entries,activityDays,syncState},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v31_backup.json';a.click()}
+function exportJson(){const blob=new Blob([JSON.stringify({settings,entries,activityDays,syncState},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v32_backup.json';a.click()}
 async function importJSON(ev){const f=ev.target.files[0];if(!f)return;const data=JSON.parse(await f.text());if(data.settings)settings=Object.assign(settings,data.settings);if(Array.isArray(data.entries))entries=data.entries;if(Array.isArray(data.activityDays))activityDays=data.activityDays;if(data.syncState)syncState=Object.assign(syncState,data.syncState,{isSyncing:false});saveSettings(false);saveActivityDays();saveEntries();saveSyncState();renderAll()}
-function wipeAll(){if(confirm('Alle lokale V31-data wissen?')){localStorage.removeItem(KEY);localStorage.removeItem(ACTKEY);localStorage.removeItem(SETKEY);localStorage.removeItem(SYNC_STATE_KEY);localStorage.removeItem('procoach_v31_seeded');entries=[];activityDays=[];location.reload()}}
-['sleep','rhr','bb'].forEach(id=>$(id).addEventListener('input',()=>{manualTouched[id]=true;renderCoach()}));['feeling','stress'].forEach(id=>$(id).addEventListener('input',renderCoach));$('date').addEventListener('change',()=>{fill(applyAutoRecovery($('date').value||today));renderAll()});$('date').value=today;loadSettings();seedProfile(false);fill(applyAutoRecovery(today));renderAll();autoSyncOnOpen();
+function wipeAll(){if(confirm('Alle V32 data wissen? Oude V29/V30 data blijft apart staan.')){localStorage.removeItem(KEY);localStorage.removeItem(ACTKEY);localStorage.removeItem(SETKEY);localStorage.removeItem(SYNC_STATE_KEY);localStorage.removeItem('procoach_v32_seeded');entries=[];activityDays=[];location.reload()}}
+['sleep','rhr','bb'].forEach(id=>$(id).addEventListener('input',()=>{manualTouched[id]=true;renderCoach()}));
+['feeling','stress'].forEach(id=>$(id).addEventListener('input',renderCoach));
+$('date').addEventListener('change',()=>{fill(applyAutoRecovery($('date').value||today));renderAll()});
+$('date').value=today;
+loadSettings();
+seedProfile(false);
+fill(applyAutoRecovery(today));
+renderAll();
+autoSyncOnOpen();
 </script>
 </body>
 </html>
