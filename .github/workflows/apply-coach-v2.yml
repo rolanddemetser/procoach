@@ -1,0 +1,47 @@
+name: Apply Coach V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/coach-engine-v2
+    paths:
+      - scripts/patch-coach-v2.js
+      - scripts/test-coach-v2.js
+      - .github/workflows/apply-coach-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/coach-engine-v2
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run coach regression tests
+        run: node scripts/test-coach-v2.js
+      - name: Apply patch to index.html
+        run: node scripts/patch-coach-v2.js
+      - name: Verify patch markers
+        run: |
+          grep -q 'ProCoach V33 Coach v2' index.html
+          grep -q 'AANGEPAST — BEHOUD DE LICHTE ACTIVITEITEN' index.html
+          ! grep -q "sleep<5){mode='stop'" index.html
+      - name: Commit integrated app
+        run: |
+          if git diff --quiet; then
+            echo 'No changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Integrate coach v2 into ProCoach V33'
+          git push origin HEAD:feature/coach-engine-v2
