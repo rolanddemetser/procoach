@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V32</title>
+<title>ProCoach V33 Coach v2</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--green:#0d6f42;--blue:#1d4f8f;--amber:#96550b;--red:#9d1c1c}
 *{box-sizing:border-box}
@@ -65,7 +65,7 @@ canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;borde
 <div class="app">
   <div class="top">
     <div>
-      <h1>ProCoach V32 🧠</h1>
+      <h1>ProCoach V33 🧠</h1>
       <div class="sub">Diepe rebuild. Historiek toont dagwaarden. Coach gebruikt gisterenbelasting. Intervals-data wordt niet meer stil gefilterd of verschoven.</div>
       <div class="small">Belangrijk: als Intervals een laag dagtotaal levert, toont V32 dat met een waarschuwing in plaats van het te verbergen.</div>
     </div>
@@ -566,26 +566,55 @@ function coach(e=currentForm()){
   e=deriveYesterday(e);
   const reasons=[];
   const sleep=num(e.sleepHours),bb=num(e.bodyBattery),bbMorning=e.bodyBatteryMorning===true||e.bodyBatterySource==='manual',rhr=num(e.rhr),stepsY=num(e.yesterdaySteps),walkY=num(e.yesterdayWalkMin)||0,activityY=num(e.yesterdayActivityMin)||0,stress=normalizeStress(e.stressFeeling),feeling=e.feeling||'ok';
-  let mode='go',title='GO — NORMALE TRAININGSDAG',actions=['Wandelen: 40–60 min rustig als gepland','Kracht: licht/gecontroleerd optioneel','Stop als pijn of duidelijke vermoeidheid opkomt'],dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];
-  if(feeling==='ziek'){mode='stop';reasons.push('Ziek gevoel: herstel is vandaag de training.')}
-  else if(feeling==='pijn'){mode='stop';reasons.push('Pijn gemeld: blessurerisico gaat voor.')}
-  else if(sleep!==null&&sleep<5){mode='stop';reasons.push('Minder dan 5 uur slaap: herstel eerst.')}
-  else if(sleep!==null&&sleep<6&&stress==='zeer_hoog'){mode='stop';reasons.push('Weinig slaap plus zeer hoge stress: niet stapelen.')}
-  else if(bb!==null&&bb<20&&bbMorning){mode='stop';reasons.push('Body Battery bij opstaan zeer laag: ondersteunend rood signaal.')}
-  if(mode!=='stop'){
-    if(sleep!==null&&sleep<6.5)reasons.push('Slaapduur is matig: herstel beschermen.');
-    if(feeling==='moe')reasons.push('Je voelt je moe: rustige dag is veiliger.');
-    if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stressgevoel is hoog: herstelstatus kwetsbaar.');
-    if(stepsY!==null&&stepsY>=12000)reasons.push('Gisteren veel stappen: dit telt als belasting.');
-    if(walkY>=60)reasons.push('Gisteren veel wandelen: benen kunnen vermoeid zijn.');
-    if(activityY>=75)reasons.push('Gisteren veel totale activiteit: belasting stapelt.');
-    if(bb!==null&&bb<35)reasons.push('Body Battery laag: ondersteunend herstelsignaal.');
-    if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');
-    if(reasons.length){mode='recover';title='RECOVER — HERSTELDAG';actions=['Wandelen: 20–30 min rustig','Mobiliteit: 5–15 min','Houd tempo en afstand ondergeschikt'];dont=['Geen versnellingen','Geen zware kracht','Geen extra lange wandeling']}
+  const heavyYesterday=(stepsY!==null&&stepsY>=12000)||walkY>=60||activityY>=75;
+  const poorRecoverySignals=[feeling==='moe',stress==='hoog'||stress==='zeer_hoog',heavyYesterday,bb!==null&&bb<35&&bbMorning,isRhrElevated(rhr,e.date)].filter(Boolean).length;
+  let mode='go',title='GO — VOLG DE WEEKPLANNING',actions=['Voer de geplande activiteiten uit','Start rustig en evalueer na 10 minuten','Pas alleen aan bij duidelijke vermoeidheid of pijn'],dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];
+
+  if(feeling==='ziek'){
+    mode='stop';
+    reasons.push('Ziek gevoel: herstel is vandaag de training.');
+  } else if(feeling==='pijn'){
+    mode='stop';
+    reasons.push('Pijn gemeld: veiligheid gaat voor.');
+  } else if(bb!==null&&bb<20&&bbMorning&&poorRecoverySignals>=2){
+    mode='stop';
+    reasons.push('Zeer lage Body Battery samen met meerdere herstelsignalen.');
   }
-  if(mode==='stop'){title='STOP — HERSTEL EERST';actions=['Rust: herstel is de training','Wandelen: max. 10–20 min zeer rustig als het goed voelt','Mobiliteit: 5–10 min indien pijnvrij'];dont=['Geen kracht','Geen versnellingen','Geen lange wandeling']}
-  if(!reasons.length)reasons.push('Herstel is voldoende en gisterenbelasting is normaal.');
-  return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling},y:getActivityDay(addDays(e.date,-1))||{}}
+
+  if(mode!=='stop'){
+    if(sleep!==null&&sleep<5){
+      reasons.push('Minder dan 5 uur slaap: zware onderdelen worden beperkt.');
+      mode='recover';
+    } else if(sleep!==null&&sleep<6&&poorRecoverySignals>=1){
+      reasons.push('Korter dan 6 uur slaap telt alleen mee door bijkomende herstelsignalen.');
+      mode='recover';
+    }
+
+    if(feeling==='moe')reasons.push('Je voelt je moe: kies de lichtere versie van de planning.');
+    if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stress is verhoogd: intensiteit beperken.');
+    if(stepsY!==null&&stepsY>=12000)reasons.push('Gisteren veel stappen: dit telt als belasting.');
+    if(walkY>=60)reasons.push('Gisteren minstens 60 minuten gewandeld.');
+    if(activityY>=75)reasons.push('Gisteren veel totale activiteit.');
+    if(bb!==null&&bb<35&&bbMorning)reasons.push('Body Battery bij opstaan is laag.');
+    if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');
+
+    if(mode==='go'&&poorRecoverySignals>=2)mode='recover';
+
+    if(mode==='recover'){
+      title='AANGEPAST — BEHOUD DE LICHTE ACTIVITEITEN';
+      actions=['Behoud rustige wandeling, mobiliteit of yoga','Kort belastende activiteiten in of stel ze uit','Start rustig en stop bij duidelijke verslechtering'];
+      dont=['Geen zware kracht','Geen versnellingen','Geen extra lange wandeling'];
+    }
+  }
+
+  if(mode==='stop'){
+    title='STOP — HERSTEL EERST';
+    actions=['Rust: herstel is de training','Alleen zeer rustig bewegen als dat goed voelt','Zoek medische hulp bij alarmsymptomen'];
+    dont=['Geen kracht','Geen versnellingen','Geen lange wandeling'];
+  }
+
+  if(!reasons.length)reasons.push('Herstel is voldoende; de bestaande weekplanning blijft leidend.');
+  return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling},y:getActivityDay(addDays(e.date,-1))||{}};
 }
 function isRhrElevated(rhr,date){if(rhr===null)return false;const vals=entries.filter(e=>e.date<date&&num(e.rhr)!==null).slice(-28).map(e=>num(e.rhr)).sort((a,b)=>a-b);if(vals.length<14)return false;const mid=Math.floor(vals.length/2),median=vals.length%2?vals[mid]:(vals[mid-1]+vals[mid])/2;return rhr>=median+8}
 function renderCoach(){
