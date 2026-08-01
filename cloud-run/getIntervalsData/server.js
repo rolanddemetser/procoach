@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { handleGetIntervalsData } from './src/getIntervalsDataV35.js';
+import { handleGetIntervalsData } from './src/getIntervalsDataV36.js';
 
 const port = Number(process.env.PORT || 8080);
 
@@ -8,5 +8,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(JSON.stringify({ severity: 'INFO', message: 'getIntervalsData V35 listening', port }));
+  console.log(JSON.stringify({ severity: 'INFO', message: 'getIntervalsData V36 listening', port }));
 });
