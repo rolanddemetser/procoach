@@ -1,0 +1,35 @@
+name: Test Backend V36
+
+on:
+  push:
+    branches:
+      - fix/backend-wellness-custom-fields-v36
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+      - '.github/workflows/test-backend-v36.yml'
+  pull_request:
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloud-run/getIntervalsData
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run full backend tests
+        run: npm test
+      - name: Syntax check V36
+        run: node --check src/getIntervalsDataV36.js
+      - name: Verify Cloud Run entrypoint
+        run: grep -q "getIntervalsDataV36.js" server.js
