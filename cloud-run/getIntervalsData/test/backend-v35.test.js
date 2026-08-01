@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mergeIntervalsData } from '../src/getIntervalsData.js';
+import { mergeIntervalsData } from '../src/getIntervalsDataV35.js';
 
 test('highest plausible step total wins over partial wellness value', () => {
   const days = mergeIntervalsData({
