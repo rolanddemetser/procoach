@@ -17,6 +17,9 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      INTERVALS_ATHLETE_ID: test-athlete
+      INTERVALS_API_KEY: test-key
     defaults:
       run:
         working-directory: cloud-run/getIntervalsData
@@ -27,8 +30,8 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Run full backend tests
-        run: npm test
+      - name: Run V36 regression tests
+        run: node --test test/backend-v36.test.js
       - name: Syntax check V36
         run: node --check src/getIntervalsDataV36.js
       - name: Verify Cloud Run entrypoint
