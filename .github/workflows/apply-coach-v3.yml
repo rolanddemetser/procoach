@@ -1,0 +1,55 @@
+name: Apply Coach V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/coach-v3-weekplan-wellness
+    paths:
+      - scripts/patch-wellness-v3.js
+      - scripts/patch-coach-v3.js
+      - scripts/test-coach-v3.js
+      - .github/workflows/apply-coach-v3.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/coach-v3-weekplan-wellness
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run regression tests
+        run: node scripts/test-coach-v3.js
+      - name: Apply wellness patch
+        run: node scripts/patch-wellness-v3.js
+      - name: Apply Coach V3 patch
+        run: node scripts/patch-coach-v3.js
+      - name: Validate JavaScript syntax
+        run: node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const s=h.match(/<script>([\\s\\S]*)<\\/script>/)[1];new Function(s);console.log('JavaScript syntax valid')"
+      - name: Verify integration markers
+        run: |
+          grep -q 'ProCoach V34 Coach V3' index.html
+          grep -q 'const WEEK_PLAN=' index.html
+          grep -q 'Automatisch uit Intervals:' index.html
+          grep -q 'stepCandidates' index.html
+          grep -q "1:\[{kind:'nordic'" index.html
+          grep -q "0:\[{kind:'measure'" index.html
+      - name: Commit integrated application
+        run: |
+          if git diff --quiet; then
+            echo 'No changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Integrate Coach V3 week plan and wellness fixes'
+          git push origin HEAD:feature/coach-v3-weekplan-wellness

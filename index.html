@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProCoach">
-<title>ProCoach V33 Coach v2</title>
+<title>ProCoach V34 Coach V3</title>
 <style>
 :root{--bg:#07111f;--panel:#142235;--panel2:#243752;--line:#415675;--text:#f8fbff;--muted:#b8c5d8;--purple:#8b4cf6;--green:#0d6f42;--blue:#1d4f8f;--amber:#96550b;--red:#9d1c1c}
 *{box-sizing:border-box}
@@ -65,7 +65,7 @@ canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;borde
 <div class="app">
   <div class="top">
     <div>
-      <h1>ProCoach V33 🧠</h1>
+      <h1>ProCoach V34 🧠</h1>
       <div class="sub">Diepe rebuild. Historiek toont dagwaarden. Coach gebruikt gisterenbelasting. Intervals-data wordt niet meer stil gefilterd of verschoven.</div>
       <div class="small">Belangrijk: als Intervals een laag dagtotaal levert, toont V32 dat met een waarschuwing in plaats van het te verbergen.</div>
     </div>
@@ -134,7 +134,7 @@ canvas{width:100%;height:220px;background:#24344d;border:1px solid #455976;borde
           <div><label>Gevoel</label><select id="feeling"><option>ok</option><option>goed</option><option>moe</option><option>pijn</option><option>ziek</option></select></div>
           <div><label>Stressgevoel</label><select id="stress"><option>normaal</option><option>laag</option><option>hoog</option><option>zeer hoog</option></select></div>
           <div><label>Rusthartslag</label><input id="rhr" type="text" inputmode="numeric" placeholder="auto of bv. 58"></div>
-          <div><label>Body Battery bij opstaan</label><input id="bb" type="text" inputmode="numeric" placeholder="auto indien beschikbaar"></div>
+          <div><label>Body Battery bij opstaan</label><input id="bb" type="text" inputmode="numeric" placeholder="alleen manueel indien nodig"><div id="bbSourceLabel" class="small" style="margin-top:5px">Nog geen automatische waarde.</div></div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
           <button class="primary" onclick="saveToday()">Bewaar vandaag</button>
@@ -326,7 +326,7 @@ function applyAutoRecovery(date){
   if(todayActivity){
     if(num(e.sleepHours)===null||e.sleepSource!=='manual'){const v=num(todayActivity.sleepHours);if(v!==null){e.sleepHours=v;e.sleepSource='intervals'}}
     if(num(e.rhr)===null||e.rhrSource!=='manual'){const v=num(todayActivity.rhr);if(v!==null){e.rhr=v;e.rhrSource='intervals'}}
-    if(num(e.bodyBattery)===null||e.bodyBatterySource!=='manual'){const v=num(todayActivity.bodyBattery);if(v!==null){e.bodyBattery=v;e.bodyBatteryMorning=todayActivity.bodyBatteryMorning===true;e.bodyBatterySource='intervals'}}
+    if(num(e.bodyBattery)===null||e.bodyBatterySource!=='manual'){const v=num(todayActivity.bodyBattery);if(v!==null){e.bodyBattery=v;e.bodyBatteryMorning=true;e.bodyBatterySource='intervals';e.bodyBatterySourcePath=todayActivity.bodyBatterySourcePath||'Intervals wellness'}}
   }
   return e;
 }
@@ -352,9 +352,11 @@ function fill(e){
   $('sleep').value=num(hydrated.sleepHours)!==null?hydrated.sleepHours:'';
   $('rhr').value=num(hydrated.rhr)!==null?hydrated.rhr:'';
   $('bb').value=num(hydrated.bodyBattery)!==null?hydrated.bodyBattery:'';
+  renderBodyBatterySource(hydrated);
   $('feeling').value=hydrated.feeling||'ok';
   $('stress').value=displayStress(hydrated.stressFeeling||'normaal');
 }
+function renderBodyBatterySource(e){const el=$('bbSourceLabel');if(!el)return;const v=num(e&&e.bodyBattery);if(v===null){el.textContent='Geen betrouwbare automatische waarde. Vul alleen dan manueel in.';return}if(manualTouched.bb||e.bodyBatterySource==='manual')el.textContent='Manueel overschreven: '+fmt0(v);else el.textContent='Automatisch uit Intervals: '+fmt0(v)+' (hoogste ochtendwaarde)'}
 function fillFromAuto(){const date=$('date').value||today;fill(applyAutoRecovery(date));renderAll()}
 function saveToday(){
   let e=currentForm();
@@ -431,7 +433,7 @@ async function syncIntervals(manual=false){
 }
 function payloadItems(raw){if(Array.isArray(raw))return raw;if(raw&&Array.isArray(raw.activities))return raw.activities;if(raw&&Array.isArray(raw.items))return raw.items;if(raw&&Array.isArray(raw.data))return raw.data;if(raw&&Array.isArray(raw.wellness))return raw.wellness;return null}
 
-function emptyDay(date){return{date,steps:null,stepsSource:'',stepCandidates:[],walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,source:'intervals',syncedAt:new Date().toISOString()}}
+function emptyDay(date){return{date,steps:null,stepsSource:'',stepCandidates:[],walkMin:0,activityMin:0,strengthMin:0,yogaMin:0,sleepHours:null,rhr:null,bodyBattery:null,bodyBatteryMorning:false,bodyBatterySourcePath:'',source:'intervals',syncedAt:new Date().toISOString()}}
 function ensureDay(by,date){if(!date)return null;if(!by[date])by[date]=emptyDay(date);return by[date]}
 function mergeActivityDays(days){
   const map=new Map(activityDays.map(e=>[e.date,e]));
@@ -501,15 +503,27 @@ function classifyIntervals(items){
       if(day)day.rhr=rhr;
     }
 
-    const bbMorning=num(getNested(a,['body_battery_morning','morning_body_battery','wellness.body_battery_morning']));
-    const bb=bbMorning??num(getNested(a,['body_battery','bodyBattery','wellness.body_battery','wellness.bodyBattery','garmin.body_battery']));
-    if(bb!==null){
+    const bbInfo=extractMorningBodyBattery(a);
+    if(bbInfo.value!==null){
       const day=ensureDay(by,activityDate||sleepDate);
-      if(day){day.bodyBattery=bb;day.bodyBatteryMorning=bbMorning!==null}
+      if(day&&(num(day.bodyBattery)===null||bbInfo.value>day.bodyBattery)){day.bodyBattery=bbInfo.value;day.bodyBatteryMorning=true;day.bodyBatterySourcePath=bbInfo.path}
     }
   });
 
   return Object.values(by).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function extractMorningBodyBattery(a){
+  const candidates=[];
+  ['body_battery_morning','morning_body_battery','bodyBatteryMorning','wellness.body_battery_morning','wellness.morning_body_battery'].forEach(path=>{const v=num(valueAt(a,path));if(v!==null&&v>=0&&v<=100)candidates.push({path,value:v,priority:5})});
+  ['body_battery','bodyBattery','wellness.body_battery','wellness.bodyBattery','garmin.body_battery'].forEach(path=>{const v=num(valueAt(a,path));if(v!==null&&v>=0&&v<=100)candidates.push({path,value:v,priority:2})});
+  collectBodyBatteryValues(a,'',candidates,0);
+  if(!candidates.length)return{value:null,path:'',priority:0};
+  const unique=[...new Map(candidates.map(c=>[c.path+'|'+c.value,c])).values()];unique.sort((a,b)=>b.value-a.value||b.priority-a.priority);return unique[0]
+}
+function collectBodyBatteryValues(o,prefix,candidates,depth){
+  if(!o||typeof o!=='object'||depth>5)return;
+  if(Array.isArray(o)){o.slice(0,200).forEach((v,i)=>collectBodyBatteryValues(v,prefix+'['+i+']',candidates,depth+1));return}
+  Object.keys(o).forEach(k=>{const v=o[k],path=prefix?prefix+'.'+k:k,low=k.toLowerCase().replace(/[^a-z]/g,'');if(low.includes('bodybattery')){const n=num(v);if(n!==null&&n>=0&&n<=100)candidates.push({path,value:n,priority:low.includes('morning')||low.includes('max')?4:2});if(Array.isArray(v))v.forEach((item,i)=>{const n2=num(item&&typeof item==='object'?(item.value??item.bodyBattery??item.body_battery):item);if(n2!==null&&n2>=0&&n2<=100)candidates.push({path:path+'['+i+']',value:n2,priority:3})})}if(v&&typeof v==='object')collectBodyBatteryValues(v,path,candidates,depth+1)})
 }
 function activityDataDate(a){return normalDate(getNested(a,['start_date_local','start_date','date','calendar_date','day','wellness.date','wellness.calendar_date']))}
 function sleepDataDate(a){
@@ -530,15 +544,18 @@ function activityMinutes(a){
 function extractStepInfo(a){
   const paths=['wellness.steps','wellness.Steps','wellness.stepCount','wellness.totalSteps','wellness.total_steps','totalSteps','total_steps','dailySteps','daily_steps','stepCount','step_count','Steps','steps'];
   const candidates=[];
-  paths.forEach(path=>{
-    const raw=valueAt(a,path),v=num(raw);
-    if(v!==null&&v>=0&&v<100000)candidates.push({path,value:v});
-  });
+  paths.forEach(path=>{const v=num(valueAt(a,path));if(v!==null&&v>=0&&v<100000)candidates.push({path,value:v,priority:path.includes('wellness')||path.toLowerCase().includes('total')||path.toLowerCase().includes('daily')?3:2})});
+  ['stepCandidates','debugStepCandidates','wellness.stepCandidates'].forEach(path=>{const list=valueAt(a,path);if(Array.isArray(list))list.forEach((item,i)=>{const v=num(item&&typeof item==='object'?item.value:item);if(v!==null&&v>=0&&v<100000)candidates.push({path:(item&&item.path)||path+'['+i+']',value:v,priority:4})})});
+  collectStepTotals(a,'',candidates,0);
   if(!candidates.length)return{value:null,source:'',candidates:[]};
-
-  candidates.sort((a,b)=>b.value-a.value);
-  const best=candidates[0];
-  return{value:best.value,source:best.path,candidates};
+  const unique=[...new Map(candidates.map(c=>[c.path+'|'+c.value,c])).values()];
+  unique.sort((a,b)=>b.value-a.value||b.priority-a.priority);
+  const best=unique[0];return{value:best.value,source:best.path,candidates:unique};
+}
+function collectStepTotals(o,prefix,candidates,depth){
+  if(!o||typeof o!=='object'||depth>4)return;
+  if(Array.isArray(o)){o.slice(0,100).forEach((v,i)=>collectStepTotals(v,prefix+'['+i+']',candidates,depth+1));return}
+  Object.keys(o).forEach(k=>{const v=o[k],path=prefix?prefix+'.'+k:k,low=k.toLowerCase().replace(/[^a-z]/g,'');const ok=['steps','stepcount','totalsteps','dailysteps'].includes(low);if(ok){const n=num(v);if(n!==null&&n>=0&&n<100000)candidates.push({path,value:n,priority:low==='totalsteps'||low==='dailysteps'?3:1})}if(v&&typeof v==='object')collectStepTotals(v,path,candidates,depth+1)})
 }
 function stepFieldPaths(items){const found=new Set();(items||[]).slice(0,500).forEach(item=>collectStepFields(item,'',found));return [...found].sort().slice(0,40)}
 function collectStepFields(o,prefix,found){if(!o||typeof o!=='object')return;Object.keys(o).forEach(k=>{const path=prefix?prefix+'.'+k:k;if(k.toLowerCase().includes('step'))found.add(path);const v=o[k];if(v&&typeof v==='object'&&!Array.isArray(v))collectStepFields(v,path,found)})}
@@ -562,59 +579,55 @@ function scheduleRetry(){if(retryTimer||document.hidden)return;const delay=(sync
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const last=syncState.lastSuccessAt?new Date(syncState.lastSuccessAt).getTime():0;if(settings.autoSync!==false&&Date.now()-last>15*60*1000)syncIntervals(false)});
 window.addEventListener('online',()=>{if(settings.autoSync!==false)syncIntervals(false)});
 
+const WEEK_PLAN={
+  1:[{kind:'nordic',label:'Nordic Walking',min:50,max:70}],
+  2:[{kind:'strength',label:'HASfit full body',min:30,max:30},{kind:'walk',label:'Wandelen',min:30,max:40}],
+  3:[{kind:'yin',label:'Yin yoga',min:30,max:40},{kind:'walk',label:'Wandelen',min:45,max:60}],
+  4:[{kind:'nordic',label:'Nordic Walking',min:50,max:70}],
+  5:[{kind:'nordic',label:'Nordic Walking',min:60,max:60}],
+  6:[{kind:'strength',label:'HASfit full body',min:30,max:30},{kind:'walk',label:'Wandelen',min:30,max:40}],
+  0:[{kind:'measure',label:'Buikomtrek meten',min:0,max:0},{kind:'nordic_long',label:'Nordic Walking',min:75,max:90},{kind:'restorative',label:'Restorative yoga',min:30,max:30}]
+};
+function planForDate(date){const d=new Date((date||today)+'T12:00:00');return(WEEK_PLAN[d.getDay()]||[]).map(x=>Object.assign({},x))}
+function formatDurationItem(a){if(a.kind==='measure')return a.label;return a.label+' '+a.min+(a.max!==a.min?'–'+a.max:'')+' min'}
+function formatPlan(plan){return plan.map(formatDurationItem).join(' + ')}
+function dayLoad(day){if(!day)return 0;const steps=num(day.steps)||0,walk=num(day.walkMin)||0,strength=num(day.strengthMin)||0,yoga=num(day.yogaMin)||0;return Math.round(clamp(steps/12000*30+walk/90*35+strength/40*30+yoga/60*5,0,100))}
+function recentLoad(date,count){const vals=[];for(let i=1;i<=count;i++){const d=getActivityDay(addDays(date,-i));if(d)vals.push(dayLoad(d))}return vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0}
+function adaptPlan(plan){return plan.map(a=>{if(a.kind==='strength')return'HASfit uitstellen; vervang door mobiliteit 10–15 min';if(a.kind==='nordic_long')return'Nordic Walking inkorten naar 45–60 min rustig';if(a.kind==='nordic')return'Nordic Walking inkorten naar 30–45 min rustig';if(a.kind==='walk')return'Wandelen rustig '+Math.min(a.min,20)+'–'+Math.min(a.max,30)+' min';if(a.kind==='yin'||a.kind==='restorative')return formatDurationItem(a)+' behouden';return formatDurationItem(a)+' behouden'})}
 function coach(e=currentForm()){
   e=deriveYesterday(e);
-  const reasons=[];
-  const sleep=num(e.sleepHours),bb=num(e.bodyBattery),bbMorning=e.bodyBatteryMorning===true||e.bodyBatterySource==='manual',rhr=num(e.rhr),stepsY=num(e.yesterdaySteps),walkY=num(e.yesterdayWalkMin)||0,activityY=num(e.yesterdayActivityMin)||0,stress=normalizeStress(e.stressFeeling),feeling=e.feeling||'ok';
+  const plan=planForDate(e.date),reasons=[];
+  const sleep=num(e.sleepHours),bb=num(e.bodyBattery),bbMorning=e.bodyBatteryMorning===true||e.bodyBatterySource==='manual'||e.bodyBatterySource==='intervals',rhr=num(e.rhr),stepsY=num(e.yesterdaySteps),walkY=num(e.yesterdayWalkMin)||0,activityY=num(e.yesterdayActivityMin)||0,stress=normalizeStress(e.stressFeeling),feeling=e.feeling||'ok';
+  const load3=recentLoad(e.date,3),load7=recentLoad(e.date,7);
   const heavyYesterday=(stepsY!==null&&stepsY>=12000)||walkY>=60||activityY>=75;
-  const poorRecoverySignals=[feeling==='moe',stress==='hoog'||stress==='zeer_hoog',heavyYesterday,bb!==null&&bb<35&&bbMorning,isRhrElevated(rhr,e.date)].filter(Boolean).length;
-  let mode='go',title='GO — VOLG DE WEEKPLANNING',actions=['Voer de geplande activiteiten uit','Start rustig en evalueer na 10 minuten','Pas alleen aan bij duidelijke vermoeidheid of pijn'],dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];
-
-  if(feeling==='ziek'){
-    mode='stop';
-    reasons.push('Ziek gevoel: herstel is vandaag de training.');
-  } else if(feeling==='pijn'){
-    mode='stop';
-    reasons.push('Pijn gemeld: veiligheid gaat voor.');
-  } else if(bb!==null&&bb<20&&bbMorning&&poorRecoverySignals>=2){
-    mode='stop';
-    reasons.push('Zeer lage Body Battery samen met meerdere herstelsignalen.');
-  }
-
-  if(mode!=='stop'){
-    if(sleep!==null&&sleep<5){
-      reasons.push('Minder dan 5 uur slaap: zware onderdelen worden beperkt.');
-      mode='recover';
-    } else if(sleep!==null&&sleep<6&&poorRecoverySignals>=1){
-      reasons.push('Korter dan 6 uur slaap telt alleen mee door bijkomende herstelsignalen.');
-      mode='recover';
-    }
-
-    if(feeling==='moe')reasons.push('Je voelt je moe: kies de lichtere versie van de planning.');
-    if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stress is verhoogd: intensiteit beperken.');
-    if(stepsY!==null&&stepsY>=12000)reasons.push('Gisteren veel stappen: dit telt als belasting.');
-    if(walkY>=60)reasons.push('Gisteren minstens 60 minuten gewandeld.');
-    if(activityY>=75)reasons.push('Gisteren veel totale activiteit.');
-    if(bb!==null&&bb<35&&bbMorning)reasons.push('Body Battery bij opstaan is laag.');
-    if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');
-
-    if(mode==='go'&&poorRecoverySignals>=2)mode='recover';
-
-    if(mode==='recover'){
-      title='AANGEPAST — BEHOUD DE LICHTE ACTIVITEITEN';
-      actions=['Behoud rustige wandeling, mobiliteit of yoga','Kort belastende activiteiten in of stel ze uit','Start rustig en stop bij duidelijke verslechtering'];
-      dont=['Geen zware kracht','Geen versnellingen','Geen extra lange wandeling'];
-    }
-  }
-
-  if(mode==='stop'){
-    title='STOP — HERSTEL EERST';
-    actions=['Rust: herstel is de training','Alleen zeer rustig bewegen als dat goed voelt','Zoek medische hulp bij alarmsymptomen'];
-    dont=['Geen kracht','Geen versnellingen','Geen lange wandeling'];
-  }
-
-  if(!reasons.length)reasons.push('Herstel is voldoende; de bestaande weekplanning blijft leidend.');
-  return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling},y:getActivityDay(addDays(e.date,-1))||{}};
+  const signals=[];
+  if(feeling==='moe')signals.push('moe');
+  if(stress==='hoog'||stress==='zeer_hoog')signals.push('stress');
+  if(heavyYesterday)signals.push('gisteren');
+  if(load3>=65)signals.push('belasting3');
+  if(load7>=60)signals.push('belasting7');
+  if(bb!==null&&bb<35&&bbMorning)signals.push('bodyBattery');
+  if(isRhrElevated(rhr,e.date))signals.push('rusthartslag');
+  if(sleep!==null&&sleep<5)signals.push('zeerKorteSlaap');
+  else if(sleep!==null&&sleep<6&&signals.length)signals.push('korteSlaap');
+  let mode='go',title='GO — VOLG DE WEEKPLANNING';
+  let actions=['Vandaag: '+formatPlan(plan),'Start rustig en evalueer na 10 minuten','Behoud de geplande volgorde en intensiteit'];
+  let dont=['Niet maximaliseren','Niet compenseren','Geen extra belasting bij pijn'];
+  if(feeling==='ziek'){mode='stop';reasons.push('Ziek gevoel: herstel is vandaag de training.')}
+  else if(feeling==='pijn'){mode='stop';reasons.push('Pijn gemeld: veiligheid gaat voor.')}
+  else if(bb!==null&&bb<20&&bbMorning&&signals.length>=3){mode='stop';reasons.push('Zeer lage Body Battery samen met meerdere rode herstelsignalen.')}
+  else if(signals.length>=2||signals.includes('zeerKorteSlaap')){mode='recover';title='AANGEPAST — WEEKPLANNING LICHTER';actions=adaptPlan(plan).slice(0,3);dont=['Geen zware kracht','Geen versnellingen','Geen extra lange wandeling']}
+  if(sleep!==null&&sleep<5)reasons.push('Minder dan 5 uur slaap: zware onderdelen worden beperkt, niet alles geschrapt.');
+  else if(sleep!==null&&sleep<6&&signals.includes('korteSlaap'))reasons.push('Korter dan 6 uur slaap telt alleen mee door een bijkomend herstelsignaal.');
+  if(feeling==='moe')reasons.push('Je voelt je moe.');
+  if(stress==='hoog'||stress==='zeer_hoog')reasons.push('Stress is verhoogd.');
+  if(heavyYesterday)reasons.push('Gisteren was belastend.');
+  if(load3>=65)reasons.push('De gemiddelde belasting over 3 dagen is hoog ('+load3+'/100).');else if(load7>=60)reasons.push('De gemiddelde belasting over 7 dagen is verhoogd ('+load7+'/100).');
+  if(bb!==null&&bb<35&&bbMorning)reasons.push('Body Battery bij opstaan is laag.');
+  if(isRhrElevated(rhr,e.date))reasons.push('Rusthartslag ligt boven je recente baseline.');
+  if(mode==='stop'){title='STOP — HERSTEL EERST';actions=['Rust: herstel is de training','Alleen zeer rustig bewegen als dat goed voelt','Zoek medische hulp bij alarmsymptomen'];dont=['Geen kracht','Geen Nordic Walking','Geen lange wandeling']}
+  if(!reasons.length)reasons.push('Herstel is voldoende; de volledige weekplanning blijft behouden.');
+  return{mode,title,actions,dont,reasons:reasons.slice(0,4),ctx:{sleep,bb,bbMorning,rhr,stepsY,walkY,activityY,stress,feeling,load3,load7,plan},y:getActivityDay(addDays(e.date,-1))||{}};
 }
 function isRhrElevated(rhr,date){if(rhr===null)return false;const vals=entries.filter(e=>e.date<date&&num(e.rhr)!==null).slice(-28).map(e=>num(e.rhr)).sort((a,b)=>a-b);if(vals.length<14)return false;const mid=Math.floor(vals.length/2),median=vals.length%2?vals[mid]:(vals[mid-1]+vals[mid])/2;return rhr>=median+8}
 function renderCoach(){
@@ -754,7 +767,7 @@ function renderAll(){loadSettings();renderCoach();renderHistory();renderDash();r
 function exportJson(){const blob=new Blob([JSON.stringify({settings,entries,activityDays,syncState},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='procoach_v32_backup.json';a.click()}
 async function importJSON(ev){const f=ev.target.files[0];if(!f)return;const data=JSON.parse(await f.text());if(data.settings)settings=Object.assign(settings,data.settings);if(Array.isArray(data.entries))entries=data.entries;if(Array.isArray(data.activityDays))activityDays=data.activityDays;if(data.syncState)syncState=Object.assign(syncState,data.syncState,{isSyncing:false});saveSettings(false);saveActivityDays();saveEntries();saveSyncState();renderAll()}
 function wipeAll(){if(confirm('Alle V32 data wissen? Oude V29/V30 data blijft apart staan.')){localStorage.removeItem(KEY);localStorage.removeItem(ACTKEY);localStorage.removeItem(SETKEY);localStorage.removeItem(SYNC_STATE_KEY);localStorage.removeItem('procoach_v32_seeded');entries=[];activityDays=[];location.reload()}}
-['sleep','rhr','bb'].forEach(id=>$(id).addEventListener('input',()=>{manualTouched[id]=true;renderCoach()}));
+['sleep','rhr','bb'].forEach(id=>$(id).addEventListener('input',()=>{manualTouched[id]=true;if(id==='bb')renderBodyBatterySource(currentForm());renderCoach()}));
 ['feeling','stress'].forEach(id=>$(id).addEventListener('input',renderCoach));
 $('date').addEventListener('change',()=>{fill(applyAutoRecovery($('date').value||today));renderAll()});
 $('date').value=today;
