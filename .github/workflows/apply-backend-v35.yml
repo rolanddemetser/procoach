@@ -1,0 +1,49 @@
+name: Apply Backend V35
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/backend-daily-wellness-v35
+    paths:
+      - scripts/patch-backend-v35.mjs
+      - cloud-run/getIntervalsData/test/backend-v35.test.js
+      - .github/workflows/apply-backend-v35.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/backend-daily-wellness-v35
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply backend patch
+        run: node scripts/patch-backend-v35.mjs
+      - name: Run backend test suite
+        working-directory: cloud-run/getIntervalsData
+        run: npm test
+      - name: Validate required integration markers
+        run: |
+          grep -q 'fetchRecentWellnessDetails' cloud-run/getIntervalsData/src/getIntervalsData.js
+          grep -q 'highest plausible daily value wins' cloud-run/getIntervalsData/src/getIntervalsData.js
+          grep -q 'extractBodyBatteryCandidate' cloud-run/getIntervalsData/src/getIntervalsData.js
+          grep -q 'bodyBatterySourcePath' cloud-run/getIntervalsData/src/getIntervalsData.js
+      - name: Commit integrated backend
+        run: |
+          if git diff --quiet; then
+            echo 'No changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cloud-run/getIntervalsData/src/getIntervalsData.js
+          git commit -m 'Fix recent wellness refresh, daily steps and morning Body Battery'
+          git push origin HEAD:fix/backend-daily-wellness-v35
