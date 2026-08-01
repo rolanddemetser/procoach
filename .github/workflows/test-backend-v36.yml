@@ -1,0 +1,38 @@
+name: Test Backend V36
+
+on:
+  push:
+    branches:
+      - fix/backend-wellness-custom-fields-v36
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+      - '.github/workflows/test-backend-v36.yml'
+  pull_request:
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      INTERVALS_ATHLETE_ID: test-athlete
+      INTERVALS_API_KEY: test-key
+    defaults:
+      run:
+        working-directory: cloud-run/getIntervalsData
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Run V36 regression tests
+        run: node --test test/backend-v36.test.js
+      - name: Syntax check V36
+        run: node --check src/getIntervalsDataV36.js
+      - name: Verify Cloud Run entrypoint
+        run: grep -q "getIntervalsDataV36.js" server.js
