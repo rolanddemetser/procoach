@@ -1,0 +1,35 @@
+name: Test Backend V37
+
+on:
+  push:
+    branches:
+      - fix/backend-wellness-csv-v37
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+      - '.github/workflows/test-backend-v37.yml'
+  pull_request:
+    paths:
+      - 'cloud-run/getIntervalsData/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloud-run/getIntervalsData
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Run V37 regression tests
+        run: node --test test/backend-v37.test.js
+      - name: Syntax check V37
+        run: node --check src/getIntervalsDataV37.js
+      - name: Verify Cloud Run entrypoint
+        run: grep -q "getIntervalsDataV37.js" server.js
