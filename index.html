@@ -580,16 +580,44 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)return;cons
 window.addEventListener('online',()=>{if(settings.autoSync!==false)syncIntervals(false)});
 
 const WEEK_PLAN={
-  1:[{kind:'nordic',label:'Nordic Walking',min:50,max:70}],
-  2:[{kind:'strength',label:'HASfit full body',min:30,max:30},{kind:'walk',label:'Wandelen',min:30,max:40}],
-  3:[{kind:'yin',label:'Yin yoga',min:30,max:40},{kind:'walk',label:'Wandelen',min:45,max:60}],
-  4:[{kind:'nordic',label:'Nordic Walking',min:50,max:70}],
-  5:[{kind:'nordic',label:'Nordic Walking',min:60,max:60}],
-  6:[{kind:'strength',label:'HASfit full body',min:30,max:30},{kind:'walk',label:'Wandelen',min:30,max:40}],
-  0:[{kind:'measure',label:'Buikomtrek meten',min:0,max:0},{kind:'nordic_long',label:'Nordic Walking',min:75,max:90},{kind:'restorative',label:'Restorative yoga',min:30,max:30}]
+  1:[
+    {kind:'restorative',label:'Yoga – herstel',min:30,max:40},
+    {kind:'steps',label:'Stappendoel',min:7000,max:9000}
+  ],
+  2:[
+    {kind:'strength',label:'HASfit 1 – Full Body Strength',min:38,max:38},
+    {kind:'walk_optional',label:'Eventueel rustig wandelen',min:20,max:30},
+    {kind:'steps',label:'Stappendoel',min:8000,max:10000}
+  ],
+  3:[
+    {kind:'walk',label:'Wandelen – aeroob',min:45,max:60},
+    {kind:'steps',label:'Stappendoel',min:9000,max:11000}
+  ],
+  4:[
+    {kind:'strength',label:'HASfit 2 – Dumbbell Full Body',min:35,max:35},
+    {kind:'yin',label:'Mobiliteitsyoga',min:15,max:20},
+    {kind:'steps',label:'Stappendoel',min:8000,max:10000}
+  ],
+  5:[
+    {kind:'restorative',label:'Yoga + mobiliteit',min:30,max:40},
+    {kind:'steps',label:'Stappendoel',min:7000,max:9000}
+  ],
+  6:[
+    {kind:'nordic_long',label:'Nordic Walking',min:60,max:75},
+    {kind:'steps',label:'Stappendoel',min:10000,max:13000}
+  ],
+  0:[
+    {kind:'strength',label:'HASfit 3 – Weight Training at Home',min:38,max:38},
+    {kind:'walk',label:'Rustig wandelen',min:45,max:45},
+    {kind:'steps',label:'Stappendoel',min:9000,max:11000}
+  ]
 };
 function planForDate(date){const d=new Date((date||today)+'T12:00:00');return(WEEK_PLAN[d.getDay()]||[]).map(x=>Object.assign({},x))}
-function formatDurationItem(a){if(a.kind==='measure')return a.label;return a.label+' '+a.min+(a.max!==a.min?'–'+a.max:'')+' min'}
+function formatDurationItem(a){
+  if(a.kind==='measure')return a.label;
+  if(a.kind==='steps')return a.label+' '+a.min.toLocaleString('nl-BE')+'–'+a.max.toLocaleString('nl-BE')+' stappen';
+  return a.label+' '+a.min+(a.max!==a.min?'–'+a.max:'')+' min'
+}
 function formatPlan(plan){return plan.map(formatDurationItem).join(' + ')}
 function dayLoad(day){if(!day)return 0;const steps=num(day.steps)||0,walk=num(day.walkMin)||0,strength=num(day.strengthMin)||0,yoga=num(day.yogaMin)||0;return Math.round(clamp(steps/12000*30+walk/90*35+strength/40*30+yoga/60*5,0,100))}
 function recentLoad(date,count){const vals=[];for(let i=1;i<=count;i++){const d=getActivityDay(addDays(date,-i));if(d)vals.push(dayLoad(d))}return vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0}
